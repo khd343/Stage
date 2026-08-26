@@ -399,6 +399,14 @@ def main() -> None:
         else pd.DataFrame()
     )
 
+    # NaN == NaN IS AGREEMENT HERE. Both implementations return NaN for the same
+    # honest reasons -- a zero volume baseline, a degenerate base, insufficient
+    # history -- and np.isclose treats NaN as unequal to itself unless told
+    # otherwise. Without equal_nan the checker reports a mismatch precisely when
+    # the two sides agree that a value cannot be computed, which is the opposite
+    # of what it exists to detect. U_D already carried equal_nan; every other
+    # comparison was missed, and three zero-volume NSE listings (BRIGHT, KALYANI,
+    # HERCULES) aborted the audit by agreeing correctly.
     failures = []
     checked_stage = checked_high = checked_volume = checked_ud = checked_liquidity = 0
     checked_ma_10w = checked_low = checked_trend = 0
@@ -412,10 +420,10 @@ def main() -> None:
             expected = independent_rs(close, t)
             actual = rs_returns(close, t)
             for m in (3, 6, 9, 12):
-                if not np.isclose(expected[m], actual[m], rtol=0, atol=1e-12):
+                if not np.isclose(expected[m], actual[m], rtol=0, atol=1e-12, equal_nan=True):
                     failures.append(f"{symbol}: R{m}M mismatch")
             expected_blend = 0.40 * expected[3] + 0.20 * expected[6] + 0.20 * expected[9] + 0.20 * expected[12]
-            if not np.isclose(expected_blend, float(result.loc[symbol, "RS_Blend"]), rtol=0, atol=1e-12):
+            if not np.isclose(expected_blend, float(result.loc[symbol, "RS_Blend"]), rtol=0, atol=1e-12, equal_nan=True):
                 failures.append(f"{symbol}: RS blend mismatch")
         except ValueError:
             pass
@@ -424,8 +432,8 @@ def main() -> None:
             ma, slope, stage = independent_stage(close, t)
             checked_stage += 1
             row = result.loc[symbol]
-            if not np.isclose(row["MA_30W"], ma, rtol=0, atol=1e-12): failures.append(f"{symbol}: 30W MA mismatch")
-            if not np.isclose(row["MA_30W_Slope_10S_Pct"], slope, rtol=0, atol=1e-12): failures.append(f"{symbol}: MA slope mismatch")
+            if not np.isclose(row["MA_30W"], ma, rtol=0, atol=1e-12, equal_nan=True): failures.append(f"{symbol}: 30W MA mismatch")
+            if not np.isclose(row["MA_30W_Slope_10S_Pct"], slope, rtol=0, atol=1e-12, equal_nan=True): failures.append(f"{symbol}: MA slope mismatch")
             if row["Stage"] != stage: failures.append(f"{symbol}: Stage mismatch")
         except ValueError:
             pass
@@ -433,7 +441,7 @@ def main() -> None:
         try:
             expected = independent_high52(high, t)
             checked_high += 1
-            if not np.isclose(result.loc[symbol, "High_52W"], expected, rtol=0, atol=1e-12): failures.append(f"{symbol}: 52W high mismatch")
+            if not np.isclose(result.loc[symbol, "High_52W"], expected, rtol=0, atol=1e-12, equal_nan=True): failures.append(f"{symbol}: 52W high mismatch")
         except ValueError:
             pass
 
@@ -442,7 +450,7 @@ def main() -> None:
             try:
                 expected = independent_sma(close, t, sessions)
                 checked_sma += 1
-                if not np.isclose(result.loc[symbol, field], expected, rtol=0, atol=1e-9):
+                if not np.isclose(result.loc[symbol, field], expected, rtol=0, atol=1e-9, equal_nan=True):
                     failures.append(f"{symbol}: {field} mismatch")
             except (ValueError, KeyError):
                 pass
@@ -455,7 +463,8 @@ def main() -> None:
                 if int(result.loc[symbol, "VCP_Contractions"]) != exp_count:
                     failures.append(f"{symbol}: VCP_Contractions mismatch")
                 if not np.isclose(
-                    result.loc[symbol, "Contraction_Ratio"], exp_ratio, rtol=0, atol=1e-9
+                    result.loc[symbol, "Contraction_Ratio"], exp_ratio,
+                    rtol=0, atol=1e-9, equal_nan=True
                 ):
                     failures.append(f"{symbol}: Contraction_Ratio mismatch")
             except (ValueError, KeyError):
@@ -464,7 +473,7 @@ def main() -> None:
         try:
             expected = independent_volume_dryup(volume, t)
             checked_dryup += 1
-            if not np.isclose(result.loc[symbol, "Volume_DryUp"], expected, rtol=0, atol=1e-9):
+            if not np.isclose(result.loc[symbol, "Volume_DryUp"], expected, rtol=0, atol=1e-9, equal_nan=True):
                 failures.append(f"{symbol}: Volume_DryUp mismatch")
         except (ValueError, KeyError):
             pass
@@ -472,7 +481,7 @@ def main() -> None:
         try:
             expected = independent_pivot(high, t)
             checked_pivot += 1
-            if not np.isclose(result.loc[symbol, "VCP_Pivot"], expected, rtol=0, atol=1e-9):
+            if not np.isclose(result.loc[symbol, "VCP_Pivot"], expected, rtol=0, atol=1e-9, equal_nan=True):
                 failures.append(f"{symbol}: VCP_Pivot mismatch")
         except (ValueError, KeyError):
             pass
@@ -480,7 +489,7 @@ def main() -> None:
         try:
             expected = independent_ma_10w(close, t)
             checked_ma_10w += 1
-            if not np.isclose(result.loc[symbol, "MA_10W"], expected, rtol=0, atol=1e-12):
+            if not np.isclose(result.loc[symbol, "MA_10W"], expected, rtol=0, atol=1e-12, equal_nan=True):
                 failures.append(f"{symbol}: 10W MA mismatch")
         except ValueError:
             pass
@@ -489,7 +498,7 @@ def main() -> None:
             try:
                 expected = independent_low52(snap.data["Low"].astype(float), t)
                 checked_low += 1
-                if not np.isclose(result.loc[symbol, "Low_52W"], expected, rtol=0, atol=1e-12):
+                if not np.isclose(result.loc[symbol, "Low_52W"], expected, rtol=0, atol=1e-12, equal_nan=True):
                     failures.append(f"{symbol}: 52W low mismatch")
             except ValueError:
                 pass
@@ -497,7 +506,7 @@ def main() -> None:
         try:
             expected = independent_volume_ratio(volume, t)
             checked_volume += 1
-            if not np.isclose(result.loc[symbol, "Volume_Ratio"], expected, rtol=0, atol=1e-12): failures.append(f"{symbol}: volume ratio mismatch")
+            if not np.isclose(result.loc[symbol, "Volume_Ratio"], expected, rtol=0, atol=1e-12, equal_nan=True): failures.append(f"{symbol}: volume ratio mismatch")
         except ValueError:
             pass
 
@@ -512,7 +521,7 @@ def main() -> None:
         if len(value) >= 20:
             checked_liquidity += 1
             expected = float(value.iloc[-20:].mean())
-            if not np.isclose(result.loc[symbol, "AvgValue20"], expected, rtol=0, atol=1e-12): failures.append(f"{symbol}: liquidity mismatch")
+            if not np.isclose(result.loc[symbol, "AvgValue20"], expected, rtol=0, atol=1e-12, equal_nan=True): failures.append(f"{symbol}: liquidity mismatch")
         elif not pd.isna(result.loc[symbol, "AvgValue20"]):
             failures.append(f"{symbol}: liquidity should be NaN")
 
@@ -529,12 +538,13 @@ def main() -> None:
             failures.append(f"{symbol}: trend panel ends at {last}, snapshot at {row['Date']}")
             continue
         if pd.notna(row["Close"]) and not np.isclose(
-            float(frame["Close"].loc[last]), float(row["Close"]), rtol=0, atol=1e-12
+            float(frame["Close"].loc[last]), float(row["Close"]),
+            rtol=0, atol=1e-12, equal_nan=True
         ):
             failures.append(f"{symbol}: trend panel Close disagrees with snapshot Close")
         for column in ("MA_10W", "MA_30W"):
             stored, reported = float(frame[column].loc[last]), row[column]
-            if pd.notna(reported) and not np.isclose(stored, float(reported), rtol=0, atol=1e-12):
+            if pd.notna(reported) and not np.isclose(stored, float(reported), rtol=0, atol=1e-12, equal_nan=True):
                 failures.append(f"{symbol}: trend panel {column} disagrees with snapshot")
 
     result = result.join(universe.set_index("Symbol"), how="left", rsuffix="_NSE")
