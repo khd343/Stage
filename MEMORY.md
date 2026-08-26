@@ -6,7 +6,7 @@
 
 You are taking over the development, quantitative research, mathematical validation, testing, and continuous improvement of the RS-Stages project.
 
-GitHub repository: `Pareshking/RS-Stages`
+GitHub repository: `khd343/Stage` (upstream: `Pareshking/RS-Stages`)
 Primary technology: Streamlit
 
 ### 1. Core Mission
