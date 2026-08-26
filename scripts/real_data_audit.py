@@ -212,6 +212,19 @@ def independent_contraction(
             raise ValueError("degenerate base")
         ranges.append((max(highs) - min(lows)) / mean_close * 100.0)
     tightenings = sum(1 for a, b in zip(ranges, ranges[1:]) if b < a)
+    if ranges[0] == 0:
+        # A first block whose high equals its low: the stock did not move for ten
+        # sessions. Production returns NaN here (quant.contraction_ratio guards
+        # `blocks[0] == 0`); this copy divided unguarded and raised
+        # ZeroDivisionError, which the caller does not catch -- it catches only
+        # ValueError/KeyError -- so one flat microcap aborted the entire audit
+        # after three hours of downloads.
+        #
+        # Raising ValueError is the idiom this module already uses to mean "this
+        # symbol cannot be reconciled"; the caller skips it and every other symbol
+        # is still checked. Returning NaN instead would silently report a match
+        # against production's NaN and verify nothing.
+        raise ValueError("degenerate base: first block has zero range")
     return tightenings, ranges[-1] / ranges[0]
 
 
