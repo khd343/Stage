@@ -296,41 +296,6 @@ def resolve_dates(decision_arg: str | None, start_arg: str | None, end_arg: str 
     return decision, start, end
 
 
-def _archive_snapshot(result: pd.DataFrame, output_dir: Path) -> None:
-    """Keep one immutable file per snapshot date, beside the overwritten latest.
-
-    WHY THIS EXISTS. `latest_research.csv` is overwritten on every run, so the
-    historical record survives only inside git history. Recovering it means walking
-    `git log --follow` and parsing each revision — fragile, and it breaks the day
-    the path changes or history is squashed. A record you cannot reliably read back
-    is not a record.
-
-    WHY IT REFUSES TO OVERWRITE. The audit re-runs: a retry, a manual dispatch, a
-    same-day fix. On 2026-08-24 four separate commits carried that one snapshot
-    date. Rewriting a dated file would let a later run silently replace what was
-    actually published that day — and a forward record whose past can change proves
-    nothing. First publication wins; a re-run is reported and ignored.
-
-    The snapshot's OWN date is used, never today's. When the provider settles
-    unevenly the file carries a split date (some symbols on the 24th, some on the
-    25th); the latest present is taken, matching what the terminal discloses.
-    """
-    if result.empty or "Date" not in result.columns:
-        return
-    dates = pd.to_datetime(result["Date"], errors="coerce").dropna()
-    if dates.empty:
-        return
-
-    archive_dir = output_dir / "snapshots"
-    archive_dir.mkdir(parents=True, exist_ok=True)
-    dated = archive_dir / f"research_{dates.max():%Y-%m-%d}.csv"
-    if dated.exists():
-        print(f"Snapshot {dated.name} already archived - left untouched.")
-        return
-    result.to_csv(dated)
-    print(f"Archived immutable snapshot: {dated.name}")
-
-
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--universe", required=True)
@@ -564,7 +529,6 @@ def main() -> None:
     result.to_csv(args.output)
 
     output_dir = Path(args.output).resolve().parent
-    _archive_snapshot(result, output_dir)
 
     # Previous-session snapshot: same columns, boundary moved back one session.
     previous_path = output_dir / "previous_research.csv"
