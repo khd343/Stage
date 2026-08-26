@@ -171,6 +171,27 @@ def independent_low52(low: pd.Series, decision: pd.Timestamp) -> float:
     return float(window.min())
 
 
+def _finite(values: list[float]) -> list[float]:
+    """Drop NaN from a POSITIONAL window, matching pandas' skipna semantics.
+
+    The universe is downloaded in bulk, and yfinance indexes a bulk response by
+    the UNION of every symbol's dates. A stock that did not trade on a day some
+    other stock did therefore carries a NaN row: ARTEMISMED and ZODIAC have 247
+    sessions against the market's 251, so four rows of theirs are NaN.
+
+    Production reads those windows with pandas, whose .mean()/.max()/.min() skip
+    NaN. These hand-written checks used Python's sum()/max()/min(), where NaN
+    poisons a sum and makes max() return whatever the ordering happens to yield --
+    max([nan, 1.0]) is nan, max([1.0, nan]) is 1.0. Two implementations that agree
+    on clean data then disagree on any symbol with a trading gap.
+
+    The window is sliced positionally FIRST and filtered after, deliberately.
+    Dropping NaN before slicing would pull in older sessions to refill the window
+    and silently measure a different period than production does.
+    """
+    return [v for v in values if v == v]
+
+
 def independent_sma(close: pd.Series, decision: pd.Timestamp, sessions: int) -> float:
     """v2.2 §5.1 — session average by plain summation, no rolling window.
 
@@ -186,6 +207,9 @@ def independent_sma(close: pd.Series, decision: pd.Timestamp, sessions: int) -> 
     if len(values) < sessions:
         raise ValueError("insufficient history")
     window = values[-sessions:]
+    window = _finite(window)
+    if not window:
+        raise ValueError('no finite observations in the SMA window')
     return sum(window) / len(window)
 
 
@@ -207,6 +231,9 @@ def independent_contraction(
         highs = [r[0] for r in chunk]
         lows = [r[1] for r in chunk]
         closes = [r[2] for r in chunk]
+        highs, lows, closes = _finite(highs), _finite(lows), _finite(closes)
+        if not highs or not lows or not closes:
+            raise ValueError("degenerate base: block has no finite observations")
         mean_close = sum(closes) / len(closes)
         if mean_close == 0:
             raise ValueError("degenerate base")
@@ -233,8 +260,10 @@ def independent_volume_dryup(volume: pd.Series, decision: pd.Timestamp) -> float
     values = [float(v) for stamp, v in volume.sort_index().items() if stamp <= decision]
     if len(values) < 60:
         raise ValueError("insufficient history")
-    recent = values[-10:]
-    baseline = values[-60:-10]
+    recent = _finite(values[-10:])
+    baseline = _finite(values[-60:-10])
+    if not recent or not baseline:
+        raise ValueError("no finite observations in the dry-up window")
     mean_baseline = sum(baseline) / len(baseline)
     if mean_baseline == 0:
         raise ValueError("degenerate baseline")
@@ -246,7 +275,10 @@ def independent_pivot(high: pd.Series, decision: pd.Timestamp) -> float:
     values = [float(v) for stamp, v in high.sort_index().items() if stamp <= decision]
     if len(values) < 50:
         raise ValueError("insufficient history")
-    return max(values[-50:])
+    window = _finite(values[-50:])
+    if not window:
+        raise ValueError('no finite observations in the pivot window')
+    return max(window)
 
 
 def independent_volume_ratio(volume: pd.Series, decision: pd.Timestamp) -> float:
