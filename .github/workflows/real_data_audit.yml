@@ -124,7 +124,8 @@ jobs:
           exit 1
 
       - name: Upload research output
-        uses: actions/upload-artifact@v4
+        # v5 runs on Node 24; v4 targets the deprecated Node 20.
+        uses: actions/upload-artifact@v5
         with:
           name: real-data-audit-${{ inputs.decision_date || 'auto' }}
           path: |
