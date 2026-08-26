@@ -37,7 +37,10 @@ env:
 jobs:
   audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    # 1,532 symbols instead of 752: the download roughly doubles to ~3 hours.
+    # GitHub's hard ceiling is 6 hours, so this leaves real headroom for a slow
+    # provider day without letting a hung run burn the full allowance.
+    timeout-minutes: 300
     steps:
       - name: Checkout
         uses: actions/checkout@v5

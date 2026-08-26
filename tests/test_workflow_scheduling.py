@@ -82,9 +82,15 @@ def _crons(text: str) -> list[str]:
     return [match.group(1).strip() for match in re.finditer(r"-\s*cron:\s*['\"](.+?)['\"]", text)]
 
 
-def test_the_two_publishing_workflows_are_the_ones_expected():
-    """A third workflow that pushes would need its own place in this ordering."""
-    assert set(_pushing_workflows()) == {"real_data_audit.yml", "update_nse_universe.yml"}
+def test_only_the_audit_publishes():
+    """A second pushing workflow would need its own place in this ordering.
+
+    update_nse_universe.yml was REMOVED: the universe is now this repo's own
+    ticker list, and that job downloaded the NSE index constituents and REPLACED
+    the file wholesale -- a successful run, no error, and the universe silently
+    gone every Friday.
+    """
+    assert set(_pushing_workflows()) == {"real_data_audit.yml"}
 
 
 def test_no_two_publishing_workflows_share_a_fire_minute():
@@ -103,43 +109,15 @@ def test_no_two_publishing_workflows_share_a_fire_minute():
             )
 
 
-def test_the_universe_refresh_lands_before_the_friday_audit():
-    """Friday's audit must analyse the constituent list published that evening.
+def test_no_workflow_can_overwrite_the_universe_file():
+    """The universe is this repo's own ticker list; nothing may regenerate it.
 
-    The audit checks the repository out when it starts, so a universe published
-    after that start is invisible to it until the following run.
+    Deleted rather than merely disabled, deliberately: a commented-out
+    `- cron:` still matches the regex in _crons(), so commenting the schedule
+    would leave every test here passing while GitHub ran nothing -- a green suite
+    describing a workflow that does not exist.
     """
-    audit = set().union(*(fire_minutes(c) for c in _crons(_workflows()["real_data_audit.yml"])))
-    universe = set().union(
-        *(fire_minutes(c) for c in _crons(_workflows()["update_nse_universe.yml"]))
-    )
-    friday = range(4 * 24 * 60, 5 * 24 * 60)
-    audit_friday = sorted(m for m in audit if m in friday)
-    universe_friday = sorted(m for m in universe if m in friday)
-    assert audit_friday, "the audit is expected to run on Friday"
-    assert universe_friday, "the universe refresh is expected to run on Friday"
-    gap = min(audit_friday) - max(universe_friday)
-    assert gap > 0, "the universe refresh must fire before the audit, not after it"
-    # The refresh takes about 20 seconds; the margin is for a slow runner, not
-    # for the job itself.
-    assert gap >= 15, f"only {gap} minutes between the refresh and the audit"
-
-
-def test_every_publishing_push_can_survive_a_moved_main():
-    """A bare `git push` discards the whole run when main moved underneath it."""
-    for name, text in _pushing_workflows().items():
-        assert "git pull --rebase origin main" in text, (
-            f"{name} pushes without a rebase path: a concurrent commit kills the run."
-        )
-        # The rebase must be a retry, not a single second attempt.
-        assert re.search(r"for attempt in .*\n(?:.*\n)*?.*git push", text), (
-            f"{name} does not retry its push."
-        )
-
-
-def test_publishing_workflows_check_out_enough_history_to_rebase():
-    """`git pull --rebase` needs a merge base; the default checkout is depth 1."""
-    for name, text in _pushing_workflows().items():
-        assert "fetch-depth: 0" in text, (
-            f"{name} rebases on a shallow clone, which has no merge base to rebase onto."
-        )
+    universe = "ind_niftytotalmarket_list.csv"
+    for name, text in _workflows().items():
+        assert not ("curl" in text and universe in text), (
+            f"{name} downloads over {universe}; the universe would be replaced")
