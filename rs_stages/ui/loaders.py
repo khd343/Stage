@@ -29,9 +29,15 @@ PANEL_PATH = DATA_DIR / "price_panel.npz"
 #: The price panel is published as a release asset rather than committed: it is
 #: a regenerated binary that Git cannot delta, so committing it would add a
 #: fresh ~1.4 MB blob to history on every audit run, permanently.
+#: Default points at THIS repository's own release. A fork that keeps the
+#: upstream URL draws its charts from someone else's panel while its CSVs come
+#: from its own audit -- two different vintages on one screen, and the failure is
+#: silent until the upstream release is deleted or made private, at which point
+#: every chart disappears at once. Override with RS_STAGES_PANEL_URL if the panel
+#: is ever hosted elsewhere.
 PANEL_URL = os.environ.get(
     "RS_STAGES_PANEL_URL",
-    "https://github.com/Pareshking/RS-Stages/releases/download/data-latest/price_panel.npz",
+    "https://github.com/khd343/Stage/releases/download/data-latest/price_panel.npz",
 )
 PANEL_TIMEOUT_SECONDS = 30
 BREADTH_PATH = DATA_DIR / "breadth_history.csv"
