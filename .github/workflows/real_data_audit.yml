@@ -88,9 +88,14 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # data/snapshots/ is the immutable forward record: one file per
+          # snapshot date, never rewritten. latest_research.csv is overwritten
+          # every run, so without this the history survives only as git-log
+          # archaeology -- and a record you cannot reliably read back is not one.
           git add data/latest_research.csv \
                   data/previous_research.csv \
-                  data/breadth_history.csv
+                  data/breadth_history.csv \
+                  data/snapshots/
           if git diff --cached --quiet; then
             echo "Validated research snapshot unchanged."
             exit 0
