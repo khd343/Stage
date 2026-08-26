@@ -1,0 +1,29 @@
+# Upstream merges must bring CODE and never touch this repo's RECORD.
+#
+# This repo and its upstream both run the same daily audit, and both commit the
+# generated research files. Upstream rewrites all ~960 rows; so does this repo.
+# Git cannot reconcile two independently regenerated data files, so without this
+# EVERY `git merge upstream/main` stops on a conflict in data nobody wants from
+# the other side.
+#
+# `merge=ours` keeps this repo's version unconditionally. That is not a
+# convenience: data/snapshots/ is an append-only forward record, and a merge that
+# could rewrite an already-published snapshot would make its past mutable. A
+# record whose past can change proves nothing.
+#
+# REQUIRES A ONE-TIME LOCAL SETUP -- `merge=ours` names a driver git does not
+# ship, and driver definitions live in .git/config, which cannot be committed.
+# In every clone, run once:
+#
+#     git config merge.ours.driver true
+#
+# Without it git reports `driver ours not found` and falls back to a normal
+# conflict. Noisy, but never silent, and never destructive.
+
+data/latest_research.csv     merge=ours
+data/previous_research.csv   merge=ours
+data/breadth_history.csv     merge=ours
+data/snapshots/**            merge=ours
+
+# Generated binary; published as a release asset, never merged.
+data/price_panel.npz         binary merge=ours

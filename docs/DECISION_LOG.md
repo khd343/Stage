@@ -574,3 +574,38 @@ Action already shown at the top, ABB's 8/8-yet-HOLD case is pinned by
 name, the "not a vote" wording is asserted present, and all three line
 functions are confirmed to return empty strings together on a row with no
 classifiable evidence at all.
+
+## Syncing from upstream (2026-08-26)
+
+This repo tracks `Pareshking/RS-Stages` as `upstream`. To take their code changes:
+
+```bash
+git fetch upstream
+git log --oneline main..upstream/main     # READ THIS FIRST
+git merge upstream/main
+```
+
+**Read the log before merging.** A change to a locked formula or the spec means
+snapshots before and after are not measuring the same thing, and the forward
+record silently stops being comparable to itself. That is a decision, not a
+routine pull.
+
+**One-time setup in every clone:**
+
+```bash
+git config merge.ours.driver true
+```
+
+`.gitattributes` marks the generated research files `merge=ours` so an upstream
+merge never rewrites this repo's record — both sides regenerate those files daily
+and git cannot reconcile them. The driver definition lives in `.git/config`, which
+cannot be committed, so each clone must set it once. Without it the merge reports
+`driver ours not found` and falls back to a normal conflict: noisy, never silent.
+
+**Expected conflicts, which should be resolved in this repo's favour:**
+
+| File | Keep |
+|---|---|
+| `rs_stages/ui/loaders.py` | this repo's `PANEL_URL` |
+| `MEMORY.md` | this repo's name |
+| `real_data_audit.yml` / `.py` | the `data/snapshots/` archive |
