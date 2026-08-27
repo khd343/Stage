@@ -604,8 +604,32 @@ cannot be committed, so each clone must set it once. Without it the merge report
 
 **Expected conflicts, which should be resolved in this repo's favour:**
 
-| File | Keep |
-|---|---|
-| `rs_stages/ui/loaders.py` | this repo's `PANEL_URL` |
-| `MEMORY.md` | this repo's name |
-| `real_data_audit.yml` / `.py` | the `data/snapshots/` archive |
+| File | Keep | Why |
+|---|---|---|
+| `rs_stages/ui/loaders.py` | this repo's `PANEL_URL` | upstream's release asset is built from upstream's universe |
+| `MEMORY.md` | this repo's name | |
+| `real_data_audit.yml` / `.py` | the `data/snapshots/` archive and the fixes below | the three audit fixes are ours; upstream has not taken them |
+| `.github/workflows/update_nse_universe.yml` | **deleted** | see below |
+
+**The one that resurrects itself.** `update_nse_universe.yml` was deleted here
+because it downloads NSE's constituent list and replaces the universe wholesale
+— which is precisely the thing this fork exists to not do. Git records a
+deletion, not a refusal: if upstream ever edits that file, the merge raises a
+delete/modify conflict, and the reflex resolution (take the incoming change)
+restores a workflow that will overwrite the universe on its next Friday run.
+Resolve it with `git rm .github/workflows/update_nse_universe.yml`, every time.
+`tests/test_workflow_scheduling.py` fails if it comes back.
+
+**What is protected automatically** (`merge=ours`, so these never conflict and
+never change): the three research CSVs, `data/snapshots/**`, `price_panel.npz`,
+and `data/ind_niftytotalmarket_list.csv`. The universe file is on that list for
+a different reason than the others — nothing here regenerates it, so upstream's
+version would simply *become* the universe, and every downstream test would keep
+passing on it. `tests/test_upstream_merge_guard.py` pins the coverage.
+
+**After any merge, before pushing:**
+
+```bash
+python -m pytest tests/ -q
+wc -l data/ind_niftytotalmarket_list.csv    # expect 1506 (1,505 + header)
+```

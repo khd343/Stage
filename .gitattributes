@@ -25,5 +25,12 @@ data/previous_research.csv   merge=ours
 data/breadth_history.csv     merge=ours
 data/snapshots/**            merge=ours
 
+# The universe itself. Upstream still runs update_nse_universe.yml and keeps
+# rewriting this file with NSE's own constituent list; this repo deleted that
+# workflow because the universe here is derived from a different source and is
+# twice the size. Without this line every sync conflicts on it, and resolving
+# that conflict wrongly even once silently swaps the whole universe back.
+data/ind_niftytotalmarket_list.csv  merge=ours
+
 # Generated binary; published as a release asset, never merged.
 data/price_panel.npz         binary merge=ours
