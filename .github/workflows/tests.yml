@@ -59,4 +59,19 @@ jobs:
           fi
           cat /tmp/streamlit.log
       - name: Run tests
-        run: python -m pytest -q
+        run: |
+          # Workflow-run LOGS require admin rights to download, so on this repo a
+          # red tick reads only as "Process completed with exit code 1" to anyone
+          # without them -- which is how a failure here cost an afternoon of
+          # guessing at a suite that passes on every developer machine.
+          # ANNOTATIONS are public, so each failing test is echoed as one and the
+          # next failure is legible from the API alone. --tb=line keeps the cause
+          # on the same line as the location without pasting whole tracebacks.
+          set -o pipefail
+          status=0
+          python -m pytest -q -rf --tb=line 2>&1 | tee "$RUNNER_TEMP/pytest.log" || status=$?
+          if [ "$status" -ne 0 ]; then
+            grep -E "^(FAILED|ERROR)|\.py:[0-9]+: " "$RUNNER_TEMP/pytest.log"               | head -40 | while IFS= read -r line; do echo "::error::$line"; done
+            echo "::error::summary: $(tail -n 1 "$RUNNER_TEMP/pytest.log")"
+          fi
+          exit "$status"
