@@ -16,7 +16,9 @@ from rs_stages.data import (
     INDEX_TICKERS,
     build_decision_snapshot,
     download_index_history,
+    global_information_boundary,
     load_nse_constituents_csv,
+    normalize_session_index,
 )
 
 #: Sessions of Close retained per symbol so the UI can draw price history and
@@ -41,25 +43,49 @@ MAX_UNIVERSE_LOSS_PCT = 2.0
 
 
 def build_universe_snapshots(
-    symbols, histories: dict, decision: pd.Timestamp
+    symbols, histories: dict, decision: pd.Timestamp, boundary: pd.Timestamp
 ) -> tuple[dict, list[tuple[str, str]]]:
-    """Snapshot every symbol the provider actually delivered.
+    """Snapshot every symbol at ONE shared information boundary.
 
     Returns the snapshots and the symbols that could not be snapshotted, each
-    with its reason. A symbol with no completed session before the decision
-    date carries no information at the boundary, so excluding it is the same
-    explicit insufficiency the quant layer applies everywhere else.
+    with its reason. A symbol with no completed session at the boundary carries
+    no information there, so excluding it is the same explicit insufficiency the
+    quant layer applies everywhere else.
+
+    Two steps, and both are load-bearing. Truncating at the boundary stops a
+    symbol the provider HAS already updated from being measured a session ahead
+    of the rest. Requiring the result to land exactly on the boundary stops a
+    symbol the provider has NOT updated from silently sliding back a session --
+    which is what build_decision_snapshot does when left to search a symbol's own
+    history, and is how one published file came to hold two different dates.
     """
     snapshots: dict = {}
     unavailable: list[tuple[str, str]] = []
+    boundary = pd.Timestamp(boundary).normalize()
     for symbol in symbols:
         name = str(symbol)
-        try:
-            snapshots[name] = build_decision_snapshot(histories[name], decision)
-        except KeyError:
+        if name not in histories:
             unavailable.append((name, "the provider returned no history"))
+            continue
+        try:
+            data = normalize_session_index(histories[name])
+        except (TypeError, ValueError) as exc:
+            unavailable.append((name, str(exc)))
+            continue
+        try:
+            snapshot = build_decision_snapshot(data.loc[data.index <= boundary], decision)
         except ValueError as exc:
             unavailable.append((name, str(exc)))
+            continue
+        if snapshot.latest_completed_session != boundary:
+            unavailable.append((
+                name,
+                f"no completed session at the global boundary "
+                f"{boundary:%Y-%m-%d}; its latest is "
+                f"{snapshot.latest_completed_session:%Y-%m-%d}",
+            ))
+            continue
+        snapshots[name] = snapshot
     return snapshots, unavailable
 
 
@@ -375,8 +401,30 @@ def main() -> None:
     #
     # The 2% ceiling is an engineering guard, not a quantity from any source,
     # and is named as such wherever it surfaces.
+    # LOCKED_SPEC 8.1: the information boundary is GLOBAL. It is derived from
+    # coverage rather than recency because Yahoo backfills the NSE universe over
+    # roughly 16 to 40 hours after a close, while NSE reopens 17.75 hours after
+    # it -- so a pre-market run that took "the newest session that exists" would
+    # never see a complete one. Measured 28 Aug 2026: 39% coverage at 16 hours,
+    # ~100% at 40. See DECISION_LOG D-2.2.16.
+    #
+    # The floor is the publisher's own tolerance, not a second opinion: a
+    # boundary admitting more loss than enforce_universe_coverage permits would
+    # pass here and abort a few lines later, so the two are one number.
+    min_coverage_pct = 100.0 - MAX_UNIVERSE_LOSS_PCT
+    try:
+        boundary = global_information_boundary(
+            histories, len(universe), decision, min_coverage_pct
+        )
+    except ValueError as exc:
+        raise SystemExit(f"No global information boundary: {exc}")
+    print(
+        f"Global information boundary: {boundary.date()} "
+        f"(newest session covering >= {min_coverage_pct:.1f}% of {len(universe)} symbols)"
+    )
+
     snapshots, unavailable = build_universe_snapshots(
-        universe["Symbol"], histories, decision
+        universe["Symbol"], histories, decision, boundary
     )
 
     if unavailable:
@@ -389,14 +437,24 @@ def main() -> None:
     # The previous snapshot re-runs the identical pipeline with the information
     # boundary moved back one completed session. It is not a stored copy of an
     # earlier run, so both sides always come from the same pipeline version.
-    previous_snapshots = {}
-    for symbol, snap in snapshots.items():
-        try:
-            previous_snapshots[symbol] = build_decision_snapshot(
-                histories[symbol], snap.latest_completed_session
-            )
-        except ValueError:
-            continue
+    #
+    # It is chosen globally for the same reason the current one is: transitions
+    # compare two snapshots, and a previous side assembled from each symbol's own
+    # prior close would report a move between different pairs of days for
+    # different symbols. Its absence is survivable -- day-over-day change is a
+    # convenience, not a signal -- so a failure here degrades rather than aborts.
+    previous_snapshots: dict = {}
+    try:
+        previous_boundary = global_information_boundary(
+            histories, len(universe), boundary, min_coverage_pct
+        )
+        previous_snapshots, _ = build_universe_snapshots(
+            list(snapshots), histories, boundary, previous_boundary
+        )
+        print(f"Previous information boundary: {previous_boundary.date()}")
+    except ValueError as exc:
+        print(f"No global boundary before {boundary.date()} ({exc}); "
+              "day-over-day changes are published as unavailable")
 
     # Benchmark, fetched before the analysis because §4.1's RS line consumes it.
     # Over the full acquisition window rather than the breadth window: the RS
@@ -656,6 +714,29 @@ def main() -> None:
 
         breadth.to_csv(breadth_path, index=False)
 
+    # THE SNAPSHOT MUST CARRY EXACTLY ONE DATE. Before the global boundary this
+    # was a printed diagnostic captioned "provider lag, not an error" -- and it
+    # WAS the error: a file holding 968 symbols at one session and 536 at the
+    # next ranks two populations against each other and calls the difference
+    # relative strength. Every path that could reintroduce it now fails here
+    # instead of narrating itself, which is the whole point of the change.
+    published = pd.to_datetime(result["Date"], errors="coerce").dt.normalize()
+    distinct = sorted(published.dropna().unique())
+    if len(distinct) != 1:
+        counts = published.value_counts()
+        breakdown = ", ".join(
+            f"{pd.Timestamp(d).date()}={int(counts[d])}" for d in reversed(distinct)
+        ) or "none"
+        failures.append(
+            f"the snapshot spans {len(distinct)} sessions ({breakdown}); "
+            "LOCKED_SPEC 8.1 requires one global information boundary"
+        )
+    elif pd.Timestamp(distinct[0]) != boundary:
+        failures.append(
+            f"the snapshot is dated {pd.Timestamp(distinct[0]).date()} but the "
+            f"global boundary is {boundary.date()}"
+        )
+
     if failures:
         raise SystemExit("Independent research-output reconciliation failures:\n" + "\n".join(failures[:100]))
 
@@ -663,10 +744,6 @@ def main() -> None:
     print(f"Yahoo history: {start.date()} to {end.date()} exclusive")
     print(f"Universe rows after DUMMY exclusion: {len(universe)}")
     print(f"Research rows: {len(result)}")
-    date_counts = pd.to_datetime(result["Date"], errors="coerce").dt.normalize().value_counts()
-    if len(date_counts) > 1:
-        breakdown = ", ".join(f"{d.date()}={n}" for d, n in date_counts.sort_index(ascending=False).items())
-        print(f"Date split across the universe (provider lag, not an error): {breakdown}")
     print(f"Independent checks: stage={checked_stage}, high52={checked_high}, volume={checked_volume}, ud={checked_ud}, liquidity={checked_liquidity}")
     print(f"Independent checks (v2.1): ma10w={checked_ma_10w}, low52={checked_low}, trend_panel={checked_trend}")
     print(

@@ -632,6 +632,72 @@ entire run. The workflow now serialises on `group: real-data-audit` with
 `cancel-in-progress: false`: a half-finished audit publishes nothing, so there
 is no partial result worth preferring over a completed one.
 
+## 2026-08-28 — The information boundary was never actually global
+
+### D-2.2.16 — One file, three dates
+
+**Problem.** §8.1 has always read *"The information boundary is global."* The
+implementation called `build_decision_snapshot` once per symbol, and each one
+searched its own history for its own last close. The published file of 28 Aug
+2026 held **968 symbols dated 26 Aug, 536 dated 27 Aug, and 1 dated 23 Jul**.
+
+**Classification.** Spec violation with a quantitative consequence. `RS_Score`
+is a cross-sectional percentile. On any day the market moves, the cohort the
+provider happened to update first is ranked on newer prices than the rest, and
+the difference is reported as relative strength. `Stage` and the breadth
+coverage floor inherit the same defect — which is why the breadth chart and the
+research table had been describing different sessions.
+
+**Measurement (150 random NSE symbols, 28 Aug 2026 07:16 IST).** Yahoo carries
+a session for **39%** of the universe 16 hours after its close and **~100%** by
+40 hours. NSE reopens **17.75 hours** after a close. A pre-market run therefore
+*cannot* see a complete latest session, and no schedule change can make it.
+This retires the scheduling work of D-2.2.14/15 as a partial answer: moving the
+run from 8 to 15.5 hours lifted coverage from 0.1% to 36% and was climbing
+toward a ceiling that sits below the requirement.
+
+**Resolution.** `global_information_boundary()` picks one session for the whole
+universe: the newest carrying a Close for at least `100 - MAX_UNIVERSE_LOSS_PCT`
+percent of it. The floor is the publisher's own tolerance rather than a second
+constant, so a boundary that admitted more loss than `enforce_universe_coverage`
+permits cannot be chosen. `build_universe_snapshots` then does two things, both
+load-bearing: it **truncates** each history at the boundary, so a symbol the
+provider updated early is not measured a session ahead of the rest; and it
+**requires** the result to land exactly on the boundary, so a symbol the
+provider has not updated is excluded with a reason instead of silently sliding
+back — the silent fallback that produced the split. The previous-session
+snapshot is chosen globally too, since transitions compare two snapshots and a
+per-symbol prior side would compare different pairs of days for different rows.
+
+**Verified against live data**, not only fixtures: 120 real symbols through the
+production acquisition path returned 35% coverage at 27 Aug and 100% at 26 Aug,
+the boundary landed on 26 Aug, all 120 snapshots shared one date, and the 42
+symbols that *did* carry 27 Aug were truncated rather than dropped.
+
+**Consequence accepted.** The snapshot is normally one session behind the newest
+session that exists anywhere. A 30-week framework loses nothing measurable to a
+day of latency, and gains a cross-section that is genuinely simultaneous. The
+freshness given up was never real — it was partial, which is worse than late.
+
+**Side effects, all of them wanted.** The price panel and breadth history derive
+from `trends`, which derive from the snapshots, so both now end on the boundary
+by construction: the panel-vs-snapshot guard is satisfied automatically and the
+breadth-vs-table divergence disappears rather than needing a guard of its own.
+The audit's output also stops depending on *when* it runs — an early run, a late
+run and a caught-up run now publish the identical snapshot.
+
+**Prevention.** The old printed diagnostic `"Date split across the universe
+(provider lag, not an error)"` is deleted. It was the error, narrating itself.
+A snapshot spanning more than one session, or landing on a session other than
+the chosen boundary, is now a reconciliation **failure**.
+`tests/test_global_boundary.py` (10) and `tests/test_universe_coverage.py` (3
+new) pin selection, application and the join.
+
+**Known trap, left in place.** `rs_stages/pipeline.build_universe_snapshots` is
+a second, unrelated snapshot builder reached only by `tests/test_pipeline.py`;
+nothing in production calls it and it still applies a per-symbol boundary.
+Wiring it up would reintroduce this defect.
+
 ## Syncing from upstream (2026-08-26)
 
 This repo tracks `Pareshking/RS-Stages` as `upstream`. To take their code changes:

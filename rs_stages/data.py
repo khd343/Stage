@@ -5,6 +5,8 @@ information-set invariant is enforced before calculations consume the data.
 """
 from __future__ import annotations
 
+import math
+from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -49,6 +51,87 @@ def latest_completed_session(index: pd.DatetimeIndex, decision_date: pd.Timestam
     if pos < 0:
         raise ValueError("No completed market session exists before decision date")
     return idx[pos]
+
+
+def session_coverage(
+    histories: dict[str, pd.DataFrame], decision_date: pd.Timestamp
+) -> pd.Series:
+    """How many symbols carry a usable Close at each session before decision D.
+
+    Usable means the same thing it means to build_decision_snapshot: a dated row
+    is not a session unless it has a Close. Yahoo publishes the row first and the
+    values later, so counting rows would report a session as fully covered hours
+    before any of its prices exist.
+
+    A frame the boundary primitives would reject -- a non-datetime index,
+    duplicate sessions -- is skipped rather than raised on. Those symbols are
+    already excluded downstream with a reason; letting one of them abort the
+    count would lose the whole universe to one bad frame.
+    """
+    decision = pd.Timestamp(decision_date).normalize()
+    counts: Counter = Counter()
+    for frame in histories.values():
+        if frame is None or len(frame) == 0:
+            continue
+        try:
+            data = normalize_session_index(frame)
+        except (TypeError, ValueError):
+            continue
+        usable = data.index[data["Close"].notna()] if "Close" in data.columns else data.index
+        counts.update(stamp for stamp in usable if stamp < decision)
+    if not counts:
+        return pd.Series(dtype="int64")
+    return pd.Series(counts, dtype="int64").sort_index()
+
+
+def global_information_boundary(
+    histories: dict[str, pd.DataFrame],
+    universe_size: int,
+    decision_date: pd.Timestamp,
+    min_coverage_pct: float,
+) -> pd.Timestamp:
+    """The newest session before D at which the universe can be measured together.
+
+    LOCKED_SPEC 8.1: *the information boundary is global*. Letting each symbol
+    stop at its own last close silently violates that, and the damage is not
+    cosmetic -- RS_Score is a cross-sectional percentile, so a universe holding
+    968 symbols priced on one session and 536 on the next ranks the fresher
+    cohort against the staler one and reports the difference as relative
+    strength. Measured 28 Aug 2026: Yahoo carries a session for roughly 39% of
+    NSE names 16 hours after the close and ~100% by 40 hours, so a pre-market
+    run can NEVER see a complete latest session. The boundary must therefore be
+    chosen from coverage, not from recency, and no schedule can substitute for
+    it.
+
+    Returns the newest session meeting the threshold; typically one session
+    older than the newest session that exists at all. That is the intended
+    trade: a 30-week framework loses nothing to a day of latency, and gains a
+    cross-section that is actually simultaneous.
+    """
+    if universe_size <= 0:
+        raise ValueError("Universe size must be positive to compute coverage")
+    coverage = session_coverage(histories, decision_date)
+    if coverage.empty:
+        raise ValueError(
+            "No session carrying a Close exists before the decision date"
+        )
+    # ceil, not round: at 1,505 symbols and a 98% floor the requirement is 1,475
+    # and not 1,474. A threshold that rounds down admits a session one symbol
+    # short of the tolerance the publisher will later enforce.
+    required = math.ceil(universe_size * min_coverage_pct / 100.0)
+    qualifying = coverage.index[coverage.to_numpy() >= required]
+    if len(qualifying) == 0:
+        newest = coverage.index[-1]
+        raise ValueError(
+            f"No session before {pd.Timestamp(decision_date):%Y-%m-%d} covers "
+            f"{min_coverage_pct:.1f}% of the {universe_size}-symbol universe "
+            f"({required} symbols). The newest session, {newest:%Y-%m-%d}, "
+            f"covers {int(coverage.iloc[-1])}. Either the provider is still "
+            "backfilling and the run is simply too early, or enough symbols have "
+            "gone permanently stale to breach the same tolerance the publisher "
+            "enforces."
+        )
+    return pd.Timestamp(qualifying.max())
 
 
 def build_decision_snapshot(market_data: pd.DataFrame, decision_date: pd.Timestamp) -> DecisionSnapshot:

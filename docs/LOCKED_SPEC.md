@@ -203,6 +203,15 @@ Interpretation:
 
 - Calendar periods remain calendar based.
 - The information boundary is global.
+- The global boundary is the newest session carrying a Close for at least
+  `100 - MAX_UNIVERSE_LOSS_PCT` percent of the universe, not the newest session
+  that exists. Yahoo backfills the NSE universe over roughly 16-40 hours while
+  NSE reopens 17.75 hours after a close, so a pre-market run can never see a
+  complete latest session; chosen by recency the snapshot splits across two
+  sessions and `RS_Score`, a cross-sectional percentile, ranks the fresher
+  cohort against the staler one. Symbols without a Close at the boundary are
+  excluded as explicit insufficiency; symbols the provider updated early are
+  truncated to it. See DECISION_LOG D-2.2.16.
 - Forward filling/interpolation requires explicit justification.
 - Missing history produces explicit insufficiency.
 - Optimizations require numerical regression testing against an independent/reference calculation.

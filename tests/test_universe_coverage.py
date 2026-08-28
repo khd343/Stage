@@ -21,6 +21,7 @@ from scripts.real_data_audit import (
 )
 
 DECISION = pd.Timestamp("2026-08-25")
+BOUNDARY = pd.Timestamp("2026-08-24")
 
 
 def _history(sessions: int = 30, last: str = "2026-08-24") -> pd.DataFrame:
@@ -42,7 +43,7 @@ def test_a_symbol_with_no_rows_is_excluded_rather_than_fatal():
     histories = {"GOOD": _history(), "BELRISE": _history().iloc[0:0]}
 
     snapshots, unavailable = build_universe_snapshots(
-        ["GOOD", "BELRISE"], histories, DECISION
+        ["GOOD", "BELRISE"], histories, DECISION, BOUNDARY
     )
 
     assert set(snapshots) == {"GOOD"}
@@ -51,7 +52,7 @@ def test_a_symbol_with_no_rows_is_excluded_rather_than_fatal():
 
 def test_a_symbol_absent_from_the_download_is_excluded_with_its_reason():
     snapshots, unavailable = build_universe_snapshots(
-        ["GOOD", "NEVER_FETCHED"], {"GOOD": _history()}, DECISION
+        ["GOOD", "NEVER_FETCHED"], {"GOOD": _history()}, DECISION, BOUNDARY
     )
 
     assert set(snapshots) == {"GOOD"}
@@ -61,7 +62,7 @@ def test_a_symbol_absent_from_the_download_is_excluded_with_its_reason():
 def test_every_exclusion_carries_a_reason():
     """A silent drop is the failure mode this guard exists to prevent."""
     _, unavailable = build_universe_snapshots(
-        ["A", "B"], {"A": _history().iloc[0:0]}, DECISION
+        ["A", "B"], {"A": _history().iloc[0:0]}, DECISION, BOUNDARY
     )
 
     assert len(unavailable) == 2
@@ -91,3 +92,55 @@ def test_the_guard_holds_at_the_boundary():
 
 def test_an_empty_universe_does_not_divide_by_zero():
     enforce_universe_coverage(missing=0, total=0)
+
+
+def test_a_symbol_the_provider_updated_early_is_truncated_not_ranked_ahead():
+    """The half of the boundary that keeps fresh symbols IN, at the shared date.
+
+    Yahoo settles the NSE universe unevenly, so on any given run some symbols
+    already carry a session the rest do not. Excluding them would throw away
+    good data; measuring them there would rank them on newer information than
+    everyone else. Both are wrong. The data is cut at the boundary instead.
+    """
+    histories = {"NORMAL": _history(), "EARLY": _history(sessions=31, last="2026-08-25")}
+
+    snapshots, unavailable = build_universe_snapshots(
+        ["NORMAL", "EARLY"], histories, DECISION, BOUNDARY
+    )
+
+    assert unavailable == []
+    assert snapshots["EARLY"].latest_completed_session == BOUNDARY
+    assert snapshots["EARLY"].data.index.max() == BOUNDARY
+    assert snapshots["NORMAL"].latest_completed_session == BOUNDARY
+
+
+def test_a_symbol_the_provider_has_not_updated_is_excluded_not_slid_back():
+    """The other half, and the one that produced the split file.
+
+    Left to search its own history, build_decision_snapshot answers with the
+    symbol's own last close -- a silent fallback that looks identical to a real
+    measurement. It has to be an exclusion with a reason instead.
+    """
+    histories = {"NORMAL": _history(), "LAGGING": _history(sessions=25, last="2026-08-19")}
+
+    snapshots, unavailable = build_universe_snapshots(
+        ["NORMAL", "LAGGING"], histories, DECISION, BOUNDARY
+    )
+
+    assert set(snapshots) == {"NORMAL"}
+    name, reason = unavailable[0]
+    assert name == "LAGGING"
+    assert "global boundary" in reason and "2026-08-24" in reason and "2026-08-19" in reason
+
+
+def test_every_surviving_symbol_shares_one_date():
+    """The invariant in one line: this is what LOCKED_SPEC 8.1 asks for."""
+    histories = {
+        "A": _history(),
+        "B": _history(sessions=31, last="2026-08-25"),
+        "C": _history(sessions=40),
+    }
+
+    snapshots, _ = build_universe_snapshots(list(histories), histories, DECISION, BOUNDARY)
+
+    assert {s.latest_completed_session for s in snapshots.values()} == {BOUNDARY}
