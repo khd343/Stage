@@ -12,6 +12,8 @@ from pathlib import Path
 import pytest
 from streamlit.testing.v1 import AppTest
 
+from rs_stages.ui.loaders import load_snapshot
+
 ENTRYPOINT = str(Path(__file__).resolve().parent.parent / "app.py")
 
 #: Every published pre-breakout condition needs a home in this view.
@@ -71,10 +73,23 @@ def test_the_rs_divergence_section_states_the_five_percent_gap():
 
 
 def test_an_empty_section_explains_itself_rather_than_rendering_blank():
-    """An unmet condition and an absent field are different facts."""
+    """An unmet condition and an absent field are different facts.
+
+    The notice has to name the universe it searched, or "nothing matched" is
+    indistinguishable from "nothing was loaded". The size is read from the
+    published universe rather than written here: this test asserted a literal
+    "750" and went on passing for days after the universe became 1,505, because
+    the branch only runs when the section is genuinely empty. It first failed on
+    28 Aug 2026 -- not when the universe changed, but when the data finally made
+    the section empty -- and it failed against a count the app renders as
+    "1,505". A test that pins a number the app derives will always be one data
+    refresh from lying.
+    """
     text = _text(_setups("RS leading price"))
-    if "No stock currently matches" in text:
-        assert "750" in text and "not a missing artifact" in text
+    if "No stock currently matches" not in text:
+        pytest.skip("the section is populated, so the empty-state branch is untested here")
+    assert f"{len(load_snapshot().universe):,}" in text
+    assert "not a missing artifact" in text
 
 
 def test_the_stacked_section_exists():
