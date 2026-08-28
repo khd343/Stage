@@ -698,6 +698,43 @@ a second, unrelated snapshot builder reached only by `tests/test_pipeline.py`;
 nothing in production calls it and it still applies a per-symbol boundary.
 Wiring it up would reintroduce this defect.
 
+## 2026-08-28 (evening) — Age does not predict coverage
+
+### D-2.2.17 — The settling model was wrong, so stop modelling and measure
+
+**What broke the model.** D-2.2.16 asserted the provider backfills over roughly
+16-40 hours, from two samples. Twelve hours later, at 18:57 IST, that same day's
+close was carried for **100%** of a 120-symbol sample — **3.4 hours** after the
+bell. The same morning, on a clean runner, the *previous* day's close stood at
+**36%** at 15.8 hours. Age alone cannot produce both numbers. The early-morning
+IST window is measurably the worst time to ask, and why is not known.
+
+**Resolution.** Stop deriving a schedule from a provider model. A 19:07 IST slot
+runs beside the 06:38 and 07:53 ones, and the boundary each publishes is the
+experiment's result — no logging or analysis, the published date *is* the
+measurement. The losing slot gets dropped once a week of dates has spoken.
+
+**The enabler: the record never moves backwards.** Coverage at the newest
+session varies with the hour, so two runs on one day can legitimately choose
+different boundaries; publishing the older would walk a terminal from Thursday
+back to Wednesday with both runs reporting success. `published_boundary()` reads
+the session on disk as a floor. Re-publishing the same session stays allowed —
+the provider revises — and a regression is a clean no-op, since running at an
+hour the provider has not reached is normal rather than broken.
+
+**Retired: the 12-hour settling floor**, added this morning and falsified by
+evening. The schedule now asserts only that no run lands inside the session
+(09:15-15:30 IST), where the newest bar is still moving and the run could
+accomplish nothing. Completeness is measured per run by the coverage threshold
+instead of assumed from the clock.
+
+**Two schedule families, each with its own days.** A run before the open
+publishes the PREVIOUS session and needs Tue-Sat; a run after the close
+publishes THAT day's session and needs Mon-Fri. Getting either wrong is silent —
+the run succeeds and republishes what was already there — so
+`tests/test_workflow_scheduling.py` derives the requirement from each cron's own
+IST time rather than pinning a list of days.
+
 ## Syncing from upstream (2026-08-26)
 
 This repo tracks `Pareshking/RS-Stages` as `upstream`. To take their code changes:

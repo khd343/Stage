@@ -34,9 +34,22 @@ on:
   #
   # There is no longer a Friday universe refresh to race: that workflow was
   # deleted, and tests/test_workflow_scheduling.py fails if one returns.
+  #
+  # THE 19:00 IST SLOT IS AN EXPERIMENT, AND THE PUBLISHED DATE IS ITS RESULT.
+  # Measured 28 Aug 2026 at 18:57 IST: that day's own close was already carried
+  # for 100% of a 120-symbol sample, 3.4 hours after the bell -- while the same
+  # morning, the PREVIOUS day's close stood at 36% on a clean runner. Age alone
+  # does not explain that, so the provider's pattern is not something to reason
+  # about; it is something to measure. Running both times and comparing the
+  # boundary each one publishes settles it with no analysis at all.
+  #
+  # Safe to run at several hours only because the boundary never regresses: a
+  # run that lands at a thin hour publishes nothing rather than walking the
+  # record back a session. Drop the losing slot once a week of dates has spoken.
   schedule:
     - cron: "8 1 * * 2-6"
     - cron: "23 2 * * 2-6"
+    - cron: "37 13 * * 1-5"
   workflow_dispatch:
     inputs:
       decision_date:

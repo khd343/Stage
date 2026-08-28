@@ -178,52 +178,49 @@ NSE_OPEN_IST = 9 * 60 + 15
 NSE_CLOSE_IST = 15 * 60 + 30
 
 
-def test_every_audit_run_is_pre_market_in_ist():
-    """A snapshot published after the open is no longer a pre-market decision.
+def test_no_scheduled_run_lands_inside_a_trading_session():
+    """09:15-15:30 IST is the one window where a run can accomplish nothing.
 
-    The audit moved to the morning AFTER each session so the price provider has
-    time to post the close (it had not done so even ten hours later: the 26 Aug
-    run saw a 26 Aug bar for 2 symbols of 1,505). Moving later trades against
-    the open, and this is the wall it must not cross -- the locked spec's whole
-    boundary rule is that a decision is made before the session it is for.
+    Mid-session the newest bar is incomplete and still moving. The boundary
+    would refuse it and fall back a session, so this is not a correctness
+    hazard -- it is a guaranteed no-op, an audit burning seven minutes to
+    republish what it already had.
+
+    This replaces a 12-hour "settling" floor written the same day and derived
+    from a provider model that did not survive it: 3.4 hours proved sufficient
+    on the evening of 28 Aug 2026 while 15.8 hours had not been that morning.
+    Age does not predict coverage, so the schedule no longer pretends to. The
+    per-run coverage threshold does that job with measurement instead.
     """
     for minute, hour, _ in _slots(_workflows()["real_data_audit.yml"]):
         ist = (hour * 60 + minute + IST_OFFSET_MINUTES) % (24 * 60)
-        assert ist < NSE_OPEN_IST, (
+        assert not (NSE_OPEN_IST <= ist <= NSE_CLOSE_IST), (
             f"cron {hour:02d}:{minute:02d} UTC is {ist // 60:02d}:{ist % 60:02d} IST, "
-            "at or after the 09:15 open; the snapshot would not be pre-market"
+            "inside the trading session; the newest bar is still moving"
         )
 
 
-def test_every_audit_run_gives_the_provider_time_to_settle():
-    """The failure this schedule exists to fix was asking Yahoo too early.
+def test_every_run_day_can_actually_reach_a_session():
+    """Two families, and each needs its own days.
 
-    Eight hours was not enough three sessions running. Twelve is the floor that
-    keeps a future edit from quietly walking the schedule back toward the close
-    and reintroducing a bug whose only symptom is a snapshot one session stale.
+    A run BEFORE the open publishes the previous day's session, so it needs
+    Tue-Sat -- a Monday morning has no preceding session and would republish
+    Friday's. A run AFTER the close publishes that same day's session, so it
+    needs Mon-Fri. Getting either wrong is silent: the run succeeds and simply
+    republishes what was already there.
     """
-    minimum_hours = 12
-    for minute, hour, _ in _slots(_workflows()["real_data_audit.yml"]):
+    for minute, hour, days in _slots(_workflows()["real_data_audit.yml"]):
         ist = (hour * 60 + minute + IST_OFFSET_MINUTES) % (24 * 60)
-        # The run is the morning after, so settling spans the prior close to
-        # midnight, then midnight to the run.
-        settled = (24 * 60 - NSE_CLOSE_IST) + ist
-        assert settled >= minimum_hours * 60, (
-            f"cron {hour:02d}:{minute:02d} UTC leaves only {settled / 60:.1f}h after the "
-            f"previous close; at least {minimum_hours}h is required"
-        )
-
-
-def test_the_audit_days_are_shifted_one_past_the_sessions_they_publish():
-    """Mon-Fri sessions, read the next morning, need Tue-Sat runs.
-
-    Getting this wrong is silent in both directions: a Monday run has no
-    preceding session to fetch and republishes Friday's, and dropping Saturday
-    loses every Friday close.
-    """
-    days = set().union(*(dow for _, _, dow in _slots(_workflows()["real_data_audit.yml"])))
-    # cron day-of-week is Sunday-based: 2..6 is Tuesday through Saturday.
-    assert days == {2, 3, 4, 5, 6}, f"expected Tue-Sat runs, got cron days {sorted(days)}"
+        label = f"cron {hour:02d}:{minute:02d} UTC ({ist // 60:02d}:{ist % 60:02d} IST)"
+        if ist < NSE_OPEN_IST:
+            # cron day-of-week is Sunday-based: 2..6 is Tuesday through Saturday.
+            assert days == {2, 3, 4, 5, 6}, (
+                f"{label} runs before the open, so it publishes the PREVIOUS "
+                f"session and needs Tue-Sat; got {sorted(days)}")
+        else:
+            assert days == {1, 2, 3, 4, 5}, (
+                f"{label} runs after the close, so it publishes THAT day's "
+                f"session and needs Mon-Fri; got {sorted(days)}")
 
 
 def test_the_audit_cannot_run_beside_itself():

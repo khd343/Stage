@@ -10,6 +10,10 @@ one symbol must not be able to fail the run, and a depleted universe must not be
 able to publish quietly.
 """
 
+import itertools
+import pathlib
+import tempfile
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -19,6 +23,18 @@ from scripts.real_data_audit import (
     build_universe_snapshots,
     enforce_universe_coverage,
 )
+
+NL = chr(10)
+_TMP_COUNTER = itertools.count()
+
+
+def tmp_snapshot(dates: list[str], header: str | None = None) -> pathlib.Path:
+    """Write a throwaway snapshot CSV and return its path."""
+    path = pathlib.Path(tempfile.gettempdir()) / f"rs_snap_{next(_TMP_COUNTER)}.csv"
+    body = header if header is not None else "Date" + NL + "".join(d + NL for d in dates)
+    path.write_text(body, encoding="utf-8")
+    return path
+
 
 DECISION = pd.Timestamp("2026-08-25")
 BOUNDARY = pd.Timestamp("2026-08-24")
@@ -144,3 +160,26 @@ def test_every_surviving_symbol_shares_one_date():
     snapshots, _ = build_universe_snapshots(list(histories), histories, DECISION, BOUNDARY)
 
     assert {s.latest_completed_session for s in snapshots.values()} == {BOUNDARY}
+
+
+def test_the_published_boundary_is_read_from_the_snapshot_on_disk():
+    """The floor that stops the record walking backwards."""
+    import pandas as pd
+    from scripts.real_data_audit import published_boundary
+
+    path = tmp_snapshot(["2026-08-27", "2026-08-27", "2026-08-26"])
+    assert published_boundary(path) == pd.Timestamp("2026-08-27")
+
+
+def test_an_absent_or_unreadable_snapshot_imposes_no_floor():
+    """A floor derived from a corrupt file is worse than no floor.
+
+    The run is about to overwrite that file regardless, so refusing to publish
+    on the strength of something unparseable would strand the record for good.
+    """
+    from pathlib import Path
+    from scripts.real_data_audit import published_boundary
+
+    assert published_boundary(Path("does-not-exist.csv")) is None
+    assert published_boundary(tmp_snapshot([], header="Symbol\nAAA\n")) is None
+    assert published_boundary(tmp_snapshot(["not-a-date"])) is None

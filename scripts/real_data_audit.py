@@ -89,6 +89,22 @@ def build_universe_snapshots(
     return snapshots, unavailable
 
 
+def published_boundary(path: Path) -> pd.Timestamp | None:
+    """The session the currently published snapshot describes, if any.
+
+    Read so a later run can refuse to move the record backwards. Anything
+    unreadable returns None: a floor derived from a corrupt file would be worse
+    than no floor, and the run is about to overwrite that file anyway.
+    """
+    if not path.exists():
+        return None
+    try:
+        dates = pd.to_datetime(pd.read_csv(path)["Date"], errors="coerce").dropna()
+    except (OSError, ValueError, KeyError):
+        return None
+    return pd.Timestamp(dates.max()).normalize() if len(dates) else None
+
+
 def enforce_universe_coverage(missing: int, total: int) -> None:
     """Refuse to publish a universe too depleted to rank against itself."""
     loss_pct = missing / total * 100 if total else 0.0
@@ -422,6 +438,23 @@ def main() -> None:
         f"Global information boundary: {boundary.date()} "
         f"(newest session covering >= {min_coverage_pct:.1f}% of {len(universe)} symbols)"
     )
+
+    # THE RECORD NEVER MOVES BACKWARDS. Coverage at the newest session varies with
+    # the hour a run happens to start, so two runs on the same day can legitimately
+    # choose different boundaries. Publishing the older one would walk the snapshot
+    # back a session -- a terminal showing Thursday, then Wednesday, with both runs
+    # reporting success. Re-publishing the SAME session is fine and expected (the
+    # provider revises); only regression is refused, and it is a clean no-op rather
+    # than a failure, because running at an hour the provider has not caught up to
+    # is normal rather than broken.
+    floor = published_boundary(Path(args.output))
+    if floor is not None and boundary < floor:
+        print(
+            f"Published snapshot already describes {floor.date()}, which is newer "
+            f"than the {boundary.date()} this run can cover. Nothing published: the "
+            "record does not move backwards."
+        )
+        return
 
     snapshots, unavailable = build_universe_snapshots(
         universe["Symbol"], histories, decision, boundary
