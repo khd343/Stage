@@ -1,29 +1,42 @@
 name: Real Data Research Audit
 
 on:
-  # 18:08 UTC is 23:38 IST -- after the NSE close settles at the provider, and
-  # before the next trading session opens. The snapshot is therefore the latest
-  # completed session, which is exactly the pre-market information boundary the
-  # locked spec requires. Weekdays only: NSE does not trade at the weekend.
+  # RUN THE MORNING AFTER EACH SESSION, NOT THE SAME EVENING.
   #
-  # TWO SCHEDULES, AND NEITHER MINUTE IS ROUND. GitHub runs `schedule` on a
-  # best-effort queue: it is delayed under load and dropped outright when the
-  # queue does not clear. Both happened here within two days -- 26 Aug fired 106
-  # minutes late (18:15 -> 20:01), and 27 Aug never fired at all, so the 27 Aug
-  # session was simply never published. On-the-hour and quarter-hour minutes are
-  # the most contended, which is why :15 became :08 and :23.
+  # The same-evening slot (23:38 IST) was measurably too early. Yahoo had not
+  # posted the day's close even TEN HOURS after the 15:30 IST close: the 26 Aug
+  # run, firing at 01:31 IST, saw a 26 Aug bar for 2 symbols out of 1,505. The
+  # boundary logic was never wrong -- the run simply asked the provider before
+  # it had the data, and fell back to the prior session every time. Diagnosis
+  # credited to upstream (Pareshking/RS-Stages 6110bf8), independently
+  # confirmed against this repo's own universe.
   #
-  # The 21:23 run is a catch-up, not a second opinion. The publish step already
-  # exits cleanly when the regenerated files are unchanged, so on a normal day
-  # it commits nothing and costs one idle run; on a day the first slot is
-  # dropped it is the only thing that publishes the session at all. Public-repo
-  # Actions minutes are free, so the insurance costs nothing but a queue slot.
+  # 01:08 UTC is 06:38 IST the NEXT calendar day: about 15 hours of settling
+  # instead of 8, and still comfortably before the 09:15 IST open, so the
+  # snapshot remains a pre-market decision. Day-of-week shifts with it -- a
+  # Monday session is picked up Tuesday morning, a Friday session on Saturday,
+  # so Mon-Fri sessions need Tue-Sat runs.
+  #
+  # TWO SLOTS, AND NEITHER MINUTE IS ROUND. GitHub runs `schedule` on a
+  # best-effort queue: delayed under load, and dropped outright when the queue
+  # does not clear. Both happened here within two days -- 26 Aug fired 106
+  # minutes late, and 27 Aug never fired at all, so that session was never
+  # published and nothing reported a failure. On-the-hour and quarter-hour
+  # minutes are the most contended, hence :08 and :23.
+  #
+  # The 02:23 run is a catch-up, not a second opinion, and deliberately NOT a
+  # separate watchdog workflow: re-dispatching a workflow from a workflow needs
+  # a personal access token, which expires, and a safety net that dies silently
+  # when a credential lapses is worse than one extra idle run. The publish step
+  # already exits cleanly when nothing changed, so a normal day costs seven
+  # free minutes; a dropped-first-slot day it is the only thing that publishes.
+  # It is still pre-market at 07:53 IST.
   #
   # There is no longer a Friday universe refresh to race: that workflow was
   # deleted, and tests/test_workflow_scheduling.py fails if one returns.
   schedule:
-    - cron: "8 18 * * 1-5"
-    - cron: "23 21 * * 1-5"
+    - cron: "8 1 * * 2-6"
+    - cron: "23 2 * * 2-6"
   workflow_dispatch:
     inputs:
       decision_date:
@@ -41,6 +54,15 @@ on:
 
 permissions:
   contents: write
+
+concurrency:
+  # The catch-up must QUEUE behind a late primary, never run beside it. Two
+  # concurrent audits push the same branch; the loser is rejected and its whole
+  # run is discarded. cancel-in-progress stays false because a half-finished
+  # audit publishes nothing -- there is no partial result worth preferring.
+  group: real-data-audit
+  cancel-in-progress: false
+
 
 env:
   # Rolling tag whose single asset is replaced on every run. Deliberately not a

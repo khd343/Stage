@@ -575,6 +575,63 @@ name, the "not a vote" wording is asserted present, and all three line
 functions are confirmed to return empty strings together on a row with no
 classifiable evidence at all.
 
+## 2026-08-28 — The audit ran before the data existed
+
+### D-2.2.14 — The provider had not posted the close when the run asked
+
+**Problem.** The audit fired at 23:38 IST the same evening as the session it was
+publishing, and Yahoo had not posted that session's close yet. The 26 Aug run,
+firing at 01:31 IST — ten and a half hours after the 15:30 close — saw a 26 Aug
+bar for **2 symbols out of 1,505**. The boundary logic was correct throughout;
+the run simply asked too early and fell back to the prior session every time.
+
+**Classification.** Operational timing, with a silent data consequence: every
+run reported success while publishing a snapshot one session stale.
+
+**Credit.** Diagnosed upstream (`Pareshking/RS-Stages` 6110bf8) and confirmed
+here independently against this repo's own 1,505-symbol universe.
+
+**Resolution.** The schedule moves to the morning after each session: `8 1` and
+`23 2` UTC, Tuesday–Saturday. 06:38 and 07:53 IST — about 15 hours of settling
+instead of 8, and both still before the 09:15 open, so the snapshot remains a
+pre-market decision.
+
+**Prevention.** `tests/test_workflow_scheduling.py` pins the three properties
+that make this schedule correct rather than merely current: every run is
+pre-market in IST, every run leaves at least 12 hours after the previous close,
+and the run days are shifted one past the sessions they publish.
+
+### D-2.2.15 — A dropped run leaves no trace at all
+
+**Problem.** Separately from the above, the 27 Aug run **never fired**. Not
+late, not failed — absent from the Actions list entirely, which is
+indistinguishable from a quiet day. The 26 Aug run had fired 106 minutes late.
+GitHub documents `schedule` as best-effort and known to drop a firing outright.
+
+**Resolution.** A second cron 75 minutes after the first, in a different hour,
+both on off-beat minutes (`:08`, `:23`) because the start of the hour and the
+quarter-hours are the most contended slots. The publish step already exits
+cleanly when the regenerated files are unchanged, so a normal day costs one
+idle run on a free public runner.
+
+**Rejected: a watchdog workflow.** Upstream solves this by having a second
+workflow re-dispatch the audit when none has succeeded recently. It is the more
+elegant design and it was rejected deliberately: GitHub blocks the automatic
+token from dispatching a workflow, so it requires a personal access token, and
+that token expires. A safety net that dies when a credential lapses — reporting
+it only as a red tick in a tab nobody is watching — is worse than one extra
+idle run. The simpler mechanism has no credential to expire.
+
+**Also rejected: the in-app "Trigger audit now" button.** It places a GitHub
+token behind a public page with no login, bounded only by a 20-minute cooldown.
+The second cron covers the same failure without the surface.
+
+**Concurrency.** Two slots mean a merely *late* primary can still be running
+when the catch-up fires, and both push the same branch — a race discards one
+entire run. The workflow now serialises on `group: real-data-audit` with
+`cancel-in-progress: false`: a half-finished audit publishes nothing, so there
+is no partial result worth preferring over a completed one.
+
 ## Syncing from upstream (2026-08-26)
 
 This repo tracks `Pareshking/RS-Stages` as `upstream`. To take their code changes:

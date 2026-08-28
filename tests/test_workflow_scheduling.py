@@ -132,6 +132,13 @@ def test_the_audit_has_a_catch_up_schedule():
     no trace in the Actions list at all. A second slot hours later turns a
     dropped run into a late one, and the publish step already no-ops when the
     regenerated files are unchanged, so the normal-day cost is one idle run.
+
+    Deliberately a second CRON and not a watchdog workflow. Upstream solved the
+    same problem by having a second workflow re-dispatch the audit, which needs
+    a personal access token because GitHub blocks the automatic token from
+    dispatching workflows. That token expires, and a safety net that dies when
+    a credential lapses -- reporting it only as a red tick in a tab nobody is
+    watching -- is worse than one extra idle run on a free public runner.
     """
     crons = _crons(_workflows()["real_data_audit.yml"])
     assert len(crons) >= 2, "the audit needs a catch-up slot; a dropped run is silent"
@@ -154,3 +161,81 @@ def test_scheduled_minutes_avoid_the_contended_slots():
                 f"{name} fires at :{minute:02d}, one of the most contended minutes of "
                 "the hour; pick an off-beat minute to reduce delays and drops."
             )
+
+
+def _slots(text: str) -> list[tuple[int, int, set[int]]]:
+    """(minute, hour, weekdays) for every cron in a workflow, UTC."""
+    out = []
+    for cron in _crons(text):
+        minute, hour, _, _, dow = cron.split()
+        out.append((int(minute), int(hour), _field(dow, 0, 6)))
+    return out
+
+
+#: IST is UTC+5:30. NSE trades 09:15-15:30 IST.
+IST_OFFSET_MINUTES = 330
+NSE_OPEN_IST = 9 * 60 + 15
+NSE_CLOSE_IST = 15 * 60 + 30
+
+
+def test_every_audit_run_is_pre_market_in_ist():
+    """A snapshot published after the open is no longer a pre-market decision.
+
+    The audit moved to the morning AFTER each session so the price provider has
+    time to post the close (it had not done so even ten hours later: the 26 Aug
+    run saw a 26 Aug bar for 2 symbols of 1,505). Moving later trades against
+    the open, and this is the wall it must not cross -- the locked spec's whole
+    boundary rule is that a decision is made before the session it is for.
+    """
+    for minute, hour, _ in _slots(_workflows()["real_data_audit.yml"]):
+        ist = (hour * 60 + minute + IST_OFFSET_MINUTES) % (24 * 60)
+        assert ist < NSE_OPEN_IST, (
+            f"cron {hour:02d}:{minute:02d} UTC is {ist // 60:02d}:{ist % 60:02d} IST, "
+            "at or after the 09:15 open; the snapshot would not be pre-market"
+        )
+
+
+def test_every_audit_run_gives_the_provider_time_to_settle():
+    """The failure this schedule exists to fix was asking Yahoo too early.
+
+    Eight hours was not enough three sessions running. Twelve is the floor that
+    keeps a future edit from quietly walking the schedule back toward the close
+    and reintroducing a bug whose only symptom is a snapshot one session stale.
+    """
+    minimum_hours = 12
+    for minute, hour, _ in _slots(_workflows()["real_data_audit.yml"]):
+        ist = (hour * 60 + minute + IST_OFFSET_MINUTES) % (24 * 60)
+        # The run is the morning after, so settling spans the prior close to
+        # midnight, then midnight to the run.
+        settled = (24 * 60 - NSE_CLOSE_IST) + ist
+        assert settled >= minimum_hours * 60, (
+            f"cron {hour:02d}:{minute:02d} UTC leaves only {settled / 60:.1f}h after the "
+            f"previous close; at least {minimum_hours}h is required"
+        )
+
+
+def test_the_audit_days_are_shifted_one_past_the_sessions_they_publish():
+    """Mon-Fri sessions, read the next morning, need Tue-Sat runs.
+
+    Getting this wrong is silent in both directions: a Monday run has no
+    preceding session to fetch and republishes Friday's, and dropping Saturday
+    loses every Friday close.
+    """
+    days = set().union(*(dow for _, _, dow in _slots(_workflows()["real_data_audit.yml"])))
+    # cron day-of-week is Sunday-based: 2..6 is Tuesday through Saturday.
+    assert days == {2, 3, 4, 5, 6}, f"expected Tue-Sat runs, got cron days {sorted(days)}"
+
+
+def test_the_audit_cannot_run_beside_itself():
+    """Two slots means a late primary can still be running when the catch-up fires.
+
+    Both push the same branch, so a race discards one entire run. The queue must
+    hold the second rather than cancel either: a half-finished audit publishes
+    nothing, so there is no partial result worth preferring over a completed one.
+    """
+    text = _workflows()["real_data_audit.yml"]
+    assert "concurrency:" in text, "two scheduled slots can overlap; serialise them"
+    assert "cancel-in-progress: false" in text, (
+        "cancelling a running audit to start a newer one throws away a complete "
+        "result for an unfinished one"
+    )
