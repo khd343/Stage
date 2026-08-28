@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from rs_stages import data
 from rs_stages.ui import loaders
 from rs_stages.ui.loaders import PricePanel, _read_panel, load_price_panel, panel_matches
 
@@ -145,16 +146,35 @@ def test_the_ui_universe_is_the_analytical_universe():
 
     NSE reserves DUMMY-prefixed rows in the constituent CSV for corporate
     actions. The audit excludes them before computing anything, so a UI that
-    read the CSV raw would advertise a universe two constituents larger than
-    every figure beneath it.
+    read the CSV raw would advertise a universe larger than every figure
+    beneath it.
+
+    This once asserted the shipped CSV *contained* DUMMY rows, which was true
+    only while the universe was NSE's own download. This repo's universe is
+    built from a different source and carries none, so that assertion pinned
+    the file rather than the behaviour and failed the moment the universe
+    changed. The guarantee is restored below without depending on the contents
+    of any particular universe file.
     """
     snapshot = loaders.load_snapshot()
     symbols = snapshot.universe["Symbol"].astype(str)
     assert not symbols.str.startswith("DUMMY").any()
     # Every analysed symbol is a member of the universe the header reports.
     assert set(snapshot.research["Symbol"].astype(str)).issubset(set(symbols))
-    # And the raw file really does carry the rows we are excluding, so this
-    # test would fail if the exclusion were silently dropped upstream.
+    # Nothing is dropped for any reason OTHER than the exclusion: with no DUMMY
+    # rows present, the raw row count and the analytical one must agree exactly.
     raw = pd.read_csv(loaders.UNIVERSE_PATH)
-    assert raw["Symbol"].astype(str).str.startswith("DUMMY").any()
-    assert len(raw) > len(snapshot.universe)
+    reserved = int(raw["Symbol"].astype(str).str.startswith("DUMMY").sum())
+    assert len(raw) - reserved == len(snapshot.universe)
+
+
+def test_the_ui_reads_the_universe_through_the_excluding_loader():
+    """The exclusion is a property of the loader, not of the shipped file.
+
+    A universe file with no DUMMY rows cannot demonstrate that the exclusion
+    still runs, so the check that survives a change of universe is that the UI
+    calls the same locked loader the audit does. That loader's behaviour is
+    pinned by tests/test_data.py; reading UNIVERSE_PATH with a bare
+    pd.read_csv here instead would silently reintroduce the reserved rows.
+    """
+    assert loaders.load_nse_constituents_csv is data.load_nse_constituents_csv

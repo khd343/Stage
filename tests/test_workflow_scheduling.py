@@ -121,3 +121,36 @@ def test_no_workflow_can_overwrite_the_universe_file():
     for name, text in _workflows().items():
         assert not ("curl" in text and universe in text), (
             f"{name} downloads over {universe}; the universe would be replaced")
+
+
+def test_the_audit_has_a_catch_up_schedule():
+    """One scheduled slot is not a schedule; it is a hope.
+
+    GitHub's `schedule` event is best-effort. Measured on this repo: the 26 Aug
+    run fired 106 minutes late, and the 27 Aug run never fired, so that session
+    was never published and nothing reported a failure -- a dropped run leaves
+    no trace in the Actions list at all. A second slot hours later turns a
+    dropped run into a late one, and the publish step already no-ops when the
+    regenerated files are unchanged, so the normal-day cost is one idle run.
+    """
+    crons = _crons(_workflows()["real_data_audit.yml"])
+    assert len(crons) >= 2, "the audit needs a catch-up slot; a dropped run is silent"
+    hours = {int(cron.split()[1]) for cron in crons}
+    assert len(hours) >= 2, f"catch-up must sit in a different hour, got {sorted(hours)}"
+
+
+def test_scheduled_minutes_avoid_the_contended_slots():
+    """GitHub's own advice: do not schedule on the busy minutes of the hour.
+
+    The queue is deepest at :00 and the quarter-hours, because that is where
+    everyone schedules. This is the one lever that costs nothing and measurably
+    reduces both delay and drops.
+    """
+    contended = {0, 15, 30, 45}
+    for name, text in _workflows().items():
+        for cron in _crons(text):
+            minute = int(cron.split()[0])
+            assert minute not in contended, (
+                f"{name} fires at :{minute:02d}, one of the most contended minutes of "
+                "the hour; pick an off-beat minute to reduce delays and drops."
+            )

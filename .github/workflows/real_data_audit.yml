@@ -1,16 +1,29 @@
 name: Real Data Research Audit
 
 on:
-  # 18:15 UTC is 23:45 IST — after the NSE close settles at the provider, and
+  # 18:08 UTC is 23:38 IST -- after the NSE close settles at the provider, and
   # before the next trading session opens. The snapshot is therefore the latest
   # completed session, which is exactly the pre-market information boundary the
   # locked spec requires. Weekdays only: NSE does not trade at the weekend.
   #
-  # The Friday universe refresh runs at 17:15 UTC, a full hour ahead, so this
-  # run always checks out the constituent list that refresh just published and
-  # never races it for the push. See tests/test_workflow_scheduling.py.
+  # TWO SCHEDULES, AND NEITHER MINUTE IS ROUND. GitHub runs `schedule` on a
+  # best-effort queue: it is delayed under load and dropped outright when the
+  # queue does not clear. Both happened here within two days -- 26 Aug fired 106
+  # minutes late (18:15 -> 20:01), and 27 Aug never fired at all, so the 27 Aug
+  # session was simply never published. On-the-hour and quarter-hour minutes are
+  # the most contended, which is why :15 became :08 and :23.
+  #
+  # The 21:23 run is a catch-up, not a second opinion. The publish step already
+  # exits cleanly when the regenerated files are unchanged, so on a normal day
+  # it commits nothing and costs one idle run; on a day the first slot is
+  # dropped it is the only thing that publishes the session at all. Public-repo
+  # Actions minutes are free, so the insurance costs nothing but a queue slot.
+  #
+  # There is no longer a Friday universe refresh to race: that workflow was
+  # deleted, and tests/test_workflow_scheduling.py fails if one returns.
   schedule:
-    - cron: "15 18 * * 1-5"
+    - cron: "8 18 * * 1-5"
+    - cron: "23 21 * * 1-5"
   workflow_dispatch:
     inputs:
       decision_date:
