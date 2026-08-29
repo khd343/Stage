@@ -46,10 +46,33 @@ on:
   # Safe to run at several hours only because the boundary never regresses: a
   # run that lands at a thin hour publishes nothing rather than walking the
   # record back a session. Drop the losing slot once a week of dates has spoken.
+  #
+  # FIVE SLOTS BECAUSE GITHUB FIRES ABOUT ONE IN THREE. Measured across both this
+  # repo and upstream: 2 scheduled runs ever here, 6 there, every one of them
+  # late -- 41, 43, 46, 106 minutes, and one by 11.5 hours. Upstream's 06:30 IST
+  # slot and ours both missed entirely on 29 Aug. The config is not the problem
+  # and neither is the minute; the free scheduler simply drops runs.
+  #
+  # Four post-close slots spread over five hours, because the drops look
+  # load-correlated rather than independent: our two morning slots sat 75 minutes
+  # apart and died together. At a ~1-in-3 firing rate, five spread slots publish
+  # a session same-day about 87% of the time against 33% for one.
+  #
+  # Extras are free because the boundary never regresses: whichever slot fires
+  # first publishes, and every later one finds its own boundary no newer than
+  # what is on disk and exits without writing. They cost a download, not a risk.
   schedule:
-    - cron: "8 1 * * 2-6"
-    - cron: "23 2 * * 2-6"
-    - cron: "37 13 * * 1-5"
+    - cron: "41 11 * * 1-5"     # 17:11 IST
+    - cron: "37 13 * * 1-5"     # 19:07 IST
+    - cron: "19 15 * * 1-5"     # 20:49 IST
+    - cron: "3 17 * * 1-5"      # 22:33 IST
+    - cron: "8 1 * * 2-6"       # 06:38 IST -- last resort, publishes the prior session
+    # TEMPORARY, REMOVE AFTER 29 AUG 2026. A one-off Saturday probe whose only
+    # purpose is to observe whether a scheduled trigger fires at all. It can
+    # publish nothing -- Friday's session is already on disk, so the boundary
+    # floor makes it a no-op -- and that is the point: the signal is the
+    # existence of a `schedule` run, not its output.
+    - cron: "47 4 * * 6"        # 10:17 IST Saturday
   workflow_dispatch:
     inputs:
       decision_date:

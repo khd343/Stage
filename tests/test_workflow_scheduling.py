@@ -178,6 +178,20 @@ NSE_OPEN_IST = 9 * 60 + 15
 NSE_CLOSE_IST = 15 * 60 + 30
 
 
+#: Cron day-of-week values on which NSE never trades (Sunday=0, Saturday=6).
+NON_TRADING_DAYS = {0, 6}
+
+
+def _trades_on_a_session_day(days: set[int]) -> bool:
+    """False for a cron that only ever fires on a weekend.
+
+    A weekend run cannot collide with a live session and has no "previous
+    session" relationship to defend, so the session-hours and day-family rules
+    below simply do not apply to it.
+    """
+    return bool(days - NON_TRADING_DAYS)
+
+
 def test_no_scheduled_run_lands_inside_a_trading_session():
     """09:15-15:30 IST is the one window where a run can accomplish nothing.
 
@@ -192,7 +206,9 @@ def test_no_scheduled_run_lands_inside_a_trading_session():
     Age does not predict coverage, so the schedule no longer pretends to. The
     per-run coverage threshold does that job with measurement instead.
     """
-    for minute, hour, _ in _slots(_workflows()["real_data_audit.yml"]):
+    for minute, hour, days in _slots(_workflows()["real_data_audit.yml"]):
+        if not _trades_on_a_session_day(days):
+            continue
         ist = (hour * 60 + minute + IST_OFFSET_MINUTES) % (24 * 60)
         assert not (NSE_OPEN_IST <= ist <= NSE_CLOSE_IST), (
             f"cron {hour:02d}:{minute:02d} UTC is {ist // 60:02d}:{ist % 60:02d} IST, "
@@ -210,6 +226,8 @@ def test_every_run_day_can_actually_reach_a_session():
     republishes what was already there.
     """
     for minute, hour, days in _slots(_workflows()["real_data_audit.yml"]):
+        if not _trades_on_a_session_day(days):
+            continue
         ist = (hour * 60 + minute + IST_OFFSET_MINUTES) % (24 * 60)
         label = f"cron {hour:02d}:{minute:02d} UTC ({ist // 60:02d}:{ist % 60:02d} IST)"
         if ist < NSE_OPEN_IST:
