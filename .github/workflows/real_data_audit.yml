@@ -67,16 +67,6 @@ on:
     - cron: "19 15 * * 1-5"     # 20:49 IST
     - cron: "3 17 * * 1-5"      # 22:33 IST
     - cron: "8 1 * * 2-6"       # 06:38 IST -- last resort, publishes the prior session
-    # TEMPORARY, REMOVE AFTER 29 AUG 2026. A one-off Saturday probe whose only
-    # purpose is to observe whether a scheduled trigger fires at all. It can
-    # publish nothing -- Friday's session is already on disk, so the boundary
-    # floor makes it a no-op -- and that is the point: the signal is the
-    # existence of a `schedule` run, not its output. TWO of them: a new cron
-    # took ~35 minutes to register yesterday, so a probe set minutes ahead
-    # cannot distinguish a dropped run from an unregistered one. The later
-    # probe has real registration time and is the one that answers anything.
-    - cron: "3 5 * * 6"         # 10:33 IST Saturday
-    - cron: "37 5 * * 6"        # 11:07 IST Saturday -- the fair test
   workflow_dispatch:
     inputs:
       decision_date:
