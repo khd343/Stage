@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 from pathlib import Path
 
 import numpy as np
@@ -87,6 +88,22 @@ def build_universe_snapshots(
             continue
         snapshots[name] = snapshot
     return snapshots, unavailable
+
+
+def signal_publication(produced: bool) -> None:
+    """Tell the workflow whether artifacts exist, via GITHUB_OUTPUT.
+
+    A no-op run writes no price panel, and the step that uploads it to the
+    release does not glob -- it fails with "no matches found". So the run that
+    correctly refused to move the record backwards died at the next step and was
+    reported as a broken audit. Every downstream step is now gated on this flag
+    rather than assuming the audit always produces files. Outside Actions the
+    variable is unset and this does nothing.
+    """
+    path = os.environ.get("GITHUB_OUTPUT")
+    if path:
+        with open(path, "a", encoding="utf-8") as handle:
+            handle.write("published=" + ("true" if produced else "false") + chr(10))
 
 
 def published_boundary(path: Path) -> pd.Timestamp | None:
@@ -454,6 +471,7 @@ def main() -> None:
             f"than the {boundary.date()} this run can cover. Nothing published: the "
             "record does not move backwards."
         )
+        signal_publication(False)
         return
 
     snapshots, unavailable = build_universe_snapshots(
@@ -795,6 +813,7 @@ def main() -> None:
     print(f"Sufficient RS rows: {result['RS_Blend'].notna().sum()}")
     print(f"Sufficient 52W rows: {result['High_52W'].notna().sum()}")
     print(f"Sufficient liquidity rows: {result['AvgValue20'].notna().sum()}")
+    signal_publication(True)
 
 
 if __name__ == "__main__":

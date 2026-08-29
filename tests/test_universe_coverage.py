@@ -183,3 +183,42 @@ def test_an_absent_or_unreadable_snapshot_imposes_no_floor():
     assert published_boundary(Path("does-not-exist.csv")) is None
     assert published_boundary(tmp_snapshot([], header="Symbol\nAAA\n")) is None
     assert published_boundary(tmp_snapshot(["not-a-date"])) is None
+
+
+def test_every_step_that_needs_artifacts_is_gated_on_the_audit_producing_them():
+    """A correct no-op must not be reported as a broken audit.
+
+    A run that refuses to move the record backwards writes no price panel, and
+    `gh release upload` does not glob -- it fails with "no matches found". On
+    29 Aug 2026 that turned a working refusal into a red X. Each step consuming
+    an artifact must therefore ask whether one exists.
+    """
+    import pathlib as _pathlib
+
+    text = (_pathlib.Path(__file__).resolve().parents[1]
+            / ".github" / "workflows" / "real_data_audit.yml").read_text(encoding="utf-8")
+    assert "id: audit" in text, "the audit step needs an id for later steps to read"
+    consumers = [
+        "Publish price panel as a release asset",
+        "Publish validated research snapshot",
+        "Upload research output",
+    ]
+    for name in consumers:
+        head = text.index(name)
+        window = text[head:head + 400]
+        assert "steps.audit.outputs.published == 'true'" in window, (
+            f"step {name!r} consumes an audit artifact but does not check one was produced")
+
+
+def test_the_audit_signals_both_outcomes():
+    """Signalling only success would leave the flag unset on a no-op.
+
+    An unset output compares false, so gating would happen to work -- until
+    someone inverts a condition. Both branches write the flag explicitly.
+    """
+    import pathlib as _pathlib
+
+    src = (_pathlib.Path(__file__).resolve().parents[1]
+           / "scripts" / "real_data_audit.py").read_text(encoding="utf-8")
+    assert "signal_publication(False)" in src
+    assert "signal_publication(True)" in src

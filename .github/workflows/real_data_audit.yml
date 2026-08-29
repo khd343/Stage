@@ -123,6 +123,7 @@ jobs:
         run: python -m pip install --disable-pip-version-check -r requirements.txt
 
       - name: Run complete Nifty Total Market audit
+        id: audit
         env:
           PYTHONPATH: ${{ github.workspace }}
         run: |
@@ -138,7 +139,13 @@ jobs:
       # regenerated binary that Git cannot delta, so committing it would add a
       # fresh ~1.4 MB blob to history on every run, permanently. Replacing a
       # single asset keeps exactly one copy and adds nothing to the repository.
+      # GATED. A run that refuses to move the record backwards writes no price
+      # panel, and `gh release upload` does not glob -- it fails with "no matches
+      # found". So a correct no-op died at the next step and was reported as a
+      # broken audit (29 Aug 2026). Everything downstream of the audit now asks
+      # whether it actually produced artifacts instead of assuming it did.
       - name: Publish price panel as a release asset
+        if: steps.audit.outputs.published == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -153,6 +160,7 @@ jobs:
           echo "Published $(du -h data/price_panel.npz | cut -f1) panel to release $DATA_TAG"
 
       - name: Publish validated research snapshot
+        if: steps.audit.outputs.published == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -189,6 +197,7 @@ jobs:
           exit 1
 
       - name: Upload research output
+        if: steps.audit.outputs.published == 'true'
         # v5 runs on Node 24; v4 targets the deprecated Node 20.
         uses: actions/upload-artifact@v5
         with:
