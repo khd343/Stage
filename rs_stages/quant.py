@@ -84,23 +84,32 @@ def ma_calendar_weeks_series(close: pd.Series, weeks: int) -> pd.Series:
     window boundaries are resolved by position instead of by repeated sorting so
     the per-symbol cost is linear rather than quadratic. Sessions without a
     complete reference window yield NaN rather than a partial-window average.
+
+    INDEXED ON REAL SESSIONS ONLY, like :func:`sma_series`. Yahoo emits a dated
+    row before it has that session's values, and this series used to carry a
+    point for each such row -- an MA value repeated from the previous real
+    session. The values were right; the POSITIONS were not, and ma_slope_pct
+    steps back a fixed number of positions. One empty row inside the trailing
+    ten therefore made "ten sessions ago" reach back only nine, and the whole
+    universe's slope silently shifted. Measured 31 Aug 2026: every one of 1,505
+    symbols failed its independent slope check because 28 Aug arrived as a dated
+    row with no close. §3 already settles which reading is right -- a row with no
+    Close is not a completed session.
     """
-    raw = close.sort_index()
-    clean = raw.dropna()
+    clean = close.sort_index().dropna()
     if clean.empty:
-        return pd.Series(np.nan, index=raw.index, dtype=float)
+        return pd.Series(np.nan, index=clean.index, dtype=float)
 
-    raw_index = pd.DatetimeIndex(raw.index)
-    ends = clean.index.searchsorted(raw_index, side="right") - 1
-    effective = clean.index[np.clip(ends, 0, None)]
-    starts = clean.index.searchsorted(effective - pd.Timedelta(weeks=weeks), side="right") - 1
+    session_index = pd.DatetimeIndex(clean.index)
+    ends = np.arange(len(session_index))
+    starts = clean.index.searchsorted(session_index - pd.Timedelta(weeks=weeks), side="right") - 1
 
-    values = np.full(len(raw_index), np.nan, dtype=float)
+    values = np.full(len(session_index), np.nan, dtype=float)
     for position, (start, end) in enumerate(zip(starts, ends)):
         if start < 0 or end < 0 or (end - start + 1) < 2:
             continue
         values[position] = float(clean.iloc[start : end + 1].mean())
-    return pd.Series(values, index=raw.index, dtype=float)
+    return pd.Series(values, index=session_index, dtype=float)
 
 
 def ma_30w(close: pd.Series, end: pd.Timestamp) -> float:

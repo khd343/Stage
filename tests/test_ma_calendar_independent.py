@@ -33,8 +33,17 @@ def _reference_scalar(close: pd.Series, end: pd.Timestamp, weeks: int) -> float:
 
 
 def _reference_series(close: pd.Series, weeks: int) -> pd.Series:
-    """Per-session loop over the scalar definition — the slow, obvious version."""
-    s = close.sort_index()
+    """Per-session loop over the scalar definition — the slow, obvious version.
+
+    Loops over SESSIONS, meaning rows that carry a Close. This reference used to
+    loop over every row the provider emitted, which encoded the same mistake the
+    optimized builder made: a dated row with no close was given a position in the
+    series, and ma_slope_pct steps back by position. On 31 Aug 2026 that made
+    every one of 1,505 symbols fail its independent slope check. LOCKED_SPEC 3
+    and sma_series both already say an empty row is not a session; this reference
+    was the outlier, so it moved rather than the rule.
+    """
+    s = close.sort_index().dropna()
     values = []
     for t in s.index:
         try:
