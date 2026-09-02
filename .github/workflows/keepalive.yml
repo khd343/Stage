@@ -1,0 +1,63 @@
+name: Keepalive
+
+# GitHub disables scheduled workflows in any repository with 60 days of no
+# COMMITS. Workflow runs do not count as activity; only commits do.
+#
+# That is a one-way trap for this repository specifically. Its only automatic
+# commits are the research snapshots the audit publishes -- so if the audit
+# stops firing, the repo goes quiet, the schedule is disabled for inactivity,
+# and the audit can never fire again to revive it. The thing that keeps the
+# schedule alive is the thing the schedule produces.
+#
+# That is not hypothetical here. Two scheduled runs fired in this repo's first
+# week; most slots were dropped outright. A quiet fortnight is ordinary, and a
+# quiet two months would end the project with no error anywhere -- just a banner
+# in a tab nobody was looking at.
+#
+# 03:07 UTC is 08:37 IST on the 1st of each month. Off the contended minute, and
+# outside the 00:00-02:30 UTC band where every dropped slot we have measured
+# lives -- across this repo and one other.
+on:
+  schedule:
+    - cron: "7 3 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Touch the activity clock
+        run: |
+          set -euo pipefail
+          date -u +"last keepalive: %Y-%m-%d %H:%M UTC" > .keepalive
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .keepalive
+          # Nothing to commit is not a failure: two runs in the same minute
+          # produce an identical file.
+          if git diff --staged --quiet; then
+            echo "Clock already fresh for this minute; nothing to commit."
+            exit 0
+          fi
+          git commit -m "chore: keepalive $(date -u +%Y-%m-%d)"
+
+          # Rebase-and-retry for the same reason the audit does it: an audit run
+          # can land while this one is between commit and push, and a bare push
+          # would then be rejected non-fast-forward. This job writes only
+          # .keepalive and the audit writes only data/, so rebasing can never
+          # conflict.
+          for attempt in 1 2 3; do
+            if git push; then
+              echo "Activity clock reset on attempt $attempt."
+              exit 0
+            fi
+            echo "Push rejected; rebasing onto origin/main (attempt $attempt)."
+            git pull --rebase origin main
+          done
+          echo "Could not reset the activity clock after 3 attempts." >&2
+          exit 1

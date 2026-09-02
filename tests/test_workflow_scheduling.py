@@ -82,31 +82,72 @@ def _crons(text: str) -> list[str]:
     return [match.group(1).strip() for match in re.finditer(r"-\s*cron:\s*['\"](.+?)['\"]", text)]
 
 
-def test_only_the_audit_publishes():
-    """A second pushing workflow would need its own place in this ordering.
+def test_the_audit_is_the_only_workflow_that_writes_published_data():
+    """Two workflows push; only one may touch the record.
 
     update_nse_universe.yml was REMOVED: the universe is now this repo's own
     ticker list, and that job downloaded the NSE index constituents and REPLACED
     the file wholesale -- a successful run, no error, and the universe silently
     gone every Friday.
+
+    keepalive.yml also pushes, but only ever a timestamp. It exists because
+    GitHub disables schedules after 60 days without COMMITS, and this repo's
+    only automatic commits are the audit's -- so a stalled audit would disable
+    the schedule that revives it. If it ever learns to write under data/, it
+    becomes a second publisher and this ordering no longer holds.
     """
-    assert set(_pushing_workflows()) == {"real_data_audit.yml"}
+    assert set(_pushing_workflows()) == {"real_data_audit.yml", "keepalive.yml"}
+
+    # Comments stripped first. An earlier version of this check matched the bare
+    # string and failed on the workflow's own comment explaining that the AUDIT
+    # writes data/ -- a scan that reads prose tests the prose, not the code.
+    code = chr(10).join(line.split("#", 1)[0] for line in
+                        _workflows()["keepalive.yml"].splitlines())
+    assert "data/" not in code, "the keepalive must never write published data"
+    assert "git add .keepalive" in code, "the keepalive must stage only its own timestamp"
 
 
-def test_no_two_publishing_workflows_share_a_fire_minute():
-    """Concurrent runs race for the push; the loser is rejected non-fast-forward."""
-    schedules = {
-        name: set().union(*(fire_minutes(c) for c in _crons(text))) if _crons(text) else set()
-        for name, text in _pushing_workflows().items()
-    }
-    names = sorted(schedules)
+def _weekly_minutes(text: str) -> set[int]:
+    """Minutes-into-the-week for crons that repeat weekly (day-of-month '*')."""
+    weekly = [c for c in _crons(text) if c.split()[2] == "*"]
+    return set().union(*(fire_minutes(c) for c in weekly)) if weekly else set()
+
+
+def _clock_slots(text: str) -> set[tuple[int, int]]:
+    """(hour, minute) for EVERY cron, including day-of-month restricted ones.
+
+    fire_minutes deliberately refuses a day-of-month cron -- expanding one into
+    minutes-of-week would depend on the calendar. A monthly schedule can still
+    collide with a daily one, so it is compared on the clock instead, which is
+    conservative: same hour and minute is a necessary condition for any overlap.
+    """
+    return {(int(c.split()[1]), int(c.split()[0])) for c in _crons(text)}
+
+
+def test_no_two_publishing_workflows_can_fire_together():
+    """Concurrent runs race for the push; the loser is rejected non-fast-forward.
+
+    Both pushers now rebase and retry, so a collision is survivable rather than
+    fatal. This keeps them from colliding in the first place.
+    """
+    names = sorted(_pushing_workflows())
+    texts = _pushing_workflows()
     for i, first in enumerate(names):
         for second in names[i + 1:]:
-            overlap = schedules[first] & schedules[second]
+            overlap = _weekly_minutes(texts[first]) & _weekly_minutes(texts[second])
             assert not overlap, (
-                f"{first} and {second} both fire at minute(s) {sorted(overlap)} of the week; "
-                "both push to main, so one push is rejected."
-            )
+                f"{first} and {second} both fire at minute(s) {sorted(overlap)} of the week")
+            clash = _clock_slots(texts[first]) & _clock_slots(texts[second])
+            assert not clash, (
+                f"{first} and {second} share clock slot(s) {sorted(clash)}; a monthly "
+                "schedule can still land on a daily one")
+
+
+def test_every_pushing_workflow_can_survive_a_moved_main():
+    """A bare `git push` throws the whole run away when main moved underneath it."""
+    for name, text in _pushing_workflows().items():
+        assert "git pull --rebase" in text, (
+            f"{name} pushes without a rebase path; a concurrent commit would discard it")
 
 
 def test_no_workflow_can_overwrite_the_universe_file():
