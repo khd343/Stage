@@ -735,6 +735,51 @@ the run succeeds and republishes what was already there — so
 `tests/test_workflow_scheduling.py` derives the requirement from each cron's own
 IST time rather than pinning a list of days.
 
+## 2026-09-10 — Admission by liquidity, never by history
+
+### D-2.2.18 — The 200-session rule was gating the wrong thing at the wrong layer
+
+**Problem.** The universe was built from one source file with a 200-session
+admission rule. Checked against a 2,000-name NSE list on 10 Sep 2026: **503**
+NSE names were outside the universe, and **287 of them already had 200+
+sessions** — they were missing because they were never in the source file, not
+because any rule excluded them. The gate was not the constraint; the source was.
+
+**What the engine already does.** `high_52w` / `low_52w` carry `min_sessions=200`
+and every calendar-window function raises on insufficient history. A 14-session
+listing run through the real screener produces a price and **NaN for every
+other field** — `MA_30W`, `Stage`, `RS_Score`, `High_52W`. Nothing fabricated.
+So history depth needs no admission gate; the engine enforces it per symbol,
+per metric, exactly as §3 requires.
+
+**What admission must protect instead.** The global boundary needs 98% of the
+universe to carry a close and the publisher refuses above 2% loss. An illiquid
+name spends that budget every day; a young liquid name spends none. That is a
+liquidity property, and it is the only thing the universe file has to enforce.
+
+**Resolution.** `scripts/admit_universe.py`: admit any NSE name that traded on
+at least 90% of the sessions **available to it** in the last 60 — the calendar
+clipped at the name's own first session, with a 10-session sample floor. BSE
+rows are ignored: one exchange, one calendar, one cross-section. An unknown
+sector spelling is refused loudly (it would become an 81st group), and existing
+rows are never modified — the candidate list disagreeing about a sector is a
+decision, not a side effect.
+
+**The first dry run rejected the entire 18 Aug migration batch**, because the
+rule as first written counted presence over a fixed 60 sessions: a name listed
+18 sessions ago could never pass however liquid. The test meant to pin the young
+case passed `minimum=15` explicitly and so hid it. Rule corrected to presence
+over possible sessions; test rewritten to use the default.
+
+**Result.** 1,510 → **1,893**. 383 admitted; 107 candidates have no NSE data;
+13 refused with numbers (11 under the sample floor and self-admitting on a
+later run, `CIGNITITEC` 0/60 delisted mid-window, `VIDEOIND` 1/40). Expected
+absentees ≈ 8 a day ≈ 0.4% against the 2% ceiling. Still 80 sectors.
+
+**Consequence accepted.** ~50 young names show price-only until they mature.
+They fill in on their own; nothing here needs a monthly re-check any more.
+Re-run the tool with any candidate list to admit what has become liquid.
+
 ## Syncing from upstream (2026-08-26)
 
 This repo tracks `Pareshking/RS-Stages` as `upstream`. To take their code changes:

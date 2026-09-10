@@ -1,8 +1,10 @@
 Company Name,Industry,Symbol,Series
 20 Microns Ltd,Mining & Mineral products,20MICRONS,EQ
 360 ONE WAM Ltd,Stock/ Commodity Brokers,360ONE,EQ
+3i Infotech Ltd,IT - Software,3IINFOLTD,EQ
 3M India Ltd,Diversified,3MINDIA,EQ
 63 Moons Technologies Ltd,IT - Software,63MOONS,EQ
+A2Z Infra Engineering Ltd,Infrastructure Developers & Operators,A2ZINFRA,EQ
 Aarey Drugs & Pharmaceuticals Ltd,Pharmaceuticals,AAREYDRUGS,EQ
 Aaron Industries Ltd,Capital Goods-Non Electrical Equipment,AARON,EQ
 Aartech Solonics Ltd,Capital Goods - Electrical Equipment,AARTECH,EQ
@@ -11,13 +13,18 @@ Aarti Industries Ltd,Chemicals,AARTIIND,EQ
 Aarti Pharmalabs Ltd,Pharmaceuticals,AARTIPHARM,EQ
 Aarti Surfactants Ltd,Chemicals,AARTISURF,EQ
 Aarvi Encon Ltd,Miscellaneous,AARVI,EQ
+Aastha Spintex Ltd,Textiles,AASTHA,EQ
 ABB India Ltd,Capital Goods - Electrical Equipment,ABB,EQ
 Abbott India Ltd,Pharmaceuticals,ABBOTINDIA,EQ
+AB Cotspin India Ltd,Textiles,ABCOTS,EQ
 Aditya Birla Fashion & Retail Ltd,Retail,ABFRL,EQ
 A B Infrabuild Ltd,Infrastructure Developers & Operators,ABINFRA,EQ
+Aditya Birla Lifestyle Brands Ltd,Retail,ABLBL,EQ
 Aditya Birla Real Estate Ltd,Realty,ABREL,EQ
+ABS Marine Services Ltd,Shipping,ABSMARINE,EQ
 ACC Ltd,Cement,ACC,EQ
 Accelya Solutions India Ltd,IT - Software,ACCELYA,EQ
+Accent Microcell Ltd,Pharmaceuticals,ACCENTMIC,EQ
 Action Construction Equipment Ltd,Capital Goods-Non Electrical Equipment,ACE,EQ
 Archean Chemical Industries Ltd,Chemicals,ACI,EQ
 Andhra Cements Ltd,Cement,ACL,EQ
@@ -31,12 +38,15 @@ Adani Power Ltd,Power Generation & Distribution,ADANIPOWER,EQ
 ADF Foods Ltd,FMCG,ADFFOODS,EQ
 Ador Welding Ltd,Capital Goods-Non Electrical Equipment,ADOR,EQ
 Allied Digital Services Ltd,IT - Software,ADSL,EQ
+Advance Agrolife Ltd,Agro Chemicals,ADVANCE,EQ
 Advani Hotels & Resorts (India) Ltd,Hotels & Restaurants,ADVANIHOTR,EQ
 Advanced Enzyme Technologies Ltd,Pharmaceuticals,ADVENZYMES,EQ
 Aegis Logistics Ltd,Trading,AEGISLOG,EQ
 Aegis Vopak Terminals Ltd,Logistics,AEGISVOPAK,EQ
+Aequs Ltd,Aerospace & Defence,AEQUS,EQ
 Aeroflex Enterprises Ltd,Steel,AEROENTER,EQ
 Aeroflex Industries Ltd,Steel,AEROFLEX,EQ
+Amir Chand Jagdish Kumar (Exports) Ltd,FMCG,AEROPLANE,EQ
 Aether Industries Ltd,Chemicals,AETHER,EQ
 Afcons Infrastructure Ltd,Infrastructure Developers & Operators,AFCONS,EQ
 Affle 3i Ltd,IT - Software,AFFLE,EQ
@@ -45,14 +55,20 @@ Agarwal Industrial Corporation Ltd,Petrochemicals,AGARIND,EQ
 Dr Agarwals Health Care Ltd,Healthcare,AGARWALEYE,EQ
 AGI Greenpac Ltd,Packaging,AGI,EQ
 AGI Infra Ltd,Realty,AGIIL,EQ
+Allcargo Global Ltd,Logistics,AGL,EQ
+Anlon Healthcare Ltd,Pharmaceuticals,AHCL,EQ
 Ahluwalia Contracts (India) Ltd,Realty,AHLUCONT,EQ
+Asian Hotels (West) Ltd,Hotels & Restaurants,AHLWEST,EQ
 AIA Engineering Ltd,"Castings, Forgings & Fastners",AIAENG,EQ
+Aimtron Electronics Ltd,Electronics,AIMTRON,EQ
+Airan Ltd,IT - Software,AIRAN,EQ
 Airo Lam Ltd,Plywood Boards/Laminates,AIROLAM,EQ
 Ajanta Pharma Ltd,Pharmaceuticals,AJANTPHARM,EQ
 Ajax Engineering Ltd,Capital Goods-Non Electrical Equipment,AJAXENGG,EQ
 Ajmera Realty & Infra India Ltd,Realty,AJMERA,EQ
 AksharChem (India) Ltd,Chemicals,AKSHARCHEM,EQ
 Akums Drugs & Pharmaceuticals Ltd,Pharmaceuticals,AKUMS,EQ
+Alankit Ltd,IT - Software,ALANKIT,EQ
 Albert David Ltd,Pharmaceuticals,ALBERTDAVD,EQ
 Alembic Ltd,Realty,ALEMBICLTD,EQ
 Alicon Castalloy Ltd,"Castings, Forgings & Fastners",ALICON,EQ
@@ -61,7 +77,14 @@ Alkem Laboratories Ltd,Pharmaceuticals,ALKEM,EQ
 Alkyl Amines Chemicals Ltd,Chemicals,ALKYLAMINE,EQ
 Allcargo Logistics Ltd,Logistics,ALLCARGO,EQ
 Alldigi Tech Ltd,IT - Software,ALLDIGI,EQ
+All E Technologies Ltd,IT - Software,ALLETEC,EQ
+All Time Plastics Ltd,Plastic products,ALLTIME,EQ
+Alok Industries Ltd,Textiles,ALOKINDS,EQ
 Alpa Laboratories Ltd,Pharmaceuticals,ALPA,EQ
+Alpex Solar Ltd,Capital Goods - Electrical Equipment,ALPEXSOLAR,EQ
+Alpine Texworld Ltd,Textiles,ALPINETEX,EQ
+Amagi Media Labs Ltd,IT - Software,AMAGI,EQ
+Amanta Healthcare Ltd,Pharmaceuticals,AMANTA,EQ
 Amber Enterprises India Ltd,Consumer Durables,AMBER,EQ
 Ambika Cotton Mills Ltd,Textiles,AMBIKCO,EQ
 Ambuja Cements Ltd,Cement,AMBUJACEM,EQ
@@ -71,7 +94,11 @@ Amrutanjan Health Care Ltd,Pharmaceuticals,AMRUTANJAN,EQ
 Anant Raj Ltd,Realty,ANANTRAJ,EQ
 Andhra Paper Ltd,Paper,ANDHRAPAP,EQ
 Andhra Sugars Ltd,Chemicals,ANDHRSUGAR,EQ
+Andrew Yule & Company Ltd,Diversified,ANDREWYU,EQ
 Anik Industries Ltd,Trading,ANIKINDS,EQ
+Anlon Technology Solutions Ltd,Miscellaneous,ANLON,EQ
+Annapurna Swadisht Ltd,FMCG,ANNAPURNA,EQ
+Antelopus Selan Energy Ltd,Crude Oil & Natural Gas,ANTELOPUS,EQ
 Anthem Biosciences Ltd,Pharmaceuticals,ANTHEM,EQ
 Anuh Pharma Ltd,Pharmaceuticals,ANUHPHR,EQ
 The Anup Engineering Ltd,Capital Goods-Non Electrical Equipment,ANUP,EQ
@@ -87,11 +114,16 @@ Apollo Hospitals Enterprise Ltd,Healthcare,APOLLOHOSP,EQ
 Apollo Pipes Ltd,Plastic products,APOLLOPIPE,EQ
 Apollo Tyres Ltd,Tyres,APOLLOTYRE,EQ
 Apollo Sindoori Hotels Ltd,Hotels & Restaurants,APOLSINHOT,EQ
+Australian Premium Solar (India) Ltd,Capital Goods - Electrical Equipment,APS,EQ
 Aptech Ltd,Computer Education,APTECHT,EQ
 Archidply Industries Ltd,Plywood Boards/Laminates,ARCHIDPLY,EQ
+Ardee Industries Ltd,Non Ferrous Metals,ARDEE,EQ
 Amara Raja Energy & Mobility Ltd,Auto Ancillaries,ARE&M,EQ
 Aries Agro Ltd,Fertilizers,ARIES,EQ
+Arihant Foundations & Housing Ltd,Realty,ARIHANT,EQ
+Arihant Academy Ltd,Education,ARIHANTACA,EQ
 Arihant Superstructures Ltd,Realty,ARIHANTSUP,EQ
+Arisinfra Solutions Ltd,Trading,ARIS,EQ
 Arkade Developers Ltd,Realty,ARKADE,EQ
 Arrow Greentech Ltd,Plastic products,ARROWGREEN,EQ
 Artemis Medicare Services Ltd,Healthcare,ARTEMISMED,EQ
@@ -105,6 +137,7 @@ Asahi Songwon Colors Ltd,Chemicals,ASAHISONG,EQ
 Automotive Stampings & Assemblies Ltd,Auto Ancillaries,ASAL,EQ
 Ashapura Minechem Ltd,Mining & Mineral products,ASHAPURMIN,EQ
 Ashiana Housing Ltd,Realty,ASHIANA,EQ
+Ashima Ltd,Diversified,ASHIMASYN,EQ
 Ashoka Buildcon Ltd,Infrastructure Developers & Operators,ASHOKA,EQ
 Ashok Leyland Ltd,Automobile,ASHOKLEY,EQ
 Asian Energy Services Ltd,Crude Oil & Natural Gas,ASIANENE,EQ
@@ -112,7 +145,9 @@ Asian Hotels (North) Ltd,Hotels & Restaurants,ASIANHOTNR,EQ
 Asian Paints Ltd,Paints/Varnish,ASIANPAINT,EQ
 Asian Granito India Ltd,Ceramic Products,ASIANTILES,EQ
 ASK Automotive Ltd,Auto Ancillaries,ASKAUTOLTD,EQ
+Avio Smart Market Stack Ltd,IT - Software,ASMS,EQ
 Aspinwall & Company Ltd,Diversified,ASPINWALL,EQ
+Asian Star Company Ltd,"Diamond, Gems and Jewellery",ASTAR,EQ
 Astec Lifesciences Ltd,Agro Chemicals,ASTEC,EQ
 Aster DM Quality Care Ltd,Healthcare,ASTERDM,EQ
 Astral Ltd,Plastic products,ASTRAL,EQ
@@ -122,11 +157,15 @@ Atam Valves Ltd,Capital Goods-Non Electrical Equipment,ATAM,EQ
 Adani Total Gas Ltd,Gas Distribution,ATGL,EQ
 Ather Energy Ltd,Automobile,ATHERENERG,EQ
 Allcargo Terminals Ltd,Marine Port & Services,ATL,EQ
+Atlantaa Ltd,Infrastructure Developers & Operators,ATLANTAA,EQ
+Atlanta Electricals Ltd,Capital Goods - Electrical Equipment,ATLANTAELE,EQ
+Atmastco Ltd,Infrastructure Developers & Operators,ATMASTCO,EQ
 Atul Ltd,Chemicals,ATUL,EQ
 Atul Auto Ltd,Automobile,ATULAUTO,EQ
 Aurionpro Solutions Ltd,IT - Software,AURIONPRO,EQ
 Aurobindo Pharma Ltd,Pharmaceuticals,AUROPHARMA,EQ
 Aurum Proptech Ltd,IT - Software,AURUM,EQ
+Ausom Enterprise Ltd,"Diamond, Gems and Jewellery",AUSOMENT,EQ
 Automotive Axles Ltd,Auto Ancillaries,AUTOAXLES,EQ
 Autoline Industries Ltd,Auto Ancillaries,AUTOIND,EQ
 Avadh Sugar & Energy Ltd,Sugar,AVADHSUGAR,EQ
@@ -141,14 +180,17 @@ AWFIS Space Solutions Ltd,Co-Working,AWFIS,EQ
 Antony Waste Handling Cell Ltd,Miscellaneous,AWHCL,EQ
 AWL Agri Business Ltd,FMCG,AWL,EQ
 AXISCADES Technologies Ltd,Aerospace & Defence,AXISCADES,EQ
+Axita Cotton Ltd,Textiles,AXITA,EQ
 AYM Syntex Ltd,Textiles,AYMSYNTEX,EQ
 Azad Engineering Ltd,Aerospace & Defence,AZAD,EQ
 Bafna Pharmaceuticals Ltd,Pharmaceuticals,BAFNAPH,EQ
+Baheti Recycling Industries Ltd,Non Ferrous Metals,BAHETI,EQ
 Bajaj Auto Ltd,Automobile,BAJAJ-AUTO,EQ
 Bajaj Consumer Care Ltd,FMCG,BAJAJCON,EQ
 Bajaj Electricals Ltd,Consumer Durables,BAJAJELEC,EQ
 Bajaj Finserv Ltd,Finance,BAJAJFINSV,EQ
 Bajaj Healthcare Ltd,Pharmaceuticals,BAJAJHCARE,EQ
+Bajaj Hindusthan Sugar Ltd,Sugar,BAJAJHIND,EQ
 Bajaj Holdings & Investment Ltd,Finance,BAJAJHLDNG,EQ
 Indef Manufacturing Ltd,Capital Goods-Non Electrical Equipment,BAJAJINDEF,EQ
 Bajel Projects Ltd,Infrastructure Developers & Operators,BAJEL,EQ
@@ -171,6 +213,7 @@ Bharat Bijlee Ltd,Capital Goods - Electrical Equipment,BBL,EQ
 Black Box Ltd,IT - Software,BBOX,EQ
 The Bombay Burmah Trading Corporation Ltd,Auto Ancillaries,BBTC,EQ
 B&B Triplewall Containers Ltd,Packaging,BBTCL,EQ
+Brightcom Group Ltd,IT - Software,BCG,EQ
 Brand Concepts Ltd,Retail,BCONCEPTS,EQ
 Bharat Dynamics Ltd,Aerospace & Defence,BDL,EQ
 Mrs Bectors Food Specialities Ltd,FMCG,BECTORFOOD,EQ
@@ -178,6 +221,7 @@ Bedmutha Industries Ltd,Non Ferrous Metals,BEDMUTHA,EQ
 Bharat Electronics Ltd,Aerospace & Defence,BEL,EQ
 Belrise Industries Ltd,Auto Ancillaries,BELRISE,EQ
 BEML Ltd,Aerospace & Defence,BEML,EQ
+Bengal & Assam Company Ltd,Finance,BENGALASM,EQ
 Bhansali Engineering Polymers Ltd,Petrochemicals,BEPL,EQ
 Berger Paints India Ltd,Paints/Varnish,BERGEPAINT,EQ
 Best Agrolife Ltd,Agro Chemicals,BESTAGRO,EQ
@@ -187,6 +231,7 @@ BGR Energy Systems Ltd,Infrastructure Developers & Operators,BGRENERGY,EQ
 Bhagiradha Chemicals & Industries Ltd,Agro Chemicals,BHAGCHEM,EQ
 Bhageria Industries Ltd,Chemicals,BHAGERIA,EQ
 Bhagyanagar India Ltd,Power Generation & Distribution,BHAGYANGR,EQ
+Bharat Coking Coal Ltd,Mining & Mineral products,BHARATCOAL,EQ
 Bharat Forge Ltd,"Castings, Forgings & Fastners",BHARATFORG,EQ
 Bharat Gears Ltd,Auto Ancillaries,BHARATGEAR,EQ
 Bharat Rasayan Ltd,Agro Chemicals,BHARATRAS,EQ
@@ -204,6 +249,9 @@ Birla Cable Ltd,Cables,BIRLACABLE,EQ
 Birla Corporation Ltd,Cement,BIRLACORPN,EQ
 BirlaNu Ltd,Cement - Products,BIRLANU,EQ
 Blackbuck Ltd,Logistics,BLACKBUCK,EQ
+BEML Land Assets Ltd,Construction,BLAL,EQ
+Behari Lal Engineering Ltd,Steel,BLEL,EQ
+Balmer Lawrie Investment Ltd,Finance,BLIL,EQ
 Bliss GVS Pharma Ltd,Pharmaceuticals,BLISSGVS,EQ
 BLKashyap & Sons Ltd,Construction,BLKASHYAP,EQ
 BLS International Services Ltd,IT - Software,BLS,EQ
@@ -211,7 +259,9 @@ BLS E-Services Ltd,IT - Software,BLSE,EQ
 Blue Dart Express Ltd,Logistics,BLUEDART,EQ
 Blue Jet Healthcare Ltd,Pharmaceuticals,BLUEJET,EQ
 Blue Star Ltd,Consumer Durables,BLUESTARCO,EQ
+Bluestone Jewellery & Lifestyle Ltd,"Diamond, Gems and Jewellery",BLUESTONE,EQ
 Bluspring Enterprises Ltd,Diversified,BLUSPRING,EQ
+BMW Ventures Ltd,Trading,BMWVENTLTD,EQ
 Bodal Chemicals Ltd,Chemicals,BODALCHEM,EQ
 Bombay Dyeing & Manufacturing Company Ltd,Textiles,BOMDYEING,EQ
 Borana Weaves Ltd,Textiles,BORANA,EQ
@@ -223,6 +273,7 @@ Bosch Ltd,Auto Ancillaries,BOSCHLTD,EQ
 Bharat Petroleum Corporation Ltd,Refineries,BPCL,EQ
 BPL Ltd,Consumer Durables,BPL,EQ
 Brigade Enterprises Ltd,Realty,BRIGADE,EQ
+Brigade Hotel Ventures Ltd,Hotels & Restaurants,BRIGHOTEL,EQ
 Bright Outdoor Media Ltd,Miscellaneous,BRIGHT,EQ
 Britannia Industries Ltd,FMCG,BRITANNIA,EQ
 Brooks Laboratories Ltd,Pharmaceuticals,BROOKS,EQ
@@ -230,6 +281,7 @@ BSE Ltd,Financial Services,BSE,EQ
 Bombay Super Hybrid Seeds Ltd,FMCG,BSHSL,EQ
 BSL Ltd,Textiles,BSL,EQ
 Birlasoft Ltd,IT - Software,BSOFT,EQ
+Shankara Buildpro Ltd,Trading,BUILDPRO,EQ
 Butterfly Gandhimathi Appliances Ltd,Consumer Durables,BUTTERFLY,EQ
 The Byke Hospitality Ltd,Hotels & Restaurants,BYKE,EQ
 Camlin Fine Sciences Ltd,Chemicals,CAMLINFINE,EQ
@@ -237,6 +289,7 @@ Campus Activewear Ltd,Leather,CAMPUS,EQ
 Computer Age Management Services Ltd,Financial Services,CAMS,EQ
 Cantabil Retail India Ltd,Textiles,CANTABIL,EQ
 Capacite Infraprojects Ltd,Infrastructure Developers & Operators,CAPACITE,EQ
+Capillary Technologies India Ltd,IT - Software,CAPILLARY,EQ
 Caplin Point Laboratories Ltd,Pharmaceuticals,CAPLIPOINT,EQ
 Carborundum Universal Ltd,Capital Goods-Non Electrical Equipment,CARBORUNIV,EQ
 CARE Ratings Ltd,Credit Rating Agencies,CARERATING,EQ
@@ -244,10 +297,14 @@ Carraro India Ltd,Auto Ancillaries,CARRARO,EQ
 Cartrade Tech Ltd,Retail,CARTRADE,EQ
 Carysil Ltd,Consumer Durables,CARYSIL,EQ
 Castrol India Ltd,Chemicals,CASTROLIND,EQ
+AvenuesAI Ltd,E-Commerce/App based Aggregator,CCAVENUE,EQ
+Consolidated Construction Consortium Ltd,Construction,CCCL,EQ
 CCL Products (India) Ltd,Plantation & Plantation Products,CCL,EQ
 Central Depository Services (India) Ltd,Financial Services,CDSL,EQ
 CEAT Ltd,Tyres,CEATLTD,EQ
 Ceigall India Ltd,Infrastructure Developers & Operators,CEIGALL,EQ
+Ceinsys Tech Ltd,IT - Software,CEINSYS,EQ
+Cellecor Gadgets Ltd,Retail,CELLECOR,EQ
 Cello World Ltd,Consumer Durables,CELLO,EQ
 Cemindia Projects Ltd,Infrastructure Developers & Operators,CEMPRO,EQ
 Century Enka Ltd,Textiles,CENTENKA,EQ
@@ -257,9 +314,12 @@ Cera Sanitaryware Ltd,Ceramic Products,CERA,EQ
 CESC Ltd,Power Generation & Distribution,CESC,EQ
 Concord Enviro Systems Ltd,Capital Goods-Non Electrical Equipment,CEWATER,EQ
 CG Power & Industrial Solutions Ltd,Capital Goods - Electrical Equipment,CGPOWER,EQ
+Creative Graphics Solutions India Ltd,Engineering,CGRAPHICS,EQ
 Chalet Hotels Ltd,Hotels & Restaurants,CHALET,EQ
 Chambal Fertilisers & Chemicals Ltd,Fertilizers,CHAMBLFERT,EQ
+Chavda Infra Ltd,Construction,CHAVDA,EQ
 Chembond Material Technologies Ltd,Chemicals,CHEMBOND,EQ
+Chembond Chemicals Ltd,Chemicals,CHEMBONDCH,EQ
 Chemcon Speciality Chemicals Ltd,Chemicals,CHEMCON,EQ
 Chemfab Alkalis Ltd,Chemicals,CHEMFAB,EQ
 Chemplast Sanmar Ltd,Chemicals,CHEMPLASTS,EQ
@@ -268,30 +328,44 @@ Cheviot Company Ltd,Textiles,CHEVIOT,EQ
 CIE Automotive India Ltd,"Castings, Forgings & Fastners",CIEINDIA,EQ
 Cipla Ltd,Pharmaceuticals,CIPLA,EQ
 Clean Science & Technology Ltd,Chemicals,CLEAN,EQ
+Clean Max Enviro Energy Solutions Ltd,Power Generation & Distribution,CLEANMAX,EQ
 CL Educate Ltd,Education,CLEDUCATE,EQ
 Chamanlal Setia Exports Ltd,FMCG,CLSEL,EQ
+Caliber Mining and Logistics Ltd,Mining & Mineral products,CMLL,EQ
+Chaman Metallics Ltd,Steel,CMNL,EQ
+Central Mine Planning & Design Institute Ltd,Miscellaneous,CMPDI,EQ
+CMR Green Technologies Ltd,Miscellaneous,CMRGREEN,EQ
 CMS Info Systems Ltd,Miscellaneous,CMSINFO,EQ
+Creative Newtech Ltd,E-Commerce/App based Aggregator,CNL,EQ
 Coal India Ltd,Mining & Mineral products,COALINDIA,EQ
 Coastal Corporation Ltd,FMCG,COASTCORP,EQ
 Cochin Shipyard Ltd,Aerospace & Defence,COCHINSHIP,EQ
+Coffee Day Enterprises Ltd,Quick Service Restaurant,COFFEEDAY,EQ
 Coforge Ltd,IT - Software,COFORGE,EQ
 Cohance Lifesciences Ltd,Pharmaceuticals,COHANCE,EQ
 Colgate-Palmolive (India) Ltd,FMCG,COLPAL,EQ
+Committed Cargo Care Ltd,Logistics,COMMITTED,EQ
 Commercial Syn Bags Ltd,Packaging,COMSYN,EQ
 Container Corporation Of India Ltd,Logistics,CONCOR,EQ
 Concord Biotech Ltd,Pharmaceuticals,CONCORDBIO,EQ
 Confidence Petroleum India Ltd,Miscellaneous,CONFIPET,EQ
 Control Print Ltd,IT - Hardware,CONTROLPR,EQ
+Cool Caps Industries Ltd,Plastic products,COOLCAPS,EQ
 Coral India Finance & Housing Ltd,Finance,CORALFINAC,EQ
+Waterways Leisure Tourism Ltd,E-Commerce/App based Aggregator,CORDELIA,EQ
 Cords Cable Industries Ltd,Cables,CORDSCABLE,EQ
 Coromandel International Ltd,Fertilizers,COROMANDEL,EQ
+Corona Remedies Ltd,Pharmaceuticals,CORONA,EQ
 Cosmo First Ltd,Packaging,COSMOFIRST,EQ
 CP Capital Limited,Finance,CPCAP,EQ
+Career Point Edutech Ltd,Education,CPEDU,EQ
 Aditya Infotech Ltd,Electronics,CPPLUS,EQ
+C P S Shapers Ltd,Readymade Garments/ Apparells,CPS,EQ
 Craftsman Automation Ltd,Auto Ancillaries,CRAFTSMAN,EQ
 CRISIL Ltd,Credit Rating Agencies,CRISIL,EQ
 Crizac Ltd,Education,CRIZAC,EQ
 Crompton Greaves Consumer Electricals Ltd,Consumer Durables,CROMPTON,EQ
+CSM Technologies Ltd,IT - Software,CSM,EQ
 Cubex Tubings Ltd,Non Ferrous Metals,CUBEXTUB,EQ
 Cummins India Ltd,Capital Goods-Non Electrical Equipment,CUMMINSIND,EQ
 Cupid Ltd,FMCG,CUPID,EQ
@@ -299,10 +373,12 @@ Cybertech Systems & Software Ltd,IT - Software,CYBERTECH,EQ
 Cyient Ltd,IT - Software,CYIENT,EQ
 Cyient DLM Ltd,Aerospace & Defence,CYIENTDLM,EQ
 Dabur India Ltd,FMCG,DABUR,EQ
+Dai-ichi Karkaria Ltd,Chemicals,DAICHI,EQ
 Dalmia Bharat Ltd,Cement,DALBHARAT,EQ
 Dalmia Bharat Sugar & Industries Ltd,Sugar,DALMIASUG,EQ
 Datamatics Global Services Ltd,IT - Software,DATAMATICS,EQ
 Data Patterns (India) Ltd,Aerospace & Defence,DATAPATTNS,EQ
+Davangere Sugar Company Ltd,FMCG,DAVANGERE,EQ
 D B Corp Ltd,Media - Print/Television/Radio,DBCORP,EQ
 Deepak Builders & Engineers India Ltd,Infrastructure Developers & Operators,DBEIL,EQ
 Dilip Buildcon Ltd,Infrastructure Developers & Operators,DBL,EQ
@@ -313,6 +389,7 @@ DC Infotech & Communication Ltd,IT - Hardware,DCI,EQ
 DCM Ltd,"Castings, Forgings & Fastners",DCM,EQ
 DCM Nouvelle Ltd,Textiles,DCMNVL,EQ
 DCM Shriram Ltd,Diversified,DCMSHRIRAM,EQ
+DCM Shriram International Ltd,Textiles,DCMSIL,EQ
 DCM Shriram Industries Ltd,Sugar,DCMSRIND,EQ
 DCW Ltd,Petrochemicals,DCW,EQ
 DCX Systems Ltd,Aerospace & Defence,DCXINDIA,EQ
@@ -326,11 +403,14 @@ Delhivery Ltd,Logistics,DELHIVERY,EQ
 Delta Corp Ltd,Miscellaneous,DELTACORP,EQ
 DE Nora India Ltd,Capital Goods-Non Electrical Equipment,DENORA,EQ
 Denta Water & Infra Solutions Ltd,Infrastructure Developers & Operators,DENTA,EQ
+Vasa Denticity Ltd,E-Commerce/App based Aggregator,DENTALKART,EQ
+Destiny Logistics & Infra Ltd,Infrastructure Developers & Operators,DESTINY,EQ
 Dev Information Technology Ltd,IT - Software,DEVIT,EQ
 Devyani International Ltd,Quick Service Restaurant,DEVYANI,EQ
 Dhampur Sugar Mills Ltd,Sugar,DHAMPURSUG,EQ
 Dhanuka Agritech Ltd,Agro Chemicals,DHANUKA,EQ
 Dharmaj Crop Guard Ltd,Agro Chemicals,DHARMAJ,EQ
+Dhoot Transmission Ltd,Capital Goods - Electrical Equipment,DHOOTTRANS,EQ
 Dhruv Consultancy Services Ltd,Miscellaneous,DHRUV,EQ
 Dhunseri Investments Ltd,Finance,DHUNINV,EQ
 Diamond Power Infrastructure Ltd,Cables,DIACABS,EQ
@@ -338,6 +418,7 @@ Diamines & Chemicals Ltd,Chemicals,DIAMINESQ,EQ
 Prataap Snacks Ltd,FMCG,DIAMONDYD,EQ
 DIC India Ltd,Chemicals,DICIND,EQ
 Diffusion Engineers Ltd,Capital Goods-Non Electrical Equipment,DIFFNKG,EQ
+DigiSpice Technologies Ltd,IT - Software,DIGISPICE,EQ
 Digitide Solutions Ltd,IT - Software,DIGITIDE,EQ
 Digjam Ltd,Textiles,DIGJAMLMTD,EQ
 Divgi Torqtransfer Systems Ltd,Auto Ancillaries,DIVGIITTS,EQ
@@ -354,19 +435,30 @@ Dolphin Offshore Enterprises (India) Ltd,Oil Drill/Allied,DOLPHIN,EQ
 Doms Industries Ltd,Printing & Stationery,DOMS,EQ
 Donear Industries Ltd,Textiles,DONEAR,EQ
 DP Abhushan Ltd,"Diamond, Gems and Jewellery",DPABHUSHAN,EQ
+Divine Power Energy Ltd,Cables,DPEL,EQ
+India Power Corporation Ltd,Power Generation & Distribution,DPSCLTD,EQ
 D P Wires Ltd,Steel,DPWIRES,EQ
+Dr Agarwals Eye Hospital Ltd,Healthcare,DRAGARWQ,EQ
 Dreamfolks Services Ltd,Miscellaneous,DREAMFOLKS,EQ
 Dredging Corporation of India Ltd,Miscellaneous,DREDGECORP,EQ
 Dr Reddys Laboratories Ltd,Pharmaceuticals,DRREDDY,EQ
+DCM Shriram Fine Chemicals Ltd,Chemicals,DSFCL,EQ
 Dynacons Systems & Solutions Ltd,IT - Software,DSSL,EQ
 Dhunseri Tea & Industries Ltd,Plantation & Plantation Products,DTIL,EQ
+Ducol Organics & Colours Ltd,Chemicals,DUCOL,EQ
+Dhunseri Ventures Ltd,Trading,DVL,EQ
 Dwarikesh Sugar Industries Ltd,Sugar,DWARKESH,EQ
 Dynamic Cables Ltd,Cables,DYCL,EQ
 Dynamatic Technologies Ltd,Capital Goods-Non Electrical Equipment,DYNAMATECH,EQ
+Dynamic Services & Security Ltd,Miscellaneous,DYNAMIC,EQ
 Dynemic Products Ltd,Chemicals,DYNPRO,EQ
 E2E Networks Ltd,IT - Software,E2E,EQ
+Easy Trip Planners Ltd,E-Commerce/App based Aggregator,EASEMYTRIP,EQ
+GNG Electronics Ltd,Trading,EBGNG,EQ
 eClerx Services Ltd,IT - Software,ECLERX,EQ
 Ecos (India) Mobility & Hospitality Ltd,Miscellaneous,ECOSMOBLTY,EQ
+E Factor Experiences Ltd,Miscellaneous,EFACTOR,EQ
+Effwa Infra & Research Ltd,Infrastructure Developers & Operators,EFFWA,EQ
 Eicher Motors Ltd,Automobile,EICHERMOT,EQ
 EID Parry (India) Ltd,Sugar,EIDPARRY,EQ
 Enviro Infra Engineers Ltd,Infrastructure Developers & Operators,EIEL,EQ
@@ -386,37 +478,51 @@ Ellenbarrie Industrial Gases Ltd,Chemicals,ELLEN,EQ
 Emami Ltd,FMCG,EMAMILTD,EQ
 Emami Paper Mills Ltd,Paper,EMAMIPAP,EQ
 Emami Realty Ltd,Realty,EMAMIREAL,EQ
+Embassy Office Parks REIT,Real Estate Investment Trusts,EMBASSY,EQ
 Embassy Developments Ltd,Realty,EMBDL,EQ
 Emcure Pharmaceuticals Ltd,Pharmaceuticals,EMCURE,EQ
 Electronics Mart India Ltd,Retail,EMIL,EQ
 Emmbi Industries Ltd,Packaging,EMMBI,EQ
+Emmvee Photovoltaic Power Ltd,Capital Goods - Electrical Equipment,EMMVEE,EQ
 EMS Ltd,Infrastructure Developers & Operators,EMSLIMITED,EQ
 eMudhra Ltd,IT - Software,EMUDHRA,EQ
 Endurance Technologies Ltd,Auto Ancillaries,ENDURANCE,EQ
 Engineers India Ltd,Infrastructure Developers & Operators,ENGINERSIN,EQ
+Siemens Energy India Ltd,Power Generation & Distribution,ENRIN,EQ
 Entero Healthcare Solutions Ltd,Pharmaceuticals,ENTERO,EQ
 Epack Durable Ltd,Consumer Durables,EPACK,EQ
+EPack Prefab Technologies Ltd,Steel,EPACKPEB,EQ
 Epigral Ltd,Chemicals,EPIGRAL,EQ
 EPL Ltd,Packaging,EPL,EQ
+Equippp Social Impact Technologies Ltd,IT - Software,EQUIPPP,EQ
 ERIS Lifesciences Ltd,Pharmaceuticals,ERIS,EQ
 Esab India Ltd,Capital Goods-Non Electrical Equipment,ESABINDIA,EQ
+Esconet Technologies Ltd,IT - Hardware,ESCONET,EQ
 Escorts Kubota Ltd,Automobile,ESCORTS,EQ
+Essen Speciality Films Ltd,Plastic products,ESFL,EQ
+Essar Shipping Ltd,Shipping,ESSARSHPNG,EQ
 Ester Industries Ltd,Packaging,ESTER,EQ
 Eternal Ltd,E-Commerce/App based Aggregator,ETERNAL,EQ
 Ethos Ltd,Retail,ETHOSLTD,EQ
 Eureka Forbes Ltd,Consumer Durables,EUREKAFORB,EQ
 Euro Panel Products Ltd,Non Ferrous Metals,EUROBOND,EQ
+Euro Pratik Sales Ltd,Plywood Boards/Laminates,EUROPRATIK,EQ
 Eveready Industries India Ltd,Dry cells,EVEREADY,EQ
 Everest Industries Ltd,Cement - Products,EVERESTIND,EQ
 Excel Industries Ltd,Agro Chemicals,EXCELINDUS,EQ
+Excelsoft Technologies Ltd,IT - Software,EXCELSOFT,EQ
 Exicom Tele-Systems Ltd,Capital Goods - Electrical Equipment,EXICOM,EQ
 Exide Industries Ltd,Auto Ancillaries,EXIDEIND,EQ
 Expleo Solutions Ltd,IT - Software,EXPLEOSOL,EQ
+Exxaro Tiles Ltd,Ceramic Products,EXXARO,EQ
+Fabtech Technologies Ltd,Trading,FABTECH,EQ
 Fertilizers & Chemicals Travancore Ltd,Fertilizers,FACT,EQ
 Fairchem Organics Ltd,Chemicals,FAIRCHEMOR,EQ
 Faze Three Ltd,Textiles,FAZE3Q,EQ
 Fineotex Chemical Ltd,Chemicals,FCL,EQ
+FCS Software Solutions Ltd,IT - Software,FCSSOFT,EQ
 FDC Ltd,Pharmaceuticals,FDC,EQ
+Felix Industries Ltd,Miscellaneous,FELIX,EQ
 Fiberweb (India) Ltd,Textiles,FIBERWEB,EQ
 Fiem Industries Ltd,Auto Ancillaries,FIEMIND,EQ
 Filatex India Ltd,Textiles,FILATEX,EQ
@@ -432,6 +538,8 @@ Foods & Inns Ltd,FMCG,FOODSIN,EQ
 Force Motors Ltd,Automobile,FORCEMOT,EQ
 Fortis Healthcare Ltd,Healthcare,FORTIS,EQ
 Foseco India Ltd,Chemicals,FOSECOIND,EQ
+Fractal Analytics Ltd,IT - Software,FRACTAL,EQ
+Frog Innovations Ltd,Telecom Equipment & Infra Services,FROG,EQ
 Firstsource Solutions Ltd,IT - Software,FSL,EQ
 Gabriel India Ltd,Auto Ancillaries,GABRIEL,EQ
 Gujarat Ambuja Exports Ltd,FMCG,GAEL,EQ
@@ -443,33 +551,45 @@ Gandhar Oil Refinery (India) Ltd,Refineries,GANDHAR,EQ
 Gandhi Special Tubes Ltd,Steel,GANDHITUBE,EQ
 Ganesha Ecosphere Ltd,Textiles,GANECOS,EQ
 Ganesh Benzoplast Ltd,Miscellaneous,GANESHBE,EQ
+Ganesh Consumer Products Ltd,FMCG,GANESHCP,EQ
 Ganesh Housing Ltd,Realty,GANESHHOU,EQ
 Ganges Securities Ltd,Finance,GANGESSECU,EQ
 Garware Technical Fibres Ltd,Textiles,GARFIBRES,EQ
 Garuda Construction and Engineering Ltd,Infrastructure Developers & Operators,GARUDA,EQ
 Gateway Distriparks Ltd,Logistics,GATEWAY,EQ
+Gaudium IVF and Women Health Ltd,Healthcare,GAUDIUMIVF,EQ
+Gayatri Projects Ltd,Infrastructure Developers & Operators,GAYAPROJ,EQ
 Geecee Ventures Ltd,Finance,GEECEE,EQ
 Geekay Wires Ltd,Steel,GEEKAYWIRE,EQ
+Gem Aromatics Ltd,Chemicals,GEMAROMA,EQ
 Generic Engineering Construction & Projects Ltd,Construction,GENCON,EQ
 Genesys International Corporation Ltd,IT - Software,GENESYS,EQ
 Gensol Engineering Ltd,Infrastructure Developers & Operators,GENSOL,EQ
+Genus Paper & Boards Ltd,Paper,GENUSPAPER,EQ
 Genus Power Infrastructures Ltd,Consumer Durables,GENUSPOWER,EQ
 Great Eastern Shipping Company Ltd,Shipping,GESHIP,EQ
 GFL Ltd,Finance,GFLLIMITED,EQ
+Ganesh Green Bharat Ltd,Capital Goods - Electrical Equipment,GGBL,EQ
 GHCL Ltd,Chemicals,GHCL,EQ
 GHCL Textiles Ltd,Textiles,GHCLTEXTIL,EQ
+Globe International Carriers Ltd,Logistics,GICL,EQ
 Gillanders Arbuthnot & Company Ltd,Plantation & Plantation Products,GILLANDERS,EQ
 Gillette India Ltd,FMCG,GILLETTE,EQ
 Ginni Filaments Ltd,Textiles,GINNIFILA,EQ
 Gujarat Industries Power Co Ltd,Power Generation & Distribution,GIPCL,EQ
+Giriraj Civil Developers Ltd,Infrastructure Developers & Operators,GIRIRAJ,EQ
+GK Energy Ltd,Infrastructure Developers & Operators,GKENERGY,EQ
+Gujarat Kidney & Super Speciality Ltd,Healthcare,GKSL,EQ
 GKW Ltd,Finance,GKWLIMITED,EQ
 Gland Pharma Ltd,Pharmaceuticals,GLAND,EQ
 Glaxosmithkline Pharmaceuticals Ltd,Pharmaceuticals,GLAXO,EQ
 Glenmark Pharmaceuticals Ltd,Pharmaceuticals,GLENMARK,EQ
 Global Education Ltd,Education,GLOBAL,EQ
+Global Pet Industries Ltd,Capital Goods-Non Electrical Equipment,GLOBALPET,EQ
 Global Vectra Helicorp Ltd,Air Transport Service,GLOBALVECT,EQ
 Globe Civil Projects Ltd,Infrastructure Developers & Operators,GLOBECIVIL,EQ
 Gloster Ltd,Textiles,GLOSTERLTD,EQ
+Glottis Ltd,Logistics,GLOTTIS,EQ
 Gujarat Mineral Development Corporation Ltd,Mining & Mineral products,GMDCLTD,EQ
 GMM Pfaudler Ltd,Capital Goods-Non Electrical Equipment,GMMPFAUDLR,EQ
 GMR Airports Ltd,Miscellaneous,GMRAIRPORT,EQ
@@ -488,9 +608,12 @@ Gokaldas Exports Ltd,Readymade Garments/ Apparells,GOKEX,EQ
 Gokul Refoils and Solvent Ltd,Edible Oil,GOKUL,EQ
 Gokul Agro Resources Ltd,Edible Oil,GOKULAGRO,EQ
 Goldiam International Ltd,"Diamond, Gems and Jewellery",GOLDIAM,EQ
+Goldstar Power Ltd,Auto Ancillaries,GOLDSTAR,EQ
 Aion-Tech Solutions Ltd,IT - Software,GOLDTECH,EQ
 Goodluck India Ltd,Steel,GOODLUCK,EQ
+Goodyear India Ltd,Tyres,GOODYEAR,EQ
 Gopal Snacks Ltd,FMCG,GOPAL,EQ
+GP Eco Solutions India Ltd,Capital Goods - Electrical Equipment,GPECO,EQ
 Godawari Power & Ispat Ltd,Steel,GPIL,EQ
 Gujarat Pipavav Port Ltd,Marine Port & Services,GPPL,EQ
 GPT Healthcare Ltd,Healthcare,GPTHEALTH,EQ
@@ -498,11 +621,15 @@ GPT Infraprojects Ltd,Infrastructure Developers & Operators,GPTINFRA,EQ
 Granules India Ltd,Pharmaceuticals,GRANULES,EQ
 Graphite India Ltd,Capital Goods-Non Electrical Equipment,GRAPHITE,EQ
 Grasim Industries Ltd,Textiles,GRASIM,EQ
+Grauer & Weil (India) Ltd,Chemicals,GRAUWEIL,EQ
 Gravita India Ltd,Non Ferrous Metals,GRAVITA,EQ
+Gayatri Rubbers and Chemicals Ltd,Plantation & Plantation Products,GRCL,EQ
 Greaves Cotton Ltd,Capital Goods-Non Electrical Equipment,GREAVESCOT,EQ
 Greenlam Industries Ltd,Plywood Boards/Laminates,GREENLAM,EQ
 Greenpanel Industries Ltd,Plywood Boards/Laminates,GREENPANEL,EQ
 Greenply Industries Ltd,Plywood Boards/Laminates,GREENPLY,EQ
+Orient Green Power Company Ltd,Power Generation & Distribution,GREENPOWER,EQ
+Gretex Industries Ltd,Trading,GRETEX,EQ
 Grindwell Norton Ltd,Capital Goods-Non Electrical Equipment,GRINDWELL,EQ
 G R Infraprojects Ltd,Infrastructure Developers & Operators,GRINFRA,EQ
 GRM Overseas Ltd,FMCG,GRMOVER,EQ
@@ -513,6 +640,8 @@ Garden Reach Shipbuilders & Engineers Ltd,Aerospace & Defence,GRSE,EQ
 Garware Hi Tech Films Ltd,Packaging,GRWRHITECH,EQ
 Gujarat State Fertilizers & Chemicals Ltd,Fertilizers,GSFC,EQ
 Global Surfaces Ltd,Consumer Durables,GSLSU,EQ
+GSP Crop Science Ltd,Agro Chemicals,GSPCROP,EQ
+GTL Infrastructure Ltd,Telecom Equipment & Infra Services,GTLINFRA,EQ
 Gufic BioSciences Ltd,Pharmaceuticals,GUFICBIO,EQ
 Gujarat Alkalies & Chemicals Ltd,Chemicals,GUJALKALI,EQ
 Gujarat Apollo Industries Ltd,Capital Goods-Non Electrical Equipment,GUJAPOLLO,EQ
@@ -520,17 +649,23 @@ Gujarat Themis Biosyn Ltd,Pharmaceuticals,GUJTHEM,EQ
 Gulf Oil Lubricants India Ltd,Chemicals,GULFOILLUB,EQ
 GP Petroleums Ltd,Chemicals,GULFPETRO,EQ
 GVK Power & Infrastructure Ltd,Infrastructure Developers & Operators,GVKPIL,EQ
+GE Power India Ltd,Infrastructure Developers & Operators,GVPIL,EQ
 GE Vernova T&D India Ltd,Capital Goods - Electrical Equipment,GVT&D,EQ
 Hindustan Aeronautics Ltd,Aerospace & Defence,HAL,EQ
+Haleos Labs Ltd,Pharmaceuticals,HALEOSLABS,EQ
 Happiest Minds Technologies Ltd,IT - Software,HAPPSTMNDS,EQ
 Happy Forgings Ltd,"Castings, Forgings & Fastners",HAPPYFORGE,EQ
+Hardwyn India Ltd,Trading,HARDWYN,EQ
 Hariom Pipe Industries Ltd,Steel,HARIOMPIPE,EQ
 Harrisons Malayalam Ltd,Plantation & Plantation Products,HARRMALAYA,EQ
 Harsha Engineers International Ltd,Capital Goods-Non Electrical Equipment,HARSHA,EQ
+Hathway Cable & Datacom Ltd,Telecom-Service,HATHWAY,EQ
 Hatsun Agro Product Ltd,FMCG,HATSUN,EQ
 Havells India Ltd,Consumer Durables,HAVELLS,EQ
 HBL Engineering Ltd,Auto Ancillaries,HBLENGINE,EQ
+Hindustan Construction Company Ltd,Infrastructure Developers & Operators,HCC,EQ
 Healthcare Global Enterprises Ltd,Healthcare,HCG,EQ
+HCL Infosystems Ltd,IT - Hardware,HCL-INSYS,EQ
 HCL Technologies Ltd,IT - Software,HCLTECH,EQ
 Health X Platform Ltd,Finance,HEALTHX,EQ
 HEC Infra Projects Ltd,Infrastructure Developers & Operators,HECPROJECT,EQ
@@ -542,11 +677,14 @@ Hercules Investments Ltd,Finance,HERCULES,EQ
 Heritage Foods Ltd,FMCG,HERITGFOOD,EQ
 Hero MotoCorp Ltd,Automobile,HEROMOTOCO,EQ
 Hester Biosciences Ltd,Pharmaceuticals,HESTERBIO,EQ
+Hexagon Nutrition Ltd,FMCG,HEXAGON,EQ
 Hexaware Technologies Ltd,IT - Software,HEXT,EQ
 HFCL Ltd,Telecom Equipment & Infra Services,HFCL,EQ
 HG Infra Engineering Ltd,Infrastructure Developers & Operators,HGINFRA,EQ
 Hinduja Global Solutions Ltd,IT - Software,HGS,EQ
+Hi-Green Carbon Ltd,Chemicals,HIGREEN,EQ
 Hikal Ltd,Pharmaceuticals,HIKAL,EQ
+Highway Infrastructure Ltd,Construction,HILINFRA,EQ
 Hilton Metal Forging Ltd,"Castings, Forgings & Fastners",HILTON,EQ
 Himatsingka Seide Ltd,Textiles,HIMATSEIDE,EQ
 Hindalco Industries Ltd,Non Ferrous Metals,HINDALCO,EQ
@@ -564,12 +702,15 @@ Hi-Tech Pipes Ltd,Steel,HITECH,EQ
 Hitech Corporation Ltd,Packaging,HITECHCORP,EQ
 The Hi-Tech Gears Ltd,Auto Ancillaries,HITECHGEAR,EQ
 HLE Glascoat Ltd,Capital Goods-Non Electrical Equipment,HLEGLAS,EQ
+HMA Agro Industries Ltd,FMCG,HMAAGRO,EQ
 HMT Ltd,Consumer Durables,HMT,EQ
 Hindustan Media Ventures Ltd,Media - Print/Television/Radio,HMVL,EQ
 Hindustan Foods Ltd,FMCG,HNDFDS,EQ
+Hoac Foods India Ltd,FMCG,HOACFOODS,EQ
 Honasa Consumer Ltd,Trading,HONASA,EQ
 Honeywell Automation India Ltd,Electronics,HONAUT,EQ
 Honda India Power Products Ltd,Capital Goods - Electrical Equipment,HONDAPOWER,EQ
+Horizon Industrial Parks Ltd,Miscellaneous,HORIZONIND,EQ
 HP Adhesives Ltd,Chemicals,HPAL,EQ
 Hindprakash Industries Ltd,Chemicals,HPIL,EQ
 HPL Electric & Power Ltd,Capital Goods - Electrical Equipment,HPL,EQ
@@ -577,8 +718,10 @@ Himadri Speciality Chemical Ltd,Chemicals,HSCL,EQ
 Hubtown Ltd,Realty,HUBTOWN,EQ
 Huhtamaki India Ltd,Packaging,HUHTAMAKI,EQ
 Hyundai Motor India Ltd,Automobile,HYUNDAI,EQ
+Indiabulls Ltd,Diversified,IBULLSLTD,EQ
 ICE Make Refrigeration Ltd,Engineering,ICEMAKE,EQ
 Indo Count Industries Ltd,Textiles,ICIL,EQ
+Vodafone Idea Ltd,Telecom-Service,IDEA,EQ
 Ideaforge Technology Ltd,Aerospace & Defence,IDEAFORGE,EQ
 Indian Energy Exchange Ltd,Financial Services,IEX,EQ
 IFB Industries Ltd,Consumer Durables,IFBIND,EQ
@@ -590,9 +733,11 @@ Indraprastha Gas Ltd,Gas Distribution,IGL,EQ
 I G Petrochemicals Ltd,Chemicals,IGPL,EQ
 IKIO Technologies Ltd,Consumer Durables,IKIO,EQ
 Inventurus Knowledge Solutions Ltd,IT - Software,IKS,EQ
+IL&FS Engineering & Construction Co Ltd,Infrastructure Developers & Operators,IL&FSENGG,EQ
 Imagicaaworld Entertainment Ltd,Entertainment,IMAGICAA,EQ
 Indian Metals & Ferro Alloys Ltd,Ferro Alloys,IMFA,EQ
 India Motor Parts & Accessories Ltd,Auto Ancillaries,IMPAL,EQ
+Insolation Energy Ltd,Capital Goods - Electrical Equipment,INA,EQ
 Indegene Ltd,Healthcare,INDGN,EQ
 Indian Hotels Co Ltd,Hotels & Restaurants,INDHOTEL,EQ
 India Cements Ltd,Cement,INDIACEM,EQ
@@ -606,17 +751,21 @@ Indo Amines Ltd,Chemicals,INDOAMIN,EQ
 Indo Borax & Chemicals Ltd,Chemicals,INDOBORAX,EQ
 Indoco Remedies Ltd,Pharmaceuticals,INDOCO,EQ
 Indo Farm Equipment Ltd,Diversified,INDOFARM,EQ
+Indo-MIM Ltd,Capital Goods-Non Electrical Equipment,INDOMIM,EQ
 Indo Rama Synthetics (India) Ltd,Textiles,INDORAMA,EQ
 Indo Tech Transformers Ltd,Capital Goods - Electrical Equipment,INDOTECH,EQ
 Indo US Bio-Tech Ltd,FMCG,INDOUS,EQ
 Indraprastha Medical Corporation Ltd,Healthcare,INDRAMEDCO,EQ
 Ind-Swift Laboratories Ltd,Pharmaceuticals,INDSWFTLAB,EQ
 Indus Towers Ltd,Telecom Equipment & Infra Services,INDUSTOWER,EQ
+Infinium Pharmachem Ltd,Pharmaceuticals,INFINIUM,EQ
 InfoBeans Technologies Ltd,IT - Software,INFOBEAN,EQ
 Infosys Ltd,IT - Software,INFY,EQ
 Ingersoll-Rand (India) Ltd,Capital Goods-Non Electrical Equipment,INGERRAND,EQ
+Interiors & More Ltd,Consumer Durables,INM,EQ
 Innova Captab Ltd,Pharmaceuticals,INNOVACAP,EQ
 Innovana Thinklabs Ltd,IT - Software,INNOVANA,EQ
+Innovision Ltd,Miscellaneous,INNOVISION,EQ
 Inox Green Energy Services Ltd,Miscellaneous,INOXGREEN,EQ
 Inox India Ltd,Packaging,INOXINDIA,EQ
 Inox Wind Ltd,Capital Goods - Electrical Equipment,INOXWIND,EQ
@@ -631,11 +780,13 @@ IOL Chemicals & Pharmaceuticals Ltd,Pharmaceuticals,IOLCP,EQ
 Ion Exchange (India) Ltd,Infrastructure Developers & Operators,IONEXCHANG,EQ
 Ipca Laboratories Ltd,Pharmaceuticals,IPCALAB,EQ
 India Pesticides Ltd,Agro Chemicals,IPL,EQ
+Integrated Personnel Services Ltd,Miscellaneous,IPSL,EQ
 IRB Infrastructure Developers Ltd,Infrastructure Developers & Operators,IRB,EQ
 Ircon International Ltd,Infrastructure Developers & Operators,IRCON,EQ
 Indian Railway Catering & Tourism Corporation Ltd,Railways,IRCTC,EQ
 Indian Renewable Energy Development Agency Ltd,Finance,IREDA,EQ
 IRIS Regtech Solutions Ltd,IT - Software,IRIS,EQ
+Iris Clothings Ltd,Readymade Garments/ Apparells,IRISDOREME,EQ
 IRM Energy Ltd,Gas Distribution,IRMENERGY,EQ
 Intrasoft Technologies Ltd,E-Commerce/App based Aggregator,ISFT,EQ
 ISGEC Heavy Engineering  Ltd,Infrastructure Developers & Operators,ISGEC,EQ
@@ -644,6 +795,7 @@ ITC Ltd,Tobacco Products,ITC,EQ
 ITC Hotels Ltd,Hotels & Restaurants,ITCHOTELS,EQ
 India Tourism Development Corporation Ltd,Hotels & Restaurants,ITDC,EQ
 ITI Ltd,Aerospace & Defence,ITI,EQ
+Ivalue Infosolutions Ltd,IT - Hardware,IVALUE,EQ
 IVP Ltd,Chemicals,IVP,EQ
 Le Travenues Technology Ltd,E-Commerce/App based Aggregator,IXIGO,EQ
 IZMO Ltd,IT - Software,IZMO,EQ
@@ -651,7 +803,10 @@ Jagran Prakashan Ltd,Media - Print/Television/Radio,JAGRAN,EQ
 Jagsonpal Pharmaceuticals Ltd,Pharmaceuticals,JAGSNPHARM,EQ
 Jai Balaji Industries Ltd,Steel,JAIBALAJI,EQ
 Jai Corp Ltd,Plastic products,JAICORPLTD,EQ
+Jainam Ferro Alloys (I) Ltd,Ferro Alloys,JAINAM,EQ
+Jain Resource Recycling Ltd,Non Ferrous Metals,JAINREC,EQ
 Jamna Auto Industries Ltd,Auto Ancillaries,JAMNAAUTO,EQ
+Jaro Institute of Technol Mgt and Research Ltd,Education,JARO,EQ
 Jash Engineering Ltd,Capital Goods-Non Electrical Equipment,JASH,EQ
 Jayant Agro Organics Ltd,Chemicals,JAYAGROGN,EQ
 Jay Bharat Maruti Ltd,Auto Ancillaries,JAYBARMARU,EQ
@@ -659,23 +814,30 @@ Jayaswal Neco Industries Ltd,Steel,JAYNECOIND,EQ
 Jay Shree Tea & Industries Ltd,Plantation & Plantation Products,JAYSREETEA,EQ
 J B Chemicals & Pharmaceuticals Ltd,Pharmaceuticals,JBCHEPHARM,EQ
 JBM Auto Ltd,Auto Ancillaries,JBMA,EQ
+Jet Airways (India) Ltd,Air Transport Service,JETAIRWAYS,EQ
 JGChemicals Ltd,Chemicals,JGCHEM,EQ
 Jindal Poly Films Ltd,Textiles,JINDALPOLY,EQ
 Jindal Saw Ltd,Capital Goods-Non Electrical Equipment,JINDALSAW,EQ
 Jindal Steel Ltd,Steel,JINDALSTEL,EQ
 Jindal Drilling & Industries Ltd,Oil Drill/Allied,JINDRILL,EQ
+Jindal Worldwide Ltd,Textiles,JINDWORLD,EQ
 Jain Irrigation Systems Ltd,Plastic products,JISLJALEQS,EQ
 JITF Infra Logistics Ltd,Miscellaneous,JITFINFRA,EQ
 J K Cements Ltd,Cement,JKCEMENT,EQ
 J Kumar Infraprojects Ltd,Infrastructure Developers & Operators,JKIL,EQ
+Jinkushal Industries Ltd,Trading,JKIPL,EQ
 JK Lakshmi Cement Ltd,Cement,JKLAKSHMI,EQ
 JK Paper Ltd,Paper,JKPAPER,EQ
 JK Tyre & Industries Ltd,Tyres,JKTYRE,EQ
 Jupiter Life Line Hospitals Ltd,Healthcare,JLHL,EQ
 Jullundur Motor Agency (Delhi) Ltd,Auto Ancillaries,JMA,EQ
 JNK India Ltd,Infrastructure Developers & Operators,JNKINDIA,EQ
+Juniper Green Energy Ltd,Infrastructure Developers & Operators,JNPR,EQ
 Jocil Ltd,Chemicals,JOCIL,EQ
+Jaiprakash Power Ventures Ltd,Power Generation & Distribution,JPPOWER,EQ
 Jindal Stainless Ltd,Steel,JSL,EQ
+Jeena Sikho Lifecare Ltd,Pharmaceuticals,JSLL,EQ
+JSW Cement Ltd,Cement,JSWCEMENT,EQ
 JSW Dulux Ltd,Paints/Varnish,JSWDULUX,EQ
 JSW Energy Ltd,Power Generation & Distribution,JSWENERGY,EQ
 JSW Holdings Ltd,Finance,JSWHL,EQ
@@ -692,6 +854,7 @@ Just Dial Ltd,E-Commerce/App based Aggregator,JUSTDIAL,EQ
 Jupiter Wagons Ltd,Capital Goods-Non Electrical Equipment,JWL,EQ
 Jyothy Labs Ltd,FMCG,JYOTHYLAB,EQ
 Jyoti CNC Automation Ltd,Capital Goods-Non Electrical Equipment,JYOTICNC,EQ
+Jyoti Structures Ltd,Capital Goods - Electrical Equipment,JYOTISTRUC,EQ
 Kabra Extrusion Technik Ltd,Capital Goods-Non Electrical Equipment,KABRAEXTRU,EQ
 Kajaria Ceramics Ltd,Ceramic Products,KAJARIACER,EQ
 Kakatiya Cement Sugar & Industries Ltd,Cement,KAKATCEM,EQ
@@ -700,20 +863,27 @@ Kalpataru Ltd,Realty,KALPATARU,EQ
 Kalyani Cast-Tech Ltd,"Castings, Forgings & Fastners",KALYANI,EQ
 Kalyani Forge Ltd,"Castings, Forgings & Fastners",KALYANIFRG,EQ
 Kalyan Jewellers India Ltd,"Diamond, Gems and Jewellery",KALYANKJIL,EQ
+Kama Holdings Ltd,Finance,KAMAHOLD,EQ
 Kamat Hotels (India) Ltd,Hotels & Restaurants,KAMATHOTEL,EQ
+Kamdhenu Ltd,Steel,KAMDHENU,EQ
 Kanoria Chemicals & Industries Ltd,Chemicals,KANORICHEM,EQ
 Kanpur Plastipack Ltd,Packaging,KANPRPLA,EQ
 Kansai Nerolac Paints Ltd,Paints/Varnish,KANSAINER,EQ
 Kapston Services Ltd,Miscellaneous,KAPSTON,EQ
+Karnika Industries Ltd,Readymade Garments/ Apparells,KARNIKA,EQ
 Kavveri Defence & Wireless Technologies Ltd,Aerospace & Defence,KAVDEFENCE,EQ
 Kaya Ltd,Healthcare,KAYA,EQ
 Kaynes Technology India Ltd,Consumer Durables,KAYNES,EQ
 K C P Ltd,Cement,KCP,EQ
+KCP Sugar & Industries Corporation Ltd,Sugar,KCPSUGIND,EQ
 KDDL Ltd,Consumer Durables,KDDL,EQ
 KEC International Ltd,Infrastructure Developers & Operators,KEC,EQ
 Kirloskar Electric Company Ltd,Capital Goods - Electrical Equipment,KECL,EQ
 KEI Industries Ltd,Cables,KEI,EQ
+Kellton Tech Solutions Ltd,IT - Software,KELLTONTEC,EQ
+Kennametal India Ltd,"Castings, Forgings & Fastners",KENNAMET,EQ
 Kernex Microsystems (India) Ltd,Electronics,KERNEX,EQ
+Kesoram Industries Ltd,Miscellaneous,KESORAMIND,EQ
 KFin Technologies Ltd,Financial Services,KFINTECH,EQ
 Khadim India Ltd,Leather,KHADIM,EQ
 Khaitan Chemicals & Fertilizers Ltd,Fertilizers,KHAICHEM,EQ
@@ -725,15 +895,26 @@ Kiri Industries Ltd,Chemicals,KIRIINDUS,EQ
 Kirloskar Brothers Ltd,Capital Goods-Non Electrical Equipment,KIRLOSBROS,EQ
 Kirloskar Oil Engines Ltd,Capital Goods-Non Electrical Equipment,KIRLOSENG,EQ
 Kirloskar Industries Ltd,Finance,KIRLOSIND,EQ
+Kirloskar Pneumatic Company Ltd,Capital Goods-Non Electrical Equipment,KIRLPNU,EQ
+Onemi Technology Solutions Ltd,E-Commerce/App based Aggregator,KISSHT,EQ
 Kitex Garments Ltd,Readymade Garments/ Apparells,KITEX,EQ
 Kewal Kiran Clothing Ltd,Readymade Garments/ Apparells,KKCL,EQ
 Knowledge Marine & Engineering Works Ltd,Ship Building,KMEW,EQ
+KM Sugar Mills Ltd,Sugar,KMSUGAR,EQ
+Knack Packaging Ltd,Packaging,KNACK,EQ
+KN Agri Resources Ltd,Edible Oil,KNAGRI,EQ
 KNR Constructions Ltd,Infrastructure Developers & Operators,KNRCON,EQ
+Kody Technolab Ltd,IT - Software,KODYTECH,EQ
 Kokuyo Camlin Ltd,Printing & Stationery,KOKUYOCMLN,EQ
 Kolte Patil Developers Ltd,Realty,KOLTEPATIL,EQ
 Kopran Ltd,Pharmaceuticals,KOPRAN,EQ
+Jay Jalaram Technologies Ltd,Retail,KORE,EQ
+Kothari Sugars & Chemicals Ltd,Sugar,KOTARISUG,EQ
 Kothari Petrochemicals Ltd,Petrochemicals,KOTHARIPET,EQ
 Kothari Products Ltd,Trading,KOTHARIPRO,EQ
+Kothari Industrial Corporation Ltd,Trading,KOTIC,EQ
+Kotyark Industries Ltd,Refineries,KOTYARK,EQ
+Kovai Medical Center & Hospital Ltd,Healthcare,KOVAI,EQ
 KP Energy Ltd,Infrastructure Developers & Operators,KPEL,EQ
 KPI Green Energy Ltd,Power Generation & Distribution,KPIGREEN,EQ
 Kalpataru Projects International Ltd,Infrastructure Developers & Operators,KPIL,EQ
@@ -742,7 +923,9 @@ K P R Mill Ltd,Readymade Garments/ Apparells,KPRMILL,EQ
 KRBL Ltd,FMCG,KRBL,EQ
 Krebs Biochemicals & Industries Ltd,Pharmaceuticals,KREBSBIO,EQ
 Krishana Phoschem Ltd,Fertilizers,KRISHANA,EQ
+Krishca Strapping Solutions Ltd,Steel,KRISHCA,EQ
 Krishival Foods Ltd,FMCG,KRISHIVAL,EQ
+Krishna Defence & Allied Industries Ltd,Aerospace & Defence,KRISHNADEF,EQ
 Kriti Industries (India) Ltd,Plastic products,KRITI,EQ
 Kriti Nutrients Ltd,FMCG,KRITINUT,EQ
 KRN Heat Exchanger and Refrigeration Ltd,Engineering,KRN,EQ
@@ -752,18 +935,28 @@ Krsnaa Diagnostics Ltd,Healthcare,KRSNAA,EQ
 Krystal Integrated Services Ltd,Miscellaneous,KRYSTAL,EQ
 KSB Ltd,Capital Goods-Non Electrical Equipment,KSB,EQ
 Kaveri Seed Company Ltd,FMCG,KSCL,EQ
+KSH International Ltd,Non Ferrous Metals,KSHINTL,EQ
 Kalyani Steels Ltd,Steel,KSL,EQ
 Ksolves India Ltd,IT - Software,KSOLVES,EQ
 Kuantum Papers Ltd,Paper,KUANTUM,EQ
+Kusumgar Ltd,Textiles,KUSUMGAR,EQ
+Kwality Walls India Ltd,FMCG,KWIL,EQ
 Lagnam Spintex Ltd,Textiles,LAGNAM,EQ
+Lalithaa Jewellery Mart Ltd,"Diamond, Gems and Jewellery",LALITHAA,EQ
 Dr Lal Pathlabs Ltd,Healthcare,LALPATHLAB,EQ
 Lambodhara Textiles Ltd,Textiles,LAMBODHARA,EQ
+Lancor Holdings Ltd,Realty,LANCORHOL,EQ
 Landmark Cars Ltd,Retail,LANDMARK,EQ
 La Opala RG Ltd,Glass & Glass Products,LAOPALA,EQ
+Laser Power & Infra Ltd,Cables,LASERPOWER,EQ
 Latent View Analytics Ltd,IT - Software,LATENTVIEW,EQ
 Laurus Labs Ltd,Pharmaceuticals,LAURUSLABS,EQ
 Laxmi Dental Ltd,Healthcare,LAXMIDENTL,EQ
+Lohia Corp Ltd,Engineering,LCL,EQ
+Leap India Ltd,Miscellaneous,LEAPIND,EQ
+Le Merite Exports Ltd,Textiles,LEMERITE,EQ
 Lemon Tree Hotels Ltd,Hotels & Restaurants,LEMONTREE,EQ
+Lenskart Solutions Ltd,FMCG,LENSKART,EQ
 L G Balakrishnan & Bros Ltd,Auto Ancillaries,LGBBROSLTD,EQ
 LG Electronics India Ltd,Consumer Durables,LGEINDIA,EQ
 Laxmi Goldorna House Ltd,"Diamond, Gems and Jewellery",LGHL,EQ
@@ -779,6 +972,7 @@ LMW Ltd,Engineering,LMW,EQ
 Lodha Developers Ltd,Realty,LODHA,EQ
 Lokesh Machines Ltd,Capital Goods-Non Electrical Equipment,LOKESHMACH,EQ
 Lords Chloro Alkali Ltd,Chemicals,LORDSCHLO,EQ
+Sri Lotus Developers & Realty Ltd,Realty,LOTUSDEV,EQ
 Lotus Eye Hospital & Institute Ltd,Healthcare,LOTUSEYE,EQ
 Lovable Lingerie Ltd,Textiles,LOVABLE,EQ
 Loyal Textile Mills Ltd,Textiles,LOYALTEX,EQ
@@ -795,11 +989,14 @@ Lyka Labs Ltd,Pharmaceuticals,LYKALABS,EQ
 Mahindra & Mahindra Ltd,Automobile,M&M,EQ
 Maan Aluminium Ltd,Non Ferrous Metals,MAANALU,EQ
 Macpower CNC Machines Ltd,Capital Goods - Electrical Equipment,MACPOWER,EQ
+Madhusudan Masala Ltd,FMCG,MADHUSUDAN,EQ
 Madras Fertilizers Ltd,Fertilizers,MADRASFERT,EQ
 Magadh Sugar & Energy Ltd,Sugar,MAGADSUGAR,EQ
+Magson Retail and Distribution Ltd,Retail,MAGSON,EQ
 Mahamaya Steel Industries Ltd,Steel,MAHASTEEL,EQ
 Mahindra EPC Irrigation Ltd,Plastic products,MAHEPC,EQ
 Maheshwari Logistics Ltd,Trading,MAHESHWARI,EQ
+Mahickra Chemicals Ltd,Chemicals,MAHICKRA,EQ
 Mahindra Lifespace Developers Ltd,Realty,MAHLIFE,EQ
 Mahindra Logistics Ltd,Logistics,MAHLOG,EQ
 Maharashtra Scooters Ltd,Finance,MAHSCOOTER,EQ
@@ -807,6 +1004,7 @@ Maharashtra Seamless Ltd,Capital Goods-Non Electrical Equipment,MAHSEAMLES,EQ
 Maithan Alloys Ltd,Ferro Alloys,MAITHANALL,EQ
 Mallcom (India) Ltd,Textiles,MALLCOM,EQ
 Mamata Machinery Ltd,Capital Goods-Non Electrical Equipment,MAMATA,EQ
+Manaksia Aluminium Company Ltd,Non Ferrous Metals,MANAKALUCO,EQ
 Manaksia Coated Metals & Industries Ltd,Steel,MANAKCOAT,EQ
 Manaksia Ltd,Trading,MANAKSIA,EQ
 Manaksia Steels Ltd,Steel,MANAKSTEEL,EQ
@@ -815,6 +1013,7 @@ Mangalam Drugs and Organics Ltd,Pharmaceuticals,MANGALAM,EQ
 Mangalam Cement Ltd,Cement,MANGLMCEM,EQ
 Man Industries (India) Ltd,Steel,MANINDS,EQ
 Man Infraconstruction Ltd,Construction,MANINFRA,EQ
+Manipal Health Enterprises Ltd,Healthcare,MANIPALHOS,EQ
 Mankind Pharma Ltd,Pharmaceuticals,MANKIND,EQ
 Manomay Tex India Ltd,Textiles,MANOMAY,EQ
 Manorama Industries Ltd,FMCG,MANORAMA,EQ
@@ -823,10 +1022,13 @@ Vedant Fashions Ltd,Readymade Garments/ Apparells,MANYAVAR,EQ
 CE Info Systems Ltd,IT - Software,MAPMYINDIA,EQ
 Maral Overseas Ltd,Textiles,MARALOVER,EQ
 Marathon Nextgen Realty Ltd,Realty,MARATHON,EQ
+Marc Technocrats Ltd,Miscellaneous,MARC,EQ
 Marico Ltd,FMCG,MARICO,EQ
 Marine Electricals (India) Ltd,Capital Goods - Electrical Equipment,MARINE,EQ
 Marksans Pharma Ltd,Pharmaceuticals,MARKSANS,EQ
+Marsons Ltd,Capital Goods - Electrical Equipment,MARSONS,EQ
 Maruti Suzuki India Ltd,Automobile,MARUTI,EQ
+Mason Infratech Ltd,Realty,MASON,EQ
 Mastek Ltd,IT - Software,MASTEK,EQ
 Matrimonycom Ltd,Miscellaneous,MATRIMONY,EQ
 Mawana Sugars Ltd,Sugar,MAWANASUG,EQ
@@ -837,7 +1039,11 @@ Mayur Uniquoters Ltd,Leather,MAYURUNIQ,EQ
 Mazda Ltd,Capital Goods-Non Electrical Equipment,MAZDA,EQ
 Mazagon Dock Shipbuilders Ltd,Aerospace & Defence,MAZDOCK,EQ
 Madhya Bharat Agro Products Ltd,Fertilizers,MBAPL,EQ
+McNally Bharat Engineering Company Ltd,Infrastructure Developers & Operators,MBECL,EQ
+M & B Engineering Ltd,Construction,MBEL,EQ
+MBL Infrastructure Ltd,Infrastructure Developers & Operators,MBLINFRA,EQ
 M Tek Copper Ltd,Non Ferrous Metals,MCL,EQ
+Mcleod Russel India Ltd,Plantation & Plantation Products,MCLEODRUSS,EQ
 Magellanic Cloud Ltd,IT - Software,MCLOUD,EQ
 Multi Commodity Exchange of India Ltd,Financial Services,MCX,EQ
 Global Health Ltd,Healthcare,MEDANTA,EQ
@@ -845,17 +1051,25 @@ Medi Assist Healthcare Services Ltd,Miscellaneous,MEDIASSIST,EQ
 Medicamen Biotech Ltd,Pharmaceuticals,MEDICAMEQ,EQ
 Medico Remedies Ltd,Pharmaceuticals,MEDICO,EQ
 Medplus Health Services Ltd,Retail,MEDPLUS,EQ
+Meesho Ltd,Logistics,MEESHO,EQ
 Megastar Foods Ltd,FMCG,MEGASTAR,EQ
+Megatherm Induction Ltd,Engineering,MEGATHERM,EQ
+Mangal Electrical Industries Ltd,Capital Goods - Electrical Equipment,MEIL,EQ
 Menon Bearings Ltd,Auto Ancillaries,MENONBE,EQ
 Metro Brands Ltd,Leather,METROBRAND,EQ
 Metropolis Healthcare Ltd,Healthcare,METROPOLIS,EQ
+Mangalam Global Enterprise Ltd,Trading,MGEL,EQ
 Mahanagar Gas Ltd,Gas Distribution,MGL,EQ
 Mahalaxmi Rubtech Ltd,Textiles,MHLXMIRU,EQ
 Mahindra Holidays & Resorts India Ltd,Hotels & Restaurants,MHRIL,EQ
 MIC Electronics Ltd,Consumer Durables,MICEL,EQ
 Mishra Dhatu Nigam Ltd,Aerospace & Defence,MIDHANI,EQ
+Midwest Ltd,Consumer Durables,MIDWESTLTD,EQ
+Milky Mist Dairy Food Ltd,FMCG,MILKYMIST,EQ
 Minda Corporation Ltd,Auto Ancillaries,MINDACORP,EQ
+Mindspace Business Parks REIT,Real Estate Investment Trusts,MINDSPACE,EQ
 Mindteck (India) Ltd,IT - Software,MINDTECK,EQ
+Mirza International Ltd,Leather,MIRZAINT,EQ
 Mitcon Consultancy & Engineering Services Ltd,Miscellaneous,MITCON,EQ
 M M Forgings Ltd,"Castings, Forgings & Fastners",MMFL,EQ
 MMP Industries Ltd,Non Ferrous Metals,MMP,EQ
@@ -866,26 +1080,33 @@ Modison Ltd,Capital Goods - Electrical Equipment,MODISONLTD,EQ
 Modern Threads (I) Ltd,Textiles,MODTHREAD,EQ
 MOIL Ltd,Mining & Mineral products,MOIL,EQ
 Meghmani Organics Ltd,Agro Chemicals,MOL,EQ
+Molbio Diagnostics Ltd,Healthcare,MOLBIO,EQ
 Mold-Tek Technologies Ltd,Infrastructure Developers & Operators,MOLDTECH,EQ
 Mold-Tek Packaging Ltd,Packaging,MOLDTKPAC,EQ
 Monte Carlo Fashions Ltd,Textiles,MONTECARLO,EQ
 Morepen Laboratories Ltd,Pharmaceuticals,MOREPENLAB,EQ
 Moschip Technologies Ltd,IT - Hardware,MOSCHIP,EQ
 Samvardhana Motherson International Ltd,Auto Ancillaries,MOTHERSON,EQ
+Motisons Jewellers Ltd,"Diamond, Gems and Jewellery",MOTISONS,EQ
 Mphasis Ltd,IT - Software,MPHASIS,EQ
 MPS Ltd,IT - Software,MPSLTD,EQ
 MRF Ltd,Tyres,MRF,EQ
 Mangalore Refinery And Petrochemicals Ltd,Refineries,MRPL,EQ
+MSP Steel & Power Ltd,Steel,MSPL,EQ
 MSTC Ltd,E-Commerce/App based Aggregator,MSTCLTD,EQ
 Motherson Sumi Wiring India Ltd,Auto Ancillaries,MSUMI,EQ
 MTAR Technologies Ltd,Aerospace & Defence,MTARTECH,EQ
 Mahanagar Telephone Nigam Ltd,Telecom-Service,MTNL,EQ
 Credo Brands Marketing Ltd,Retail,MUFTI,EQ
 Mukand Ltd,Steel,MUKANDLTD,EQ
+Mukka Proteins Ltd,FMCG,MUKKA,EQ
 Munjal Auto Industries Ltd,Auto Ancillaries,MUNJALAU,EQ
 Munjal Showa Ltd,Auto Ancillaries,MUNJALSHOW,EQ
 Murudeshwar Ceramics Ltd,Ceramic Products,MURUDCERA,EQ
+MV Electrosystems Ltd,Consumer Durables,MVELECTRO,EQ
 Manoj Vaibhav Gems N Jewellers Ltd,"Diamond, Gems and Jewellery",MVGJL,EQ
+MVK Agro Food Product Ltd,Sugar,MVKAGRO,EQ
+Mangalam Worldwide Ltd,Steel,MWL,EQ
 NACL Industries Ltd,Agro Chemicals,NACLIND,EQ
 Nahar Industrial Enterprises Ltd,Textiles,NAHARINDUS,EQ
 Nahar Polyfilms Ltd,Packaging,NAHARPOLY,EQ
@@ -903,14 +1124,19 @@ Nazara Technologies Ltd,E-Commerce/App based Aggregator,NAZARA,EQ
 NBCC (India) Ltd,Miscellaneous,NBCC,EQ
 NCC Ltd,Infrastructure Developers & Operators,NCC,EQ
 NCL Industries Ltd,Cement,NCLIND,EQ
+Nandan Denim Ltd,Textiles,NDL,EQ
 NDR Auto Components Ltd,Auto Ancillaries,NDRAUTO,EQ
 New Delhi Television Ltd,Media - Print/Television/Radio,NDTV,EQ
+North Eastern Carrying Corporation Ltd,Logistics,NECCLTD,EQ
+Nectar Lifescience Ltd,Pharmaceuticals,NECLIFE,EQ
 Nelcast Ltd,"Castings, Forgings & Fastners",NELCAST,EQ
 NELCO Ltd,Telecom Equipment & Infra Services,NELCO,EQ
 Neogen Chemicals Ltd,Chemicals,NEOGEN,EQ
+Nephrocare Health Services Ltd,Healthcare,NEPHROPLUS,EQ
 NESCO Ltd,Realty,NESCO,EQ
 Nestle India Ltd,FMCG,NESTLEIND,EQ
 Netweb Technologies India Ltd,IT - Hardware,NETWEB,EQ
+Neueon Corporation Ltd,Trading,NEUEON,EQ
 Neuland Laboratories Ltd,Pharmaceuticals,NEULANDLAB,EQ
 Newgen Software Technologies Ltd,IT - Software,NEWGEN,EQ
 National Fertilizer Ltd,Fertilizers,NFL,EQ
@@ -920,6 +1146,8 @@ NHPC Ltd,Power Generation & Distribution,NHPC,EQ
 NIBE Ltd,Aerospace & Defence,NIBE,EQ
 NIIT Ltd,Computer Education,NIITLTD,EQ
 NIIT Learning Systems Ltd,Computer Education,NIITMTS,EQ
+Nila Infrastructures Ltd,Construction,NILAINFRA,EQ
+Nila Spaces Ltd,Realty,NILASPACES,EQ
 Nilkamal Ltd,Plastic products,NILKAMAL,EQ
 NINtec Systems Ltd,IT - Software,NINSYS,EQ
 Indo National Ltd,Dry cells,NIPPOBATRY,EQ
@@ -931,15 +1159,18 @@ NLC India Ltd,Power Generation & Distribution,NLCINDIA,EQ
 NMDC Ltd,Mining & Mineral products,NMDC,EQ
 NOCIL Ltd,Chemicals,NOCIL,EQ
 Nova Agritech Ltd,Fertilizers,NOVAAGRI,EQ
+Novartis India Ltd,Pharmaceuticals,NOVARTIND,EQ
 Network People Services Technologies Ltd,IT - Software,NPST,EQ
 N R Agarwal Industries Ltd,Paper,NRAIL,EQ
 NRB Bearings Ltd,Bearings,NRBBEARING,EQ
 Nupur Recyclers Ltd,Trading,NRL,EQ
+NMDC Steel Ltd,Steel,NSLNISP,EQ
 NTPC Ltd,Power Generation & Distribution,NTPC,EQ
 NTPC Green Energy Ltd,Power Generation & Distribution,NTPCGREEN,EQ
 Nucleus Software Exports Ltd,IT - Software,NUCLEUS,EQ
 Nureca Ltd,E-Commerce/App based Aggregator,NURECA,EQ
 Nuvoco Vistas Corporation Ltd,Cement,NUVOCO,EQ
+Nexus Select Trust,Real Estate Investment Trusts,NXST,EQ
 FSN E-Commerce Ventures Ltd,E-Commerce/App based Aggregator,NYKAA,EQ
 Oriental Aromatics Ltd,Chemicals,OAL,EQ
 OBCL Ltd,Logistics,OBCL,EQ
@@ -950,27 +1181,38 @@ Oil India Ltd,Crude Oil & Natural Gas,OIL,EQ
 Oil Country Tubular Ltd,Steel,OILCOUNTUB,EQ
 Ola Electric Mobility Ltd,Automobile,OLAELEC,EQ
 Olectra Greentech Ltd,Automobile,OLECTRA,EQ
+OneClick Logistics India Ltd,Logistics,OLIL,EQ
 Omax Autos Ltd,Auto Ancillaries,OMAXAUTO,EQ
 Omaxe Ltd,Realty,OMAXE,EQ
+Om Freight Forwarders Ltd,Logistics,OMFREIGHT,EQ
 Om Infra Ltd,Infrastructure Developers & Operators,OMINFRAL,EQ
+Omnitech Engineering Ltd,Engineering,OMNI,EQ
+Om Power Transmission Ltd,Infrastructure Developers & Operators,OMPOWER,EQ
+On Door Concepts Ltd,Retail,ONDOOR,EQ
 One Point One Solutions Ltd,IT - Software,ONEPOINT,EQ
 OneSource Specialty Pharma Ltd,Pharmaceuticals,ONESOURCE,EQ
 Oil & Natural Gas Corpn Ltd,Crude Oil & Natural Gas,ONGC,EQ
+Onida Electronics Ltd,Consumer Durables,ONIDA,EQ
 OnMobile Global Ltd,Telecom-Service,ONMOBILE,EQ
 Onward Technologies Ltd,IT - Software,ONWARDTEC,EQ
 Optiemus Infracom Ltd,Telecom-Handsets/Mobile,OPTIEMUS,EQ
 Orbit Exports Ltd,Textiles,ORBTEXP,EQ
 Orchid Pharma Ltd,Pharmaceuticals,ORCHPHARMA,EQ
+Oriana Power Ltd,Power Infrastructure,ORIANA,EQ
 Oricon Enterprises Ltd,Packaging,ORICONENT,EQ
 Orient Bell Ltd,Ceramic Products,ORIENTBELL,EQ
 Orient Cement Ltd,Cement,ORIENTCEM,EQ
 Orient Ceratech Ltd,Refractories,ORIENTCER,EQ
 Orient Electric Ltd,Consumer Durables,ORIENTELEC,EQ
 Oriental Hotels Ltd,Hotels & Restaurants,ORIENTHOT,EQ
+Orient Paper & Industries Ltd,Paper,ORIENTPPR,EQ
 Orient Technologies Ltd,IT - Software,ORIENTTECH,EQ
 Orissa Minerals Development Company Ltd,Mining & Mineral products,ORISSAMINE,EQ
+Orkla India Ltd,FMCG,ORKLAINDIA,EQ
 Oswal Agro Mills Ltd,Trading,OSWALAGRO,EQ
+Oswal Green Tech Ltd,Diversified,OSWALGREEN,EQ
 Oswal Pumps Ltd,Capital Goods-Non Electrical Equipment,OSWALPUMPS,EQ
+Pace Digitek Ltd,Telecom Equipment & Infra Services,PACEDIGITK,EQ
 Page Industries Ltd,Readymade Garments/ Apparells,PAGEIND,EQ
 Pakka Ltd,Paper,PAKKA,EQ
 Palash Securities Ltd,Finance,PALASHSECU,EQ
@@ -984,20 +1226,28 @@ Paramount Communications Ltd,Cables,PARACABLES,EQ
 Paradeep Phosphates Ltd,Fertilizers,PARADEEP,EQ
 Parag Milk Foods Ltd,FMCG,PARAGMILK,EQ
 Paras Defence and Space Technologies Ltd,Aerospace & Defence,PARAS,EQ
+Parin Enterprises Ltd,Consumer Durables,PARIN,EQ
+Park Medi World Ltd,Healthcare,PARKHOSPS,EQ
 Apeejay Surrendra Park Hotels Ltd,Hotels & Restaurants,PARKHOTELS,EQ
 Pashupati Cotspin Ltd,Textiles,PASHUPATI,EQ
 Pasupati Acrylon Ltd,Textiles,PASUPTAC,EQ
 Patanjali Foods Ltd,FMCG,PATANJALI,EQ
 Patel Engineering Ltd,Infrastructure Developers & Operators,PATELENG,EQ
+Patel Retail Ltd,Retail,PATELRMART,EQ
+Paushak Ltd,Chemicals,PAUSHAKLTD,EQ
 Pavna Industries Ltd,Auto Ancillaries,PAVNAIND,EQ
 One 97 Communications Ltd,E-Commerce/App based Aggregator,PAYTM,EQ
 PCBL Chemical Ltd,Chemicals,PCBL,EQ
+Petro Carbon & Chemicals Ltd,Chemicals,PCCL,EQ
+PC Jeweller Ltd,"Diamond, Gems and Jewellery",PCJEWELLER,EQ
 Pudumjee Paper Products Ltd,Paper,PDMJEPAPER,EQ
 PDS Ltd,Textiles,PDSL,EQ
 Pennar Industries Ltd,Steel,PENIND,EQ
+Peninsula Land Ltd,Realty,PENINLAND,EQ
 Persistent Systems Ltd,IT - Software,PERSISTENT,EQ
 Petronet LNG Ltd,Gas Distribution,PETRONET,EQ
 Pfizer Ltd,Pharmaceuticals,PFIZER,EQ
+Prime Focus Ltd,Realty,PFOCUS,EQ
 PG Electroplast Ltd,Consumer Durables,PGEL,EQ
 Procter & Gamble Hygiene and Health Care Ltd,FMCG,PGHH,EQ
 Procter & Gamble Health Ltd,Pharmaceuticals,PGHL,EQ
@@ -1006,6 +1256,7 @@ Phoenix Mills Ltd,Realty,PHOENIXLTD,EQ
 Pidilite Industries Ltd,Chemicals,PIDILITIND,EQ
 Power & Instrumentation (Gujarat) Ltd,Capital Goods - Electrical Equipment,PIGL,EQ
 P I Industries Ltd,Agro Chemicals,PIIND,EQ
+Pine Labs Ltd,E-Commerce/App based Aggregator,PINELABS,EQ
 Pitti Engineering Ltd,Capital Goods-Non Electrical Equipment,PITTIENG,EQ
 Pix Transmission Ltd,Plantation & Plantation Products,PIXTRANS,EQ
 The Peria Karamalai Tea & Produce Company Ltd,Plantation & Plantation Products,PKTEA,EQ
@@ -1014,14 +1265,18 @@ Platinum Industries Ltd,Chemicals,PLATIND,EQ
 Plaza Wires Ltd,Cables,PLAZACABLE,EQ
 PNC Infratech Ltd,Infrastructure Developers & Operators,PNCINFRA,EQ
 P N Gadgil Jewellers Ltd,"Diamond, Gems and Jewellery",PNGJL,EQ
+PNGS Reva Diamond Jewellery Ltd,"Diamond, Gems and Jewellery",PNGSREVA,EQ
 Pondy Oxides & Chemicals Ltd,Non Ferrous Metals,POCL,EQ
 Poddar Pigments Ltd,Chemicals,PODDARMENT,EQ
 Pokarna Ltd,Consumer Durables,POKARNA,EQ
+PB Fintech Ltd,E-Commerce/App based Aggregator,POLICYBZR,EQ
 Polycab India Ltd,Cables,POLYCAB,EQ
 Poly Medicure Ltd,Healthcare,POLYMED,EQ
 Polyplex Corporation Ltd,Packaging,POLYPLEX,EQ
+Polysil Irrigation Systems Ltd,Plastic products,POLYSIL,EQ
 Ponni Sugars (Erode) Ltd,Sugar,PONNIERODE,EQ
 Power Grid Corporation of India Ltd,Power Generation & Distribution,POWERGRID,EQ
+Powerica Ltd,Capital Goods - Electrical Equipment,POWERICA,EQ
 Hitachi Energy India Ltd,Capital Goods - Electrical Equipment,POWERINDIA,EQ
 Power Mech Projects Ltd,Infrastructure Developers & Operators,POWERMECH,EQ
 PPAP Automotive Ltd,Auto Ancillaries,PPAP,EQ
@@ -1030,9 +1285,12 @@ Piramal Pharma Ltd,Pharmaceuticals,PPLPHARMA,EQ
 Prabha Energy Ltd,Crude Oil & Natural Gas,PRABHA,EQ
 Praj Industries Ltd,Capital Goods-Non Electrical Equipment,PRAJIND,EQ
 Prakash Industries Ltd,Steel,PRAKASH,EQ
+Pratham EPC Projects Ltd,Infrastructure Developers & Operators,PRATHAM,EQ
+Praxis Home Retail Ltd,Retail,PRAXIS,EQ
 Precision Camshafts Ltd,Auto Ancillaries,PRECAM,EQ
 Precot Ltd,Textiles,PRECOT,EQ
 Precision Wires India Ltd,Non Ferrous Metals,PRECWIRE,EQ
+Premco Global Ltd,Textiles,PREMCO,EQ
 Premier Explosives Ltd,Aerospace & Defence,PREMEXPLN,EQ
 Premier Energies Ltd,Trading,PREMIERENE,EQ
 Premier Polyfilm Ltd,Plastic products,PREMIERPOL,EQ
@@ -1040,9 +1298,13 @@ Prestige Estates Projects Ltd,Realty,PRESTIGE,EQ
 Pricol Ltd,Auto Ancillaries,PRICOLLTD,EQ
 Prince Pipes & Fittings Ltd,Plastic products,PRINCEPIPE,EQ
 Priti International Ltd,Consumer Durables,PRITI,EQ
+Pritika Auto Industries Ltd,Auto Ancillaries,PRITIKAUTO,EQ
 Privi Speciality Chemicals Ltd,Chemicals,PRIVISCL,EQ
+Prizor Viztech Ltd,Consumer Durables,PRIZOR,EQ
+PE Analytics Ltd,Miscellaneous,PROPEQUITY,EQ
 Prostarm Info Systems Ltd,Capital Goods - Electrical Equipment,PROSTARM,EQ
 Protean eGov Technologies Ltd,IT - Software,PROTEAN,EQ
+Proventus Agrocom Ltd,Trading,PROV,EQ
 Prozone Realty Ltd,Miscellaneous,PROZONER,EQ
 Prism Johnson Ltd,Cement,PRSMJOHNSN,EQ
 PSP Projects Ltd,Construction,PSPPROJECT,EQ
@@ -1051,12 +1313,16 @@ PTC Industries Ltd,"Castings, Forgings & Fastners",PTCIL,EQ
 PTL Enterprises Ltd,Miscellaneous,PTL,EQ
 Punjab Chemicals & Crop Protection Ltd,Agro Chemicals,PUNJABCHEM,EQ
 Puravankara Ltd,Realty,PURVA,EQ
+PVP Ventures Ltd,Realty,PVP,EQ
 Popular Vehicles & Services Ltd,Retail,PVSL,EQ
+Physicswallah Ltd,Education,PWL,EQ
 Pyramid Technoplast Ltd,Packaging,PYRAMID,EQ
+QMS Medical Allied Services Ltd,Healthcare,QMSMEDI,EQ
 Quality Power Electrical Equipments Ltd,Capital Goods - Electrical Equipment,QPOWER,EQ
 Quadrant Future Tek Ltd,Cables,QUADFUTURE,EQ
 Quess Corp Ltd,Diversified,QUESS,EQ
 Quick Heal Technologies Ltd,IT - Software,QUICKHEAL,EQ
+Quint Digital Ltd,IT - Software,QUINT,EQ
 Race Eco Chain Ltd,Trading,RACE,EQ
 RACL Geartech Ltd,Auto Ancillaries,RACLGEAR,EQ
 Radhika Jeweltech Ltd,"Diamond, Gems and Jewellery",RADHIKAJWE,EQ
@@ -1067,9 +1333,13 @@ Rainbow Childrens Medicare Ltd,Healthcare,RAINBOW,EQ
 Rajesh Exports Ltd,"Diamond, Gems and Jewellery",RAJESHEXPO,EQ
 Rajoo Engineers Ltd,Capital Goods-Non Electrical Equipment,RAJOOENG,EQ
 Rajratan Global Wire Ltd,Steel,RAJRATAN,EQ
+Raj Rayon Industries Ltd,Textiles,RAJRILTD,EQ
 Rajshree Sugars & Chemicals Ltd,Sugar,RAJSREESUG,EQ
 Rallis India Ltd,Agro Chemicals,RALLIS,EQ
+Shree Rama Newsprint Ltd,Miscellaneous,RAMANEWS,EQ
 Rama Phosphates Ltd,Fertilizers,RAMAPHO,EQ
+Rama Steel Tubes Ltd,Steel,RAMASTEEL,EQ
+Advit Jewels Ltd,"Diamond, Gems and Jewellery",RAMBHAJO,EQ
 The Ramco Cements Ltd,Cement,RAMCOCEM,EQ
 Ramco Industries Ltd,Cement - Products,RAMCOIND,EQ
 Ramco Systems Ltd,IT - Software,RAMCOSYS,EQ
@@ -1082,12 +1352,17 @@ Ratnamani Metals & Tubes Ltd,Capital Goods-Non Electrical Equipment,RATNAMANI,EQ
 Ratnaveer Precision Engineering Ltd,Steel,RATNAVEER,EQ
 Raymond Ltd,Air Transport Service,RAYMOND,EQ
 Raymond Lifestyle Ltd,Textiles,RAYMONDLSL,EQ
+Raymond Realty Ltd,Realty,RAYMONDREL,EQ
 Restaurant Brands Asia Ltd,Quick Service Restaurant,RBA,EQ
+RBM Infracon Ltd,Construction,RBMINFRA,EQ
+Ramdevbaba Solvent Ltd,Edible Oil,RBS,EQ
 RBZ Jewellers Ltd,"Diamond, Gems and Jewellery",RBZJEWEL,EQ
 Rashtriya Chemicals & Fertilizers Ltd,Fertilizers,RCF,EQ
+Reliance Communications Ltd,Telecom-Service,RCOM,EQ
 Redington Ltd,Trading,REDINGTON,EQ
 Redtape Ltd,Retail,REDTAPE,EQ
 Refex Industries Ltd,Trading,REFEX,EQ
+Regaal Resources Ltd,Miscellaneous,REGAAL,EQ
 Regency Ceramics Ltd,Ceramic Products,REGENCERAM,EQ
 Relaxo Footwears Ltd,Leather,RELAXO,EQ
 Reliance Chemotex Industries Ltd,Textiles,RELCHEMQ,EQ
@@ -1095,6 +1370,7 @@ Reliance Industries Ltd,Refineries,RELIANCE,EQ
 Reliance Infrastructure Ltd,Infrastructure Developers & Operators,RELINFRA,EQ
 Ravindra Energy Ltd,Capital Goods - Electrical Equipment,RELTD,EQ
 Remsons Industries Ltd,Auto Ancillaries,REMSONSIND,EQ
+Remus Pharmaceuticals Ltd,Pharmaceuticals,REMUS,EQ
 Shree Renuka Sugars Ltd,Sugar,RENUKA,EQ
 Rudrabhishek Enterprises Ltd,Miscellaneous,REPL,EQ
 Repro India Ltd,Printing & Stationery,REPRO,EQ
@@ -1112,6 +1388,7 @@ Ramkrishna Forgings Ltd,"Castings, Forgings & Fastners",RKFORGE,EQ
 R K Swamy Ltd,Media - Print/Television/Radio,RKSWAMY,EQ
 R M Drip & Sprinklers Systems Ltd,Plastic products,RMDRIP,EQ
 Rane (Madras) Ltd,Auto Ancillaries,RML,EQ
+R&B Denims Ltd,Textiles,RNBDENIMS,EQ
 Royal Orchid Hotels Ltd,Hotels & Restaurants,ROHLTD,EQ
 Rolex Rings Ltd,Auto Ancillaries,ROLEXRINGS,EQ
 Rossari Biotech Ltd,Chemicals,ROSSARI,EQ
@@ -1126,28 +1403,42 @@ RPP Infra Projects Ltd,Infrastructure Developers & Operators,RPPINFRA,EQ
 RPSG Ventures Ltd,IT - Software,RPSGVENT,EQ
 Rashi Peripherals Ltd,Trading,RPTECH,EQ
 R R Kabel Ltd,Cables,RRKABEL,EQ
+Rajputana Stainless Ltd,Steel,RSL,EQ
 R S Software (India) Ltd,IT - Software,RSSOFTWARE,EQ
 RSWM Ltd,Textiles,RSWM,EQ
 R Systems International Ltd,IT - Software,RSYSTEMS,EQ
 RattanIndia Enterprises Ltd,Finance,RTNINDIA,EQ
+RattanIndia Power Ltd,Power Generation & Distribution,RTNPOWER,EQ
 Rubfila International Ltd,Plantation & Plantation Products,RUBFILA,EQ
 Rubicon Research Ltd,Pharmaceuticals,RUBICON,EQ
 Ruby Mills Ltd,Textiles,RUBYMILLS,EQ
 Ruchira Papers Ltd,Paper,RUCHIRA,EQ
 Rupa & Company Ltd,Textiles,RUPA,EQ
+Rushil Decor Ltd,Plywood Boards/Laminates,RUSHIL,EQ
 Keystone Realtors Ltd,Realty,RUSTOMJEE,EQ
+Ravinder Heights Ltd,Realty,RVHL,EQ
 Rail Vikas Nigam Ltd,Infrastructure Developers & Operators,RVNL,EQ
 Revathi Equipment India Ltd,Engineering,RVTH,EQ
 S & S Power Switchgear Ltd,Capital Goods - Electrical Equipment,S&SPOWER,EQ
+Saakshi Medtech & Panels Ltd,Capital Goods - Electrical Equipment,SAAKSHI,EQ
+Saatvik Green Energy Ltd,Capital Goods - Electrical Equipment,SAATVIKGL,EQ
+Sadhana Nitro Chem Ltd,Chemicals,SADHNANIQ,EQ
 Safari Industries (India) Ltd,Plastic products,SAFARI,EQ
 Sagar Cements Ltd,Cement,SAGCEM,EQ
 Sagility Ltd,IT - Software,SAGILITY,EQ
+Sahaj Solar Ltd,Capital Goods - Electrical Equipment,SAHAJSOLAR,EQ
+Sahana Systems Ltd,IT - Software,SAHANA,EQ
 Sahyadri Industries Ltd,Cement - Products,SAHYADRI,EQ
 Steel Authority of India Ltd,Steel,SAIL,EQ
 Sai Life Sciences Ltd,Pharmaceuticals,SAILIFE,EQ
+Sai Parenterals Ltd,Pharmaceuticals,SAIPARENT,EQ
 Sakar Healthcare Ltd,Pharmaceuticals,SAKAR,EQ
+Sakthi Sugars Ltd,Sugar,SAKHTISUG,EQ
 Saksoft Ltd,IT - Software,SAKSOFT,EQ
+Sakuma Exports Ltd,Trading,SAKUMA,EQ
+Salasar Techno Engineering Ltd,Steel,SALASAR,EQ
 Salona Cotspin Ltd,Textiles,SALONA,EQ
+SAL Steel Ltd,Steel,SALSTEEL,EQ
 Salzer Electronics Ltd,Capital Goods - Electrical Equipment,SALZERELEC,EQ
 Sambhv Steel Tubes Ltd,Steel,SAMBHV,EQ
 Samhi Hotels Ltd,Hotels & Restaurants,SAMHI,EQ
@@ -1157,6 +1448,7 @@ Sandhar Technologies Limited,Auto Ancillaries,SANDHAR,EQ
 Sandur Manganese & Iron Ores Ltd,Mining & Mineral products,SANDUMA,EQ
 Sangam (India) Ltd,Textiles,SANGAMIND,EQ
 Sanghvi Movers Ltd,Miscellaneous,SANGHVIMOV,EQ
+Sanginita Chemicals Ltd,Chemicals,SANGINITA,EQ
 Sanofi India Ltd,Pharmaceuticals,SANOFI,EQ
 Sanofi Consumer Healthcare India Ltd,Pharmaceuticals,SANOFICONR,EQ
 Sansera Engineering Ltd,Auto Ancillaries,SANSERA,EQ
@@ -1164,9 +1456,12 @@ Sanstar Ltd,FMCG,SANSTAR,EQ
 Sapphire Foods India Ltd,Quick Service Restaurant,SAPPHIRE,EQ
 Sarda Energy & Minerals Ltd,Steel,SARDAEN,EQ
 Sarla Performance Fibers Ltd,Textiles,SARLAPOLY,EQ
+Sar Televenture Ltd,Telecom Equipment & Infra Services,SARTELE,EQ
+Sarveshwar Foods Ltd,FMCG,SARVESHWAR,EQ
 Sasken Technologies Ltd,IT - Software,SASKEN,EQ
 Satia Industries Ltd,Paper,SATIA,EQ
 Saurashtra Cement Ltd,Cement,SAURASHCEM,EQ
+SBC Exports Ltd,Textiles,SBC,EQ
 Shivalik Bimetal Controls Ltd,Non Ferrous Metals,SBCL,EQ
 Suratwwala Business Group Ltd,Realty,SBGLP,EQ
 Schaeffler India Ltd,Bearings,SCHAEFFLER,EQ
@@ -1178,34 +1473,50 @@ Scoda Tubes Ltd,Steel,SCODATUBES,EQ
 Sheetal Cool Products Ltd,FMCG,SCPL,EQ
 SEAMEC Ltd,Miscellaneous,SEAMECLTD,EQ
 Secmark Consultancy Ltd,IT - Software,SECMARK,EQ
+Sedemac Mechatronics Ltd,Electronics,SEDEMAC,EQ
 Sejal Glass Ltd,Glass & Glass Products,SEJALLTD,EQ
 Semac Construction Ltd,Infrastructure Developers & Operators,SEMAC,EQ
 Senco Gold Ltd,"Diamond, Gems and Jewellery",SENCO,EQ
 Senores Pharmaceuticals Ltd,Pharmaceuticals,SENORES,EQ
+SEPC Ltd,Infrastructure Developers & Operators,SEPC,EQ
 Servotech Renewable Power System Ltd,Capital Goods - Electrical Equipment,SERVOTECH,EQ
 Seshasayee Paper & Boards Ltd,Paper,SESHAPAPER,EQ
+Setco Automotive Ltd,Auto Ancillaries,SETCO,EQ
+Standard Engineering Technology Ltd,Capital Goods-Non Electrical Equipment,SETL,EQ
 Sheela Foam Ltd,Consumer Durables,SFL,EQ
 Synergy Green Industries Ltd,"Castings, Forgings & Fastners",SGIL,EQ
+Shadowfax Technologies Ltd,Logistics,SHADOWFAX,EQ
+Shah Metacorp Ltd,Steel,SHAH,EQ
 Shah Alloys Ltd,Steel,SHAHALLOYS,EQ
 Shaily Engineering Plastics Ltd,Plastic products,SHAILY,EQ
 Shakti Pumps (India) Ltd,Capital Goods-Non Electrical Equipment,SHAKTIPUMP,EQ
 Shalby Ltd,Healthcare,SHALBY,EQ
 Shalimar Paints Ltd,Paints/Varnish,SHALPAINTS,EQ
 Shankara Building Products Ltd,Retail,SHANKARA,EQ
+Shankesh Jewellers Ltd,"Diamond, Gems and Jewellery",SHANKESH,EQ
 Shanthi Gears Ltd,Capital Goods-Non Electrical Equipment,SHANTIGEAR,EQ
+Shanti Gold International Ltd,"Diamond, Gems and Jewellery",SHANTIGOLD,EQ
 Sharda Cropchem Ltd,Agro Chemicals,SHARDACROP,EQ
 Sharda Motor Industries Ltd,Auto Ancillaries,SHARDAMOTR,EQ
+Sheetal Universal Ltd,FMCG,SHEETAL,EQ
+Shera Energy Ltd,Non Ferrous Metals,SHERA,EQ
 Shilpa Medicare Ltd,Pharmaceuticals,SHILPAMED,EQ
+Shiprocket Ltd,E-Commerce/App based Aggregator,SHIPROCKET,EQ
 Shivalik Rasayan Ltd,Agro Chemicals,SHIVALIK,EQ
+Shivam Autotech Ltd,Auto Ancillaries,SHIVAMAUTO,EQ
 Shiva Texyarn Ltd,Textiles,SHIVATEX,EQ
+Shiv Aum Steels Ltd,Steel,SHIVAUM,EQ
 S H Kelkar & Company Ltd,Chemicals,SHK,EQ
 Shoppers Stop Ltd,Retail,SHOPERSTOP,EQ
 Shradha Realty Ltd,Realty,SHRADHA,EQ
 Shree Digvijay Cement Co Ltd,Cement,SHREDIGCEM,EQ
 Shree Cement Ltd,Cement,SHREECEM,EQ
+Shreeji Shipping Global Ltd,Shipping,SHREEJISPG,EQ
+Shree Karni Fabcom Ltd,Textiles,SHREEKARNI,EQ
 Shree Pushkar Chemicals & Fertilizers Ltd,Chemicals,SHREEPUSHK,EQ
 Shree Rama Multi-Tech Ltd,Packaging,SHREERAMA,EQ
 Shreyans Industries Ltd,Paper,SHREYANIND,EQ
+Shringar House of Mangalsutra Ltd,"Diamond, Gems and Jewellery",SHRINGARMS,EQ
 SPR Auto Technologies Ltd,Auto Ancillaries,SHRIPISTON,EQ
 Shriram Properties Ltd,Realty,SHRIRAMPPS,EQ
 Shyam Metalics & Energy Ltd,Steel,SHYAMMETL,EQ
@@ -1218,17 +1529,23 @@ SignatureGlobal India Ltd,Realty,SIGNATURE,EQ
 Signpost India Ltd,Miscellaneous,SIGNPOST,EQ
 Sikko Industries Ltd,Agro Chemicals,SIKKO,EQ
 Silgo Retail Ltd,"Diamond, Gems and Jewellery",SILGO,EQ
+Silkflex Polymers (India) Ltd,Chemicals,SILKFLEX,EQ
 Silver Touch Technologies Ltd,IT - Software,SILVERTUC,EQ
 Simplex Infrastructures Ltd,Infrastructure Developers & Operators,SIMPLEXINF,EQ
+Sindhu Trade Links Ltd,Logistics,SINDHUTRAD,EQ
+Singer India Ltd,Consumer Durables,SINGERIND,EQ
 Sintercom India Ltd,Auto Ancillaries,SINTERCOM,EQ
 Sirca Paints India Ltd,Paints/Varnish,SIRCA,EQ
 SIS Ltd,Miscellaneous,SIS,EQ
 Siyaram Silk Mills Ltd,Textiles,SIYSIL,EQ
+S J Logistics (India) Ltd,Logistics,SJLOGISTIC,EQ
 S J S Enterprises Ltd,Auto Ancillaries,SJS,EQ
 SJVN Ltd,Power Generation & Distribution,SJVN,EQ
 SKF India Ltd,Bearings,SKFINDIA,EQ
+SKF India (Industrial) Ltd,Bearings,SKFINDUS,EQ
 Skipper Ltd,Engineering,SKIPPER,EQ
 SKM Egg Products Export (India) Ltd,FMCG,SKMEGGPROD,EQ
+SKP Bearing Industries Ltd,Bearings,SKP,EQ
 Sky Gold & Diamonds Ltd,"Diamond, Gems and Jewellery",SKYGOLD,EQ
 Smartlink Holdings Ltd,IT - Hardware,SMARTLINK,EQ
 Smartworks Coworking Spaces Ltd,Co-Working,SMARTWORKS,EQ
@@ -1240,6 +1557,8 @@ Sobha Ltd,Realty,SOBHA,EQ
 Softtech Engineers Ltd,IT - Software,SOFTTECH,EQ
 Solara Active Pharma Sciences Ltd,Pharmaceuticals,SOLARA,EQ
 Solar Industries India Ltd,Aerospace & Defence,SOLARINDS,EQ
+Solarworld Energy Solutions Ltd,Power Infrastructure,SOLARWORLD,EQ
+Solex Energy Ltd,Capital Goods - Electrical Equipment,SOLEX,EQ
 Somany Ceramics Ltd,Ceramic Products,SOMANYCERA,EQ
 Soma Textiles & Industries Ltd,Infrastructure Developers & Operators,SOMATEX,EQ
 Somi Conveyor Beltings Ltd,Plantation & Plantation Products,SOMICONVEY,EQ
@@ -1250,6 +1569,7 @@ Savita Oil Technologies Ltd,Petrochemicals,SOTL,EQ
 South West Pinnacle Exploration Ltd,Mining & Mineral products,SOUTHWEST,EQ
 S P Apparels Ltd,Readymade Garments/ Apparells,SPAL,EQ
 Sun Pharma Advanced Research Company Ltd,Pharmaceuticals,SPARC,EQ
+Spacenet Enterprises India Ltd,Trading,SPCENET,EQ
 Speciality Restaurants Ltd,Hotels & Restaurants,SPECIALITY,EQ
 Spectrum Electrical Industries Ltd,Capital Goods - Electrical Equipment,SPECTRUM,EQ
 Spencers Retail Ltd,Retail,SPENCERS,EQ
@@ -1263,6 +1583,7 @@ SRF Ltd,Chemicals,SRF,EQ
 Sree Rayalaseema Hi-Strength Hypo Ltd,Chemicals,SRHHYPOLTD,EQ
 SRM Contractors Ltd,Infrastructure Developers & Operators,SRM,EQ
 Saraswati Saree Depot Ltd,Textiles,SSDL,EQ
+Srivari Spices & Foods Ltd,FMCG,SSFL,EQ
 Steel Strips Wheels Ltd,Auto Ancillaries,SSWL,EQ
 Stallion India Fluorochemicals Ltd,Chemicals,STALLION,EQ
 Stanley Lifestyles Ltd,Consumer Durables,STANLEY,EQ
@@ -1271,14 +1592,21 @@ Star Cement Ltd,Cement,STARCEMENT,EQ
 Star Paper Mills Ltd,Paper,STARPAPER,EQ
 State Trading Corporation of India Ltd,Trading,STCINDIA,EQ
 Steelcast Ltd,"Castings, Forgings & Fastners",STEELCAS,EQ
+Steel Exchange India Ltd,Steel,STEELXIND,EQ
 Sterling Tools Ltd,"Castings, Forgings & Fastners",STERTOOLS,EQ
+STL Networks Ltd,Telecom-Service,STLNETWORK,EQ
 Sterlite Technologies Ltd,Cables,STLTECH,EQ
 Stove Kraft Ltd,Consumer Durables,STOVEKRAFT,EQ
+Studds Accessories Ltd,Plastic products,STUDDS,EQ
+Seshaasai Technologies Ltd,IT - Software,STYL,EQ
 Stylam Industries Ltd,Plywood Boards/Laminates,STYLAMIND,EQ
 Baazar Style Retail Ltd,Retail,STYLEBAAZA,EQ
 Styrenix Performance Materials Ltd,Petrochemicals,STYRENIX,EQ
+Subex Ltd,IT - Software,SUBEXLTD,EQ
 Subros Ltd,Auto Ancillaries,SUBROS,EQ
+Sudarshan Colorants India Ltd,Chemicals,SUDARCOLOR,EQ
 Sudarshan Chemical Industries Ltd,Chemicals,SUDARSCHEM,EQ
+Sudeep Pharma Ltd,Chemicals,SUDEEPPHRM,EQ
 Sukhjit Starch & Chemicals Ltd,FMCG,SUKHJITS,EQ
 Sumeet Industries Ltd,Textiles,SUMEETINDS,EQ
 Sumitomo Chemical India Ltd,Agro Chemicals,SUMICHEM,EQ
@@ -1294,28 +1622,38 @@ Suprajit Engineering Ltd,Auto Ancillaries,SUPRAJIT,EQ
 Supreme Holdings & Hospitality Ltd,Construction,SUPREME,EQ
 Supreme Industries Ltd,Plastic products,SUPREMEIND,EQ
 Supreme Infrastructure India Ltd,Infrastructure Developers & Operators,SUPREMEINF,EQ
+Supreme Power Equipment Ltd,Capital Goods - Electrical Equipment,SUPREMEPWR,EQ
 Supriya Lifescience Ltd,Pharmaceuticals,SUPRIYA,EQ
 Suraj Estate Developers Ltd,Realty,SURAJEST,EQ
 Suraj Ltd,Steel,SURAJLTD,EQ
 Suraksha Diagnostic Ltd,Healthcare,SURAKSHA,EQ
+Surana Telecom and Power Ltd,Capital Goods - Electrical Equipment,SURANAT&P,EQ
 Suryalakshmi Cotton Mills Ltd,Textiles,SURYALAXMI,EQ
 Surya Roshni Ltd,Capital Goods-Non Electrical Equipment,SURYAROSNI,EQ
+Sutlej Textiles and Industries Ltd,Textiles,SUTLEJTEX,EQ
 Suven Life Sciences Ltd,Healthcare,SUVEN,EQ
 Suyog Telematics Ltd,Telecom Equipment & Infra Services,SUYOG,EQ
 Suzlon Energy Ltd,Capital Goods - Electrical Equipment,SUZLON,EQ
 Shree Vasu Logistics Ltd,Logistics,SVLL,EQ
 Swan Corp Ltd,Textiles,SWANCORP,EQ
 Swan Defence and Heavy Industries Ltd,Ship Building,SWANDEF,EQ
+Swaraj Suiting Ltd,Textiles,SWARAJ,EQ
 Swaraj Engines Ltd,Capital Goods-Non Electrical Equipment,SWARAJENG,EQ
 Swelect Energy Systems Ltd,Capital Goods - Electrical Equipment,SWELECTES,EQ
 Swiggy Ltd,E-Commerce/App based Aggregator,SWIGGY,EQ
 Sterling & Wilson Renewable Energy Ltd,Infrastructure Developers & Operators,SWSOLAR,EQ
 Symphony Ltd,Consumer Durables,SYMPHONY,EQ
+Syncom Formulations (India) Ltd,Pharmaceuticals,SYNCOMF,EQ
 Syngene International Ltd,Healthcare,SYNGENE,EQ
 Syrma SGS Technology Ltd,Electronics,SYRMA,EQ
+Systango Technologies Ltd,IT - Software,SYSTANGO,EQ
+TAAL Tech Ltd,Engineering,TAALTECH,EQ
+TAC Infosec Ltd,IT - Software,TAC,EQ
 Tainwala Chemicals & Plastics (India) Ltd,Trading,TAINWALCHM,EQ
 TajGVK Hotels & Resorts Ltd,Hotels & Restaurants,TAJGVK,EQ
+Take Ltd,Healthcare,TAKE,EQ
 Talbros Automotive Components Ltd,Auto Ancillaries,TALBROAUTO,EQ
+Tamboli Industries Ltd,Finance,TAMBOLIIN,EQ
 Tanla Platforms Ltd,IT - Software,TANLA,EQ
 Tara Chand Infralogistic Solutions Ltd,Diversified,TARACHAND,EQ
 TARC Ltd,Realty,TARC,EQ
@@ -1335,15 +1673,20 @@ TBO Tek Ltd,E-Commerce/App based Aggregator,TBOTEK,EQ
 Tribhovandas Bhimji Zaveri Ltd,"Diamond, Gems and Jewellery",TBZ,EQ
 Transport Corporation of India Ltd,Logistics,TCI,EQ
 TCI Express Ltd,Logistics,TCIEXP,EQ
+Thaai Casting Ltd,"Castings, Forgings & Fastners",TCL,EQ
 TCPL Packaging Ltd,Packaging,TCPLPACK,EQ
 Tata Consultancy Services Ltd,IT - Software,TCS,EQ
 TD Power Systems Ltd,Capital Goods - Electrical Equipment,TDPOWERSYS,EQ
 Team Lease Services Ltd,Miscellaneous,TEAMLEASE,EQ
+Trident Techlabs Ltd,IT - Software,TECHLABS,EQ
 Tech Mahindra Ltd,IT - Software,TECHM,EQ
+Technocraft Ventures Ltd,Infrastructure Developers & Operators,TECHNOCRAF,EQ
 Techno Electric & Engineering Company Ltd,Infrastructure Developers & Operators,TECHNOE,EQ
 Tega Industries Ltd,Capital Goods-Non Electrical Equipment,TEGA,EQ
 Tejas Networks Ltd,Telecom Equipment & Infra Services,TEJASNET,EQ
 Tembo Global Industries Ltd,Retail,TEMBO,EQ
+Tempsens Instruments (India) Ltd,Engineering,TEMPSENS,EQ
+Tenneco Clean Air India Ltd,Auto Ancillaries,TENNIND,EQ
 Tera Software Ltd,IT - Software,TERASOFT,EQ
 Texmaco Infrastructure & Holdings Ltd,Realty,TEXINFRA,EQ
 Texmo Pipes & Products Ltd,Plastic products,TEXMOPIPES,EQ
@@ -1363,6 +1706,8 @@ Time Technoplast Ltd,Plastic products,TIMETECHNO,EQ
 Timken India Ltd,Bearings,TIMKEN,EQ
 Tinna Rubber & Infrastructure Ltd,Plantation & Plantation Products,TINNARUBR,EQ
 Thirumalai Chemicals Ltd,Chemicals,TIRUMALCHM,EQ
+Shree Tirupati Balajee FIBC Ltd,Packaging,TIRUPATI,EQ
+Tirupati Forge Ltd,"Castings, Forgings & Fastners",TIRUPATIFL,EQ
 Titagarh Rail Systems Ltd,Capital Goods-Non Electrical Equipment,TITAGARH,EQ
 Titan Company Ltd,"Diamond, Gems and Jewellery",TITAN,EQ
 Tata Motors Ltd,Automobile,TMCV,EQ
@@ -1380,23 +1725,28 @@ Transrail Lighting Ltd,Infrastructure Developers & Operators,TRANSRAILL,EQ
 Transworld Shipping Lines Ltd,Shipping,TRANSWORLD,EQ
 Travel Food Services Ltd,Quick Service Restaurant,TRAVELFOOD,EQ
 Trejhara Solutions Ltd,IT - Software,TREJHARA,EQ
+TransIndia Real Estate Ltd,Logistics,TREL,EQ
 Trent Ltd,Retail,TRENT,EQ
 TRF Ltd,Capital Goods-Non Electrical Equipment,TRF,EQ
 Trident Ltd,Textiles,TRIDENT,EQ
 Trigyn Technologies Ltd,IT - Software,TRIGYN,EQ
 Triveni Turbine Ltd,Capital Goods - Electrical Equipment,TRITURBINE,EQ
 Triveni Engineering and Industries Ltd,Sugar,TRIVENI,EQ
+TruAlt Bioenergy Ltd,Miscellaneous,TRUALT,EQ
 TTK Healthcare Ltd,Diversified,TTKHLTCARE,EQ
 TTK Prestige Ltd,Consumer Durables,TTKPRESTIG,EQ
 Tata Teleservices (Maharashtra) Ltd,Telecom-Service,TTML,EQ
+Turtlemint Fintech Solutions Ltd,IT - Software,TURTLEMINT,EQ
 TVS Electronics Ltd,IT - Hardware,TVSELECT,EQ
 TVS Holdings Ltd,Finance,TVSHLTD,EQ
 TVS Motor Company Ltd,Automobile,TVSMOTOR,EQ
 TVS Supply Chain Solutions Ltd,Logistics,TVSSCS,EQ
 TVS Srichakra Ltd,Tyres,TVSSRICHAK,EQ
 Ucal Ltd,Auto Ancillaries,UCAL,EQ
+Ushanti Colour Chem Ltd,Chemicals,UCL,EQ
 Updater Services Ltd,Miscellaneous,UDS,EQ
 Ujaas Energy Ltd,Power Generation & Distribution,UEL,EQ
+United Foodbrands Ltd,Quick Service Restaurant,UFBL,EQ
 Uflex Ltd,Packaging,UFLEX,EQ
 Ugar Sugar Works Ltd,Sugar,UGARSUGAR,EQ
 UltraTech Cement Ltd,Cement,ULTRACEMCO,EQ
@@ -1406,8 +1756,11 @@ Unichem Laboratories Ltd,Pharmaceuticals,UNICHEMLAB,EQ
 United Drilling Tools Ltd,Capital Goods-Non Electrical Equipment,UNIDT,EQ
 Unicommerce eSolutions Ltd,IT - Software,UNIECOM,EQ
 Uniphos Enterprises Ltd,Trading,UNIENTER,EQ
+Unihealth Hospitals Ltd,Healthcare,UNIHEALTH,EQ
 Unimech Aerospace and Manufacturing Ltd,Aerospace & Defence,UNIMECH,EQ
 Uniparts India Ltd,Engineering,UNIPARTS,EQ
+Unitech Ltd,Realty,UNITECH,EQ
+United Polyfab Gujarat Ltd,Textiles,UNITEDPOLY,EQ
 United Nilgiri Tea Estates Company Ltd,Plantation & Plantation Products,UNITEDTEA,EQ
 Univastu India Ltd,Infrastructure Developers & Operators,UNIVASTU,EQ
 Universal Cables Ltd,Cables,UNIVCABLES,EQ
@@ -1415,20 +1768,28 @@ Universus Photo Imagings Ltd,Consumer Durables,UNIVPHOTO,EQ
 Uno Minda Ltd,Auto Ancillaries,UNOMINDA,EQ
 UPL Ltd,Agro Chemicals,UPL,EQ
 Uravi Defence & Technology Ltd,Auto Ancillaries,URAVIDEF,EQ
+Urban Company Ltd,E-Commerce/App based Aggregator,URBANCO,EQ
+Urja Global Ltd,Automobile,URJA,EQ
 Usha Martin Ltd,Steel,USHAMART,EQ
+Fujiyama Power Systems Ltd,Capital Goods - Electrical Equipment,UTLSOLAR,EQ
 Uttam Sugar Mills Ltd,Sugar,UTTAMSUGAR,EQ
 V2 Retail Ltd,Retail,V2RETAIL,EQ
 Vadilal Industries Ltd,FMCG,VADILALIND,EQ
 Vaibhav Global Ltd,"Diamond, Gems and Jewellery",VAIBHAVGBL,EQ
+Vakrangee Ltd,IT - Software,VAKRANGEE,EQ
 Valiant Laboratories Ltd,Pharmaceuticals,VALIANTLAB,EQ
 Valiant Organics Ltd,Chemicals,VALIANTORG,EQ
+Vedanta Aluminium Metal Ltd,Non Ferrous Metals,VAML,EQ
 Vardhman Acrylics Ltd,Textiles,VARDHACRLC,EQ
+Vardhman Polytex Ltd,Textiles,VARDMNPOLY,EQ
 Varroc Engineering Ltd,Auto Ancillaries,VARROC,EQ
 Vascon Engineers Ltd,Infrastructure Developers & Operators,VASCONEQ,EQ
 Vaswani Industries Ltd,Steel,VASWANI,EQ
 Varun Beverages Ltd,FMCG,VBL,EQ
 Vedanta Ltd,Non Ferrous Metals,VEDL,EQ
+Vedanta Power Ltd,Power Generation & Distribution,VEDPOWER,EQ
 Veedol Corporation Ltd,Chemicals,VEEDOL,EQ
+Veljan Denison Ltd,Capital Goods-Non Electrical Equipment,VELJAN,EQ
 Venkys (India) Ltd,FMCG,VENKEYS,EQ
 Ventive Hospitality Ltd,Hotels & Restaurants,VENTIVE,EQ
 Venus Pipes & Tubes Ltd,Steel,VENUSPIPES,EQ
@@ -1437,22 +1798,37 @@ Veranda Learning Solutions Ltd,Education,VERANDA,EQ
 Vertoz Ltd,IT - Software,VERTOZ,EQ
 Vesuvius India Ltd,Refractories,VESUVIUS,EQ
 Veto Switchgears & Cables Ltd,Capital Goods - Electrical Equipment,VETO,EQ
+Varvee Global Ltd,Textiles,VGL,EQ
 V-Guard Industries Ltd,Capital Goods - Electrical Equipment,VGUARD,EQ
 Viceroy Hotels Ltd,Hotels & Restaurants,VHLTD,EQ
 Vidhi Specialty Food Ingredients Ltd,Chemicals,VIDHIING,EQ
+Vidya Wires Ltd,Capital Goods - Electrical Equipment,VIDYAWIRES,EQ
 Vijaya Diagnostic Centre Ltd,Healthcare,VIJAYA,EQ
+Vikas Lifecare Ltd,Trading,VIKASLIFE,EQ
+Vikram Solar Ltd,Capital Goods - Electrical Equipment,VIKRAMSOLR,EQ
+Vikran Engineering Ltd,Infrastructure Developers & Operators,VIKRAN,EQ
+Vilas Transcore Ltd,Steel,VILAS,EQ
 Vimta Labs Ltd,Healthcare,VIMTALABS,EQ
 Vinati Organics Ltd,Chemicals,VINATIORGA,EQ
 Vintage Coffee & Beverages Ltd,Retail,VINCOFE,EQ
 Vindhya Telelinks Ltd,Infrastructure Developers & Operators,VINDHYATEL,EQ
+Vinyas Innovative Technologies Ltd,Electronics,VINYAS,EQ
 Vinyl Chemicals (I) Ltd,Chemicals,VINYLINDIA,EQ
 V I P Industries Ltd,Plastic products,VIPIND,EQ
+VISA Chrome Ltd,Ferro Alloys,VISACHROME,EQ
 Visaka Industries Ltd,Cement - Products,VISAKAIND,EQ
+Vishal Fabrics Ltd,Textiles,VISHAL,EQ
 Vishnu Chemicals Ltd,Chemicals,VISHNU,EQ
+Vishnusurya Projects and Infra Ltd,Infrastructure Developers & Operators,VISHNUINFR,EQ
+Vedanta Iron & Steel Ltd,Steel,VISL,EQ
+Viviana Power Tech Ltd,Infrastructure Developers & Operators,VIVIANA,EQ
 Viyash Scientific Ltd,Pharmaceuticals,VIYASH,EQ
 VL E-Governance & IT Solutions Ltd,IT - Software,VLEGOV,EQ
+V-Marc India Ltd,Cables,VMARCIND,EQ
 V-Mart Retail Ltd,Retail,VMART,EQ
 Vishal Mega Mart Ltd,Retail,VMM,EQ
+VMS TMT Ltd,Steel,VMSTMT,EQ
+Vedanta Oil and Gas Ltd,Crude Oil & Natural Gas,VOGL,EQ
 Voltamp Transformers Ltd,Capital Goods - Electrical Equipment,VOLTAMP,EQ
 Voltas Ltd,Consumer Durables,VOLTAS,EQ
 Vishnu Prakash R Punglia Ltd,Infrastructure Developers & Operators,VPRPL,EQ
@@ -1467,8 +1843,10 @@ Waaree Energies Ltd,Capital Goods - Electrical Equipment,WAAREEENER,EQ
 Indosolar Ltd,Capital Goods - Electrical Equipment,WAAREEINDO,EQ
 Waaree Renewable Technologies Ltd,Power Infrastructure,WAAREERTL,EQ
 Va Tech Wabag Ltd,Infrastructure Developers & Operators,WABAG,EQ
+Wakefit Innovations Ltd,Textiles,WAKEFIT,EQ
 Walchandnagar Industries Ltd,Capital Goods-Non Electrical Equipment,WALCHANNAG,EQ
 Wanbury Ltd,Pharmaceuticals,WANBURY,EQ
+Waterbase Ltd,FMCG,WATERBASE,EQ
 Western Carriers (India) Ltd,Logistics,WCIL,EQ
 Websol Energy System Ltd,Capital Goods - Electrical Equipment,WEBELSOLAR,EQ
 Weizmann Ltd,Textiles,WEIZMANIND,EQ
@@ -1478,6 +1856,7 @@ Welspun Enterprises Ltd,Infrastructure Developers & Operators,WELENT,EQ
 Welspun Living Ltd,Textiles,WELSPUNLIV,EQ
 Wendt India Ltd,Capital Goods-Non Electrical Equipment,WENDT,EQ
 Westlife Foodworld Ltd,Quick Service Restaurant,WESTLIFE,EQ
+Wework India Management Ltd,Co-Working,WEWORK,EQ
 Wheels India Ltd,Auto Ancillaries,WHEELS,EQ
 Whirlpool of India Ltd,Consumer Durables,WHIRLPOOL,EQ
 Windlas Biotech Ltd,Pharmaceuticals,WINDLAS,EQ
@@ -1486,13 +1865,17 @@ Western India Plywoods Ltd,Plywood Boards/Laminates,WIPL,EQ
 Wipro Ltd,IT - Software,WIPRO,EQ
 Wockhardt Ltd,Pharmaceuticals,WOCKPHARMA,EQ
 Wonderla Holidays Ltd,Entertainment,WONDERLA,EQ
+Worth Peripherals Ltd,Packaging,WORTHPERI,EQ
 W S Industries (India) Ltd,Infrastructure Developers & Operators,WSI,EQ
 West Coast Paper Mills Ltd,Paper,WSTCSTPAPR,EQ
+Wise Travel India Ltd,E-Commerce/App based Aggregator,WTICAB,EQ
 Xchanging Solutions Ltd,IT - Software,XCHANGING,EQ
 Xelpmoc Design and Tech Ltd,IT - Software,XELPMOC,EQ
 XPRO India Ltd,Packaging,XPROINDIA,EQ
 XT Global Infotech Ltd,IT - Software,XTGLOBAL,EQ
+Xtranet Technologies Ltd,IT - Software,XTRANET,EQ
 Yasho Industries Ltd,Chemicals,YASHO,EQ
+Yash Optics & Lens Ltd,FMCG,YASHOPTICS,EQ
 Yatharth Hospital & Trauma Care Services Ltd,Healthcare,YATHARTH,EQ
 Yatra Online Ltd,E-Commerce/App based Aggregator,YATRA,EQ
 Yuken India Ltd,Capital Goods-Non Electrical Equipment,YUKEN,EQ
