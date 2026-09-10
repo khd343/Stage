@@ -142,33 +142,3 @@ def test_a_new_sector_is_admitted_only_by_explicit_declaration():
     assert out.loc[out.Symbol == "HDFCBANK", "Industry"].item() == "Banks"
     with pytest.raises(ValueError, match="81st group"):
         merge(_universe(), add.assign(Industry="Bank"), allow_sectors=frozenset({"Banks"}))
-
-
-def test_the_tv_sector_map_never_lands_in_a_residual_by_measurement():
-    """A residual bucket is not a sector, so co-occurrence may not choose it.
-
-    The first version of the map let "Finance/Rental/Leasing" -- 64 names,
-    essentially every NBFC -- resolve to Miscellaneous on a 7-name overlap, and
-    BAJFINANCE was filed under Miscellaneous. Any industry whose measured
-    plurality is the residual needs a hand decision, recorded as such.
-    """
-    root = pathlib.Path(__file__).resolve().parents[1]
-    rows = list(__import__("csv").DictReader(open(root / "data" / "sector_map_tv.csv", encoding="utf-8")))
-    assert rows, "the map exists and is non-empty"
-    measured_into_residual = [r["tv_industry"] for r in rows
-                              if r["basis"] == "measured" and r["sector"] == "Miscellaneous"]
-    assert not measured_into_residual, measured_into_residual
-    for r in rows:
-        assert r["basis"] in {"measured", "hand"}, r
-        assert r["reason"].strip(), f"{r['tv_industry']} has no recorded reason"
-
-
-def test_every_mapped_sector_is_in_the_vocabulary_or_explicitly_new():
-    """The map may only speak the universe's language, plus the two declared additions."""
-    root = pathlib.Path(__file__).resolve().parents[1]
-    csv = __import__("csv")
-    known = {r["Industry"] for r in csv.DictReader(open(root / "data" / "ind_niftytotalmarket_list.csv", encoding="utf-8"))}
-    declared_new = {"Banks", "Insurance"}
-    mapped = {r["sector"] for r in csv.DictReader(open(root / "data" / "sector_map_tv.csv", encoding="utf-8"))}
-    stray = mapped - known - declared_new
-    assert not stray, f"map introduces undeclared sector value(s): {sorted(stray)}"

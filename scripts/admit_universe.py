@@ -17,11 +17,12 @@ universe was first built from. That is the gap this tool closes, and keeps
 closed: run it again with any candidate list and it admits what is liquid.
 
 Usage:
-    python scripts/admit_universe.py --list "stocks list.csv" [--dry-run]
+    python scripts/admit_universe.py --list "stock list.csv" [--dry-run]
 
-The candidate list needs columns companyId (EXCHANGE:SYMBOL), Name, Industry,
-where Industry holds one of the universe's own sector values. BSE-prefixed rows
-are ignored: one exchange, one session calendar, one cross-section.
+The candidate list IS the universe's boundary: nothing outside it is ever
+admitted. It needs columns company_id (EXCHANGE:SYMBOL), name, industry, where
+industry holds one of the universe's own sector values. BSE-prefixed rows are
+ignored: one exchange, one session calendar, one cross-section.
 """
 from __future__ import annotations
 
@@ -48,97 +49,27 @@ LIQUIDITY_MIN_SAMPLE = 10
 
 
 def candidates_from_list(path: Path) -> pd.DataFrame:
-    """NSE rows of a candidate list as [Symbol, Company Name, Industry]."""
-    raw = pd.read_csv(path, encoding="utf-8-sig")
-    for col in ("companyId", "Name", "Industry"):
-        if col not in raw.columns:
-            raise ValueError(f"candidate list lacks required column {col!r}")
-    nse = raw[raw["companyId"].astype(str).str.startswith("NSE:")].copy()
+    """NSE rows of a candidate list as [Symbol, Company Name, Industry].
+
+    Accepts either header spelling the list has used (company_id/name/industry
+    or companyId/Name/Industry). TradingView writes BAJAJ_AUTO for what NSE
+    lists as BAJAJ-AUTO; the underscore is normalised.
+    """
+    raw = pd.read_csv(path, encoding="utf-8-sig", dtype=str).fillna("")
+    cols = {c.lower(): c for c in raw.columns}
+    idc = cols.get("company_id") or cols.get("companyid")
+    namec = cols.get("name")
+    indc = cols.get("industry")
+    if not (idc and namec and indc):
+        raise ValueError("candidate list needs company_id, name and industry columns")
+    nse = raw[raw[idc].str.strip().str.upper().str.startswith("NSE:")].copy()
     out = pd.DataFrame({
-        "Symbol": nse["companyId"].str.slice(4).str.strip(),
-        "Company Name": nse["Name"].astype(str).str.strip()
-                        .str.replace(r"\s+Limited$", " Ltd", regex=True),
-        "Industry": nse["Industry"].astype(str).str.strip(),
+        "Symbol": nse[idc].str.slice(4).str.strip().str.upper().str.replace("_", "-", regex=False),
+        "Company Name": nse[namec].str.strip().str.replace(r"\s+Limited$", " Ltd", regex=True),
+        "Industry": nse[indc].str.strip(),
     })
     out = out[out["Symbol"] != ""].drop_duplicates("Symbol")
     return out.reset_index(drop=True)
-
-
-NSE_EQUITY_LIST = "https://nsearchives.nseindia.com/content/equities/EQUITY_L.csv"
-#: Main-board series admitted. BZ is the trade-to-trade segment for regulatory
-#: defaulters; SME listings are on a separate board and a separate list. One
-#: exchange, one board, one cross-section.
-NSE_SERIES = ("EQ", "BE")
-_NSE_HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36",
-    "Referer": "https://www.nseindia.com/",
-}
-
-
-def fetch_nse_equity_list(url: str = NSE_EQUITY_LIST) -> pd.DataFrame:
-    """NSE's own complete main-board equity list: the authoritative candidate set.
-
-    Every hand-maintained candidate list tried before this surfaced a different
-    partial slice -- one found 503 names, three together found 839 of which 705
-    were BSE codes needing resolution and 109 were dead tickers. This file is
-    the complete answer, and it retires BSE-to-NSE resolution entirely: a BSE
-    name with an NSE listing is already here under its NSE symbol.
-
-    Returns [Symbol, Company Name, Series, Listed]. Header cells carry leading
-    spaces in the source; they are stripped.
-    """
-    import io
-    import urllib.request
-    req = urllib.request.Request(url, headers=_NSE_HEADERS)
-    with urllib.request.urlopen(req, timeout=30) as resp:
-        body = resp.read().decode("utf-8-sig", errors="replace")
-    raw = pd.read_csv(io.StringIO(body), dtype=str)
-    raw.columns = [c.strip() for c in raw.columns]
-    for col in ("SYMBOL", "NAME OF COMPANY", "SERIES", "DATE OF LISTING"):
-        if col not in raw.columns:
-            raise ValueError(f"NSE equity list lacks expected column {col!r}")
-    raw = raw.apply(lambda c: c.str.strip())
-    keep = raw[raw["SERIES"].isin(NSE_SERIES)]
-    return pd.DataFrame({
-        "Symbol": keep["SYMBOL"],
-        "Company Name": keep["NAME OF COMPANY"].str.replace(r"\s+Limited$", " Ltd", regex=True),
-        "Series": keep["SERIES"],
-        "Listed": keep["DATE OF LISTING"],
-    }).drop_duplicates("Symbol").reset_index(drop=True)
-
-
-def sector_lookup(sources: list[Path], tv_classification: Path | None,
-                  tv_map: Path | None) -> dict[str, str]:
-    """Symbol -> sector, from the user's own files first, then a mapped taxonomy.
-
-    The universe's 80 sector names are the vocabulary. Anything that cannot be
-    expressed in it is left OUT of the dict, so merge() refuses the name rather
-    than inventing an 81st group. Order matters: a sector the user assigned by
-    hand beats one inferred through a mapping.
-    """
-    out: dict[str, str] = {}
-    for path in sources:
-        frame = pd.read_csv(path, dtype=str, encoding="utf-8-sig").fillna("")
-        idcol = next((c for c in frame.columns if c.lower() in ("company_id", "companyid", "symbol")), None)
-        # "sector" wins over "industry" when a file carries both: the universe's
-        # vocabulary IS sector-level, and Stock_cat.csv lists the finer industry first.
-        seccol = next((c for c in frame.columns if c.lower() == "sector"), None)               or next((c for c in frame.columns if c.lower() == "industry"), None)
-        if idcol is None or seccol is None:
-            continue
-        for cid, sec in zip(frame[idcol], frame[seccol]):
-            ex, _, sym = str(cid).partition(":")
-            sym = (sym or ex).strip().upper()
-            if sec.strip() and sym not in out:
-                out[sym] = sec.strip()
-    if tv_classification and tv_map and tv_classification.exists() and tv_map.exists():
-        mapping = pd.read_csv(tv_map, dtype=str).fillna("")
-        tv_to_sector = dict(zip(mapping["tv_industry"].str.strip(), mapping["sector"].str.strip()))
-        cls = pd.read_csv(tv_classification, dtype=str, encoding="utf-8-sig").fillna("")
-        for sym, ind in zip(cls["Symbol"].str.strip().str.upper(), cls["TV_Industry"].str.strip()):
-            sec = tv_to_sector.get(ind, "")
-            if sec and sym not in out:
-                out[sym] = sec
-    return out
 
 
 def session_calendar(closes: dict[str, pd.Series]) -> pd.DatetimeIndex:
@@ -231,14 +162,7 @@ def fetch_closes(symbols: list[str], days: int = 120, batch: int = 100) -> dict[
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    src = ap.add_mutually_exclusive_group(required=True)
-    src.add_argument("--list", help="candidate CSV: companyId,Name,Industry")
-    src.add_argument("--nse-list", action="store_true",
-                     help="use NSE's official main-board equity list as the candidate set")
-    ap.add_argument("--sectors", nargs="*", default=[],
-                    help="CSV(s) giving symbol->sector in the universe's vocabulary (first match wins)")
-    ap.add_argument("--tv-classification", help="Symbol,TV_Sector,TV_Industry CSV")
-    ap.add_argument("--tv-map", help="tv_industry,sector CSV mapping into the universe's vocabulary")
+    ap.add_argument("--list", required=True, help="candidate CSV: company_id,name,industry")
     ap.add_argument("--allow-sector", nargs="*", default=[],
                     help="sector value(s) NEW to the universe, admitted by explicit declaration")
     ap.add_argument("--universe", default=str(UNIVERSE))
@@ -246,17 +170,7 @@ def main() -> None:
     args = ap.parse_args()
 
     universe = pd.read_csv(args.universe, encoding="utf-8")
-    if args.nse_list:
-        listed = fetch_nse_equity_list()
-        sectors = sector_lookup([Path(p) for p in args.sectors],
-                                Path(args.tv_classification) if args.tv_classification else None,
-                                Path(args.tv_map) if args.tv_map else None)
-        listed["Industry"] = listed["Symbol"].map(sectors).fillna("")
-        unsectored = listed[(listed["Industry"] == "") & ~listed["Symbol"].isin(set(universe["Symbol"]))]
-        print(f"NSE main board: {len(listed)} | no sector in any source: {len(unsectored)} (not admitted)")
-        cands = listed[listed["Industry"] != ""][["Symbol", "Company Name", "Industry"]].reset_index(drop=True)
-    else:
-        cands = candidates_from_list(Path(args.list))
+    cands = candidates_from_list(Path(args.list))
     fresh = cands[~cands["Symbol"].isin(set(universe["Symbol"]))]
     print(f"universe {len(universe)} | NSE candidates {len(cands)} | not yet in universe {len(fresh)}")
 

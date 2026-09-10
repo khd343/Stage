@@ -850,9 +850,11 @@ list's NSE names (with the `_`→`-` TradingView spelling normalised). 2,281 →
 (D-2.2.20 stands: one board) and 120 refused by the liquidity rule as dead or
 under the sample floor, which self-admit if they become liquid.
 
-**What stays.** The admission tool keeps `--nse-list` as an option and the
-sector map and `Banks`/`Insurance` allowlist remain tested; they cost nothing
-and record how the wider universe would be built if ever wanted. The
+**What stays — revised the same day.** The `--nse-list` mode, the vendored
+TradingView classification and the TV-industry sector map were removed at the
+owner's request: they served only the rejected wider universe, and speculative
+machinery is weight, not insurance. The generic `--allow-sector` guard stays.
+The tool is `--list` only; the list is the boundary. The
 liquidity rule, the sample floor, the never-Miscellaneous rule and the
 refuse-unknown-sector rule are unchanged and apply to the list.
 
