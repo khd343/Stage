@@ -780,6 +780,61 @@ absentees ≈ 8 a day ≈ 0.4% against the 2% ceiling. Still 80 sectors.
 They fill in on their own; nothing here needs a monthly re-check any more.
 Re-run the tool with any candidate list to admit what has become liquid.
 
+## 2026-09-10 (later) — The candidate source is NSE's own list
+
+### D-2.2.19 — Hand-maintained candidate lists were the wrong source
+
+**Problem.** Each candidate list tried surfaced a different partial slice: one
+found 503 names outside the universe, three together found 839 — 705 of them
+BSE codes needing resolution and 109 dead tickers. Meanwhile NSE publishes the
+complete main-board equity list for free (`EQUITY_L.csv`: 2,568 rows; EQ 2,294,
+BE 247, BZ 27). Against it the true gap was **750** NSE equities, and a
+BSE-to-NSE name search running to resolve 520 codes was stopped as pointless:
+a BSE name with an NSE listing is already in that file under its NSE symbol.
+
+**Resolution.** `scripts/admit_universe.py --nse-list` uses the official list
+as the candidate set (EQ and BE; BZ is the trade-to-trade defaulter segment).
+The liquidity rule is unchanged. **0 dead tickers** on the first run, by
+construction.
+
+**The binding constraint became sector.** 557 of the 750 had no sector in any
+file. A sector lookup chain resolves it: the user's own files first, then a
+TradingView classification (`data/nse_tv_classification.csv`, vendored from
+`Pareshking/Paresh` with a provenance note) translated through
+`data/sector_map_tv.csv` — 54 TV industries → the universe's vocabulary, **45
+by measured co-occurrence** among names already classified, **9 by hand**,
+every row carrying its basis and reason. 260 names have no sector anywhere and
+stay out until a source exists.
+
+**Two sectors are new, by declaration.** The universe held **no banks and no
+insurers** — inherited from a fundamentals source that excludes them by
+design. A Stage/RS cross-section without ~30% of index weight is not a
+cross-section. `merge()` still refuses any unknown sector; `Banks` and
+`Insurance` were admitted through an explicit `--allow-sector` list, pinned so
+a typo can never ride in on it. 82 sectors now.
+
+**A residual is not a sector.** The first map let `Finance/Rental/Leasing` —
+64 names, essentially every NBFC — resolve to `Miscellaneous` on a 7-name
+overlap; `BAJFINANCE` filed under Miscellaneous was the symptom. Rule added and
+pinned: co-occurrence may never choose `Miscellaneous`; such industries take a
+recorded hand decision (`Finance`, and `Investment Managers` → `Financial
+Services`). The uncommitted universe was reverted and regenerated.
+
+**Result.** 1,893 → **2,371**. 478 admitted; 12 refused with numbers (11 under
+the 10-session sample floor, `LAKSHMIMIL` 13/15). Banks 43, Insurance 14.
+
+### D-2.2.20 — SME-board listings removed
+
+**Problem.** 90 names in the universe were on NSE's SME platform, not the main
+board — admitted on 10 Sep because they appeared in a hand list and traded
+daily; the liquidity rule cannot see which board a name is on. SME is a
+separate list with different lot sizes, disclosure and liquidity. One
+exchange, one board, one cross-section.
+
+**Resolution.** `scripts/remove_sme_board.py` reads NSE's SME list live and
+removes members, printing each. Cannot recur: the candidate source is now the
+main-board list only. Own commit, so it is independently revertible.
+
 ## Syncing from upstream (2026-08-26)
 
 This repo tracks `Pareshking/RS-Stages` as `upstream`. To take their code changes:

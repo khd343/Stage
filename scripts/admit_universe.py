@@ -64,6 +64,83 @@ def candidates_from_list(path: Path) -> pd.DataFrame:
     return out.reset_index(drop=True)
 
 
+NSE_EQUITY_LIST = "https://nsearchives.nseindia.com/content/equities/EQUITY_L.csv"
+#: Main-board series admitted. BZ is the trade-to-trade segment for regulatory
+#: defaulters; SME listings are on a separate board and a separate list. One
+#: exchange, one board, one cross-section.
+NSE_SERIES = ("EQ", "BE")
+_NSE_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124 Safari/537.36",
+    "Referer": "https://www.nseindia.com/",
+}
+
+
+def fetch_nse_equity_list(url: str = NSE_EQUITY_LIST) -> pd.DataFrame:
+    """NSE's own complete main-board equity list: the authoritative candidate set.
+
+    Every hand-maintained candidate list tried before this surfaced a different
+    partial slice -- one found 503 names, three together found 839 of which 705
+    were BSE codes needing resolution and 109 were dead tickers. This file is
+    the complete answer, and it retires BSE-to-NSE resolution entirely: a BSE
+    name with an NSE listing is already here under its NSE symbol.
+
+    Returns [Symbol, Company Name, Series, Listed]. Header cells carry leading
+    spaces in the source; they are stripped.
+    """
+    import io
+    import urllib.request
+    req = urllib.request.Request(url, headers=_NSE_HEADERS)
+    with urllib.request.urlopen(req, timeout=30) as resp:
+        body = resp.read().decode("utf-8-sig", errors="replace")
+    raw = pd.read_csv(io.StringIO(body), dtype=str)
+    raw.columns = [c.strip() for c in raw.columns]
+    for col in ("SYMBOL", "NAME OF COMPANY", "SERIES", "DATE OF LISTING"):
+        if col not in raw.columns:
+            raise ValueError(f"NSE equity list lacks expected column {col!r}")
+    raw = raw.apply(lambda c: c.str.strip())
+    keep = raw[raw["SERIES"].isin(NSE_SERIES)]
+    return pd.DataFrame({
+        "Symbol": keep["SYMBOL"],
+        "Company Name": keep["NAME OF COMPANY"].str.replace(r"\s+Limited$", " Ltd", regex=True),
+        "Series": keep["SERIES"],
+        "Listed": keep["DATE OF LISTING"],
+    }).drop_duplicates("Symbol").reset_index(drop=True)
+
+
+def sector_lookup(sources: list[Path], tv_classification: Path | None,
+                  tv_map: Path | None) -> dict[str, str]:
+    """Symbol -> sector, from the user's own files first, then a mapped taxonomy.
+
+    The universe's 80 sector names are the vocabulary. Anything that cannot be
+    expressed in it is left OUT of the dict, so merge() refuses the name rather
+    than inventing an 81st group. Order matters: a sector the user assigned by
+    hand beats one inferred through a mapping.
+    """
+    out: dict[str, str] = {}
+    for path in sources:
+        frame = pd.read_csv(path, dtype=str, encoding="utf-8-sig").fillna("")
+        idcol = next((c for c in frame.columns if c.lower() in ("company_id", "companyid", "symbol")), None)
+        # "sector" wins over "industry" when a file carries both: the universe's
+        # vocabulary IS sector-level, and Stock_cat.csv lists the finer industry first.
+        seccol = next((c for c in frame.columns if c.lower() == "sector"), None)               or next((c for c in frame.columns if c.lower() == "industry"), None)
+        if idcol is None or seccol is None:
+            continue
+        for cid, sec in zip(frame[idcol], frame[seccol]):
+            ex, _, sym = str(cid).partition(":")
+            sym = (sym or ex).strip().upper()
+            if sec.strip() and sym not in out:
+                out[sym] = sec.strip()
+    if tv_classification and tv_map and tv_classification.exists() and tv_map.exists():
+        mapping = pd.read_csv(tv_map, dtype=str).fillna("")
+        tv_to_sector = dict(zip(mapping["tv_industry"].str.strip(), mapping["sector"].str.strip()))
+        cls = pd.read_csv(tv_classification, dtype=str, encoding="utf-8-sig").fillna("")
+        for sym, ind in zip(cls["Symbol"].str.strip().str.upper(), cls["TV_Industry"].str.strip()):
+            sec = tv_to_sector.get(ind, "")
+            if sec and sym not in out:
+                out[sym] = sec
+    return out
+
+
 def session_calendar(closes: dict[str, pd.Series]) -> pd.DatetimeIndex:
     """Every date on which ANY candidate traded: the NSE calendar, observed.
 
@@ -103,15 +180,19 @@ def liquid(closes: dict[str, pd.Series], window: int = LIQUIDITY_WINDOW,
     return admitted, counts
 
 
-def merge(universe: pd.DataFrame, additions: pd.DataFrame) -> pd.DataFrame:
+def merge(universe: pd.DataFrame, additions: pd.DataFrame,
+          allow_sectors: frozenset[str] = frozenset()) -> pd.DataFrame:
     """Add rows to the universe without touching what is already there.
 
     Refuses an unknown sector loudly: a new spelling would silently become an
-    81st group in every sector view. Existing rows are never modified -- if the
-    candidate list disagrees about an existing name's sector, the universe's
-    value stands (a change of classification is a decision, not a side effect).
+    81st group in every sector view. A sector that is genuinely new -- the
+    universe inherited a source with no bank or insurance category at all -- is
+    admitted only by naming it in `allow_sectors`, so a vocabulary change is a
+    declared decision and never a typo that got through. Existing rows are never
+    modified: if the candidate list disagrees about an existing name's sector,
+    the universe's value stands.
     """
-    known = set(universe["Industry"])
+    known = set(universe["Industry"]) | set(allow_sectors)
     new = additions[~additions["Symbol"].isin(set(universe["Symbol"]))].copy()
     bad = sorted(set(new["Industry"]) - known)
     if bad:
@@ -150,13 +231,32 @@ def fetch_closes(symbols: list[str], days: int = 120, batch: int = 100) -> dict[
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--list", required=True, help="candidate CSV: companyId,Name,Industry")
+    src = ap.add_mutually_exclusive_group(required=True)
+    src.add_argument("--list", help="candidate CSV: companyId,Name,Industry")
+    src.add_argument("--nse-list", action="store_true",
+                     help="use NSE's official main-board equity list as the candidate set")
+    ap.add_argument("--sectors", nargs="*", default=[],
+                    help="CSV(s) giving symbol->sector in the universe's vocabulary (first match wins)")
+    ap.add_argument("--tv-classification", help="Symbol,TV_Sector,TV_Industry CSV")
+    ap.add_argument("--tv-map", help="tv_industry,sector CSV mapping into the universe's vocabulary")
+    ap.add_argument("--allow-sector", nargs="*", default=[],
+                    help="sector value(s) NEW to the universe, admitted by explicit declaration")
     ap.add_argument("--universe", default=str(UNIVERSE))
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
     universe = pd.read_csv(args.universe, encoding="utf-8")
-    cands = candidates_from_list(Path(args.list))
+    if args.nse_list:
+        listed = fetch_nse_equity_list()
+        sectors = sector_lookup([Path(p) for p in args.sectors],
+                                Path(args.tv_classification) if args.tv_classification else None,
+                                Path(args.tv_map) if args.tv_map else None)
+        listed["Industry"] = listed["Symbol"].map(sectors).fillna("")
+        unsectored = listed[(listed["Industry"] == "") & ~listed["Symbol"].isin(set(universe["Symbol"]))]
+        print(f"NSE main board: {len(listed)} | no sector in any source: {len(unsectored)} (not admitted)")
+        cands = listed[listed["Industry"] != ""][["Symbol", "Company Name", "Industry"]].reset_index(drop=True)
+    else:
+        cands = candidates_from_list(Path(args.list))
     fresh = cands[~cands["Symbol"].isin(set(universe["Symbol"]))]
     print(f"universe {len(universe)} | NSE candidates {len(cands)} | not yet in universe {len(fresh)}")
 
@@ -170,7 +270,7 @@ def main() -> None:
               + ", ".join(f"{s}({counts[s][0]}/{counts[s][1]})" for s in thin))
 
     add = fresh[fresh["Symbol"].isin(admitted)]
-    merged = merge(universe, add)
+    merged = merge(universe, add, frozenset(args.allow_sector))
     print(f"result: {len(universe)} -> {len(merged)} rows, {merged['Industry'].nunique()} sectors")
     if args.dry_run:
         print("dry run; universe file untouched")

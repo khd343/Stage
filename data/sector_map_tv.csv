@@ -1,0 +1,55 @@
+tv_industry,sector,basis,reason
+Agricultural Commodities/Milling,Sugar,measured,plurality among 57 already-classified names: Sugar (23/57)
+Apparel/Footwear,Readymade Garments/ Apparells,measured,plurality among 31 already-classified names: Readymade Garments/ Apparells (12/31)
+Beverages: Alcoholic,FMCG,hand,no overlap; nearest existing bucket
+Broadcasting,Media - Print/Television/Radio,measured,plurality among 1 already-classified names: Media - Print/Television/Radio (1/1)
+Cable/Satellite TV,Telecom-Service,measured,plurality among 1 already-classified names: Telecom-Service (1/1)
+Chemicals: Major Diversified,Chemicals,measured,plurality among 21 already-classified names: Chemicals (20/21)
+Chemicals: Specialty,Chemicals,measured,plurality among 76 already-classified names: Chemicals (51/76)
+Commercial Printing/Forms,Engineering,measured,plurality among 4 already-classified names: Engineering (1/4)
+Construction Materials,Cement,measured,plurality among 34 already-classified names: Cement (23/34)
+Containers/Packaging,Packaging,measured,plurality among 20 already-classified names: Packaging (12/20)
+Contract Drilling,Oil Drill/Allied,measured,plurality among 1 already-classified names: Oil Drill/Allied (1/1)
+Data Processing Services,IT - Software,measured,plurality among 3 already-classified names: IT - Software (3/3)
+Electric Utilities,Power Generation & Distribution,measured,plurality among 24 already-classified names: Power Generation & Distribution (18/24)
+Electronics Distributors,Trading,measured,plurality among 6 already-classified names: Trading (2/6)
+Engineering & Construction,Infrastructure Developers & Operators,measured,plurality among 93 already-classified names: Infrastructure Developers & Operators (68/93)
+Finance/Rental/Leasing,Finance,hand,"hand: NBFCs; co-occurrence gave Miscellaneous 2/7, a residual is never a sector"
+Financial Conglomerates,Finance,measured,plurality among 2 already-classified names: Finance (1/2)
+Financial Publishing/Services,Credit Rating Agencies,measured,plurality among 1 already-classified names: Credit Rating Agencies (1/1)
+Financial Services,Financial Services,hand,no overlap; same name exists in the vocabulary
+Food Retail,Retail,measured,plurality among 3 already-classified names: Retail (3/3)
+Food: Major Diversified,FMCG,measured,plurality among 8 already-classified names: FMCG (4/8)
+Food: Specialty/Candy,FMCG,measured,plurality among 29 already-classified names: FMCG (20/29)
+Homebuilding,Realty,measured,plurality among 8 already-classified names: Realty (6/8)
+Hotels/Resorts/Cruise lines,Hotels & Restaurants,measured,plurality among 23 already-classified names: Hotels & Restaurants (23/23)
+Industrial Machinery,Capital Goods-Non Electrical Equipment,measured,plurality among 61 already-classified names: Capital Goods-Non Electrical Equipment (24/61)
+Industrial Specialties,Chemicals,measured,plurality among 35 already-classified names: Chemicals (9/35)
+Information Technology Services,IT - Software,measured,plurality among 55 already-classified names: IT - Software (44/55)
+Internet Software/Services,E-Commerce/App based Aggregator,measured,plurality among 17 already-classified names: E-Commerce/App based Aggregator (6/17)
+Investment Banks/Brokers,Financial Services,measured,plurality among 6 already-classified names: Financial Services (4/6)
+Investment Managers,Financial Services,hand,"hand: AMCs; co-occurrence gave Miscellaneous 2/5, same rule"
+Investment Trusts/Mutual Funds,Stock/ Commodity Brokers,measured,plurality among 1 already-classified names: Stock/ Commodity Brokers (1/1)
+Life/Health Insurance,Insurance,hand,NEW sector; overrides a 1-of-1 co-occurrence with Finance
+Major Banks,Banks,hand,NEW sector: no bank category existed; the universe held no banks at all
+Metal Fabrication,Steel,measured,plurality among 30 already-classified names: Steel (9/30)
+Miscellaneous Commercial Services,IT - Software,measured,plurality among 40 already-classified names: IT - Software (12/40)
+Miscellaneous Manufacturing,Plastic products,measured,plurality among 26 already-classified names: Plastic products (10/26)
+Movies/Entertainment,Entertainment,measured,plurality among 5 already-classified names: Entertainment (2/5)
+Multi-Line Insurance,Insurance,hand,NEW sector
+Other Consumer Services,E-Commerce/App based Aggregator,measured,plurality among 6 already-classified names: E-Commerce/App based Aggregator (2/6)
+Other Consumer Specialties,"Diamond, Gems and Jewellery",measured,"plurality among 20 already-classified names: Diamond, Gems and Jewellery (16/20)"
+Other Metals/Minerals,Non Ferrous Metals,measured,plurality among 20 already-classified names: Non Ferrous Metals (11/20)
+Other Transportation,Logistics,measured,plurality among 9 already-classified names: Logistics (3/9)
+Packaged Software,IT - Software,measured,plurality among 50 already-classified names: IT - Software (42/50)
+Publishing: Newspapers,Media - Print/Television/Radio,measured,plurality among 4 already-classified names: Media - Print/Television/Radio (4/4)
+Pulp & Paper,Paper,measured,plurality among 15 already-classified names: Paper (14/15)
+Real Estate Development,Realty,measured,plurality among 50 already-classified names: Realty (38/50)
+Regional Banks,Banks,hand,"NEW sector, as above"
+Semiconductors,Capital Goods - Electrical Equipment,measured,plurality among 13 already-classified names: Capital Goods - Electrical Equipment (9/13)
+Specialty Insurance,Insurance,hand,NEW sector
+Specialty Telecommunications,Telecom-Service,measured,plurality among 2 already-classified names: Telecom-Service (2/2)
+Steel,Steel,measured,plurality among 62 already-classified names: Steel (46/62)
+Textiles,Textiles,measured,plurality among 67 already-classified names: Textiles (57/67)
+Trucks/Construction/Farm Machinery,Capital Goods-Non Electrical Equipment,measured,plurality among 27 already-classified names: Capital Goods-Non Electrical Equipment (12/27)
+Wholesale Distributors,Trading,measured,plurality among 31 already-classified names: Trading (10/31)
