@@ -835,6 +835,32 @@ exchange, one board, one cross-section.
 removes members, printing each. Cannot recur: the candidate source is now the
 main-board list only. Own commit, so it is independently revertible.
 
+### D-2.2.21 — The universe is the user's list. The NSE-wide expansion is reverted in data.
+
+**Correction.** D-2.2.19 admitted 478 names from NSE's complete main-board list
+on the reasoning that the source file, not the rule, was the gap. That was a
+wider universe than the one asked for. The universe's definition is the user's
+own `stock list.csv` — stated when it was first built, and restated here — and
+nothing outside it belongs, however liquid or large. **Every bank and insurer
+came out with it**: none is in the list.
+
+**Resolution.** `scripts/restrict_to_list.py` removes any symbol not in the
+list's NSE names (with the `_`→`-` TradingView spelling normalised). 2,281 →
+**1,790**. The 210 list names still outside are the 90 SME-board listings
+(D-2.2.20 stands: one board) and 120 refused by the liquidity rule as dead or
+under the sample floor, which self-admit if they become liquid.
+
+**What stays.** The admission tool keeps `--nse-list` as an option and the
+sector map and `Banks`/`Insurance` allowlist remain tested; they cost nothing
+and record how the wider universe would be built if ever wanted. The
+liquidity rule, the sample floor, the never-Miscellaneous rule and the
+refuse-unknown-sector rule are unchanged and apply to the list.
+
+**The lesson, so it is not repeated.** "Is there a better approach" was a
+question about the *rule*, not an invitation to change the *boundary*. A
+recommendation that widens what a system is about needs the owner's yes on
+that specific point, not a general "proceed".
+
 ## Syncing from upstream (2026-08-26)
 
 This repo tracks `Pareshking/RS-Stages` as `upstream`. To take their code changes:
