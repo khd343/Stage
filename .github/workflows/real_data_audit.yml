@@ -166,7 +166,8 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/latest_research.csv \
                   data/previous_research.csv \
-                  data/breadth_history.csv
+                  data/breadth_history.csv \
+                  data/maturing.csv
           if git diff --cached --quiet; then
             echo "Validated research snapshot unchanged."
             exit 0
@@ -207,4 +208,5 @@ jobs:
             data/previous_research.csv
             data/price_panel.npz
             data/breadth_history.csv
+            data/maturing.csv
           retention-days: 30

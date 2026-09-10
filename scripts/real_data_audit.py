@@ -106,6 +106,44 @@ def signal_publication(produced: bool) -> None:
             handle.write("published=" + ("true" if produced else "false") + chr(10))
 
 
+#: Mirrors high_52w's min_sessions. A test asserts they are equal, so the report
+#: can never call a name "maturing" while the engine already gives it a 52-week high.
+MATURITY_SESSIONS = 200
+
+
+def maturing_report(result: pd.DataFrame, snapshots: dict, boundary: pd.Timestamp) -> pd.DataFrame:
+    """Names in the snapshot the engine has not yet given a 52-week high.
+
+    The FLAG is the engine's own decision -- High_52W is NaN exactly when a name
+    has fewer than MATURITY_SESSIONS sessions in its 52-week window -- so this
+    report and the published snapshot cannot disagree. The count and the date
+    are informational: sessions with a Close inside the window, and the
+    business-day estimate of when the shortfall closes ("around", since
+    exchange holidays are not modelled).
+
+    This replaces a waiting list. Young names are IN the universe already; the
+    night one crosses the line its RS, Stage and 52-week fields simply appear.
+    Nothing moves between lists because there is one list. This just says who
+    is next.
+    """
+    cols = ["Symbol", "Sessions_52W", "Sessions_To_Go", "Reaches_200_Around"]
+    if "High_52W" not in result.columns or result.empty:
+        return pd.DataFrame(columns=cols)
+    start = pd.Timestamp(boundary) - pd.Timedelta(weeks=52)
+    rows = []
+    for symbol in result.index[result["High_52W"].isna()]:
+        snap = snapshots.get(symbol)
+        if snap is None:
+            continue
+        close = snap.data["Close"]
+        n = int(close[(close.index > start) & (close.index <= boundary)].notna().sum())
+        to_go = max(MATURITY_SESSIONS - n, 1)
+        rows.append({"Symbol": symbol, "Sessions_52W": n, "Sessions_To_Go": to_go,
+                     "Reaches_200_Around": (pd.Timestamp(boundary) + pd.tseries.offsets.BDay(to_go)).date()})
+    return pd.DataFrame(rows, columns=cols).sort_values(["Sessions_To_Go", "Symbol"]).reset_index(drop=True)
+
+
+
 def published_boundary(path: Path) -> pd.Timestamp | None:
     """The session the currently published snapshot describes, if any.
 
@@ -790,6 +828,17 @@ def main() -> None:
 
     if failures:
         raise SystemExit("Independent research-output reconciliation failures:\n" + "\n".join(failures[:100]))
+
+    # Who is still maturing, from the engine's own verdict. Written beside the
+    # snapshot every run so the answer is always current without anyone asking.
+    maturing = maturing_report(result, snapshots, boundary)
+    maturing.to_csv(output_dir / "maturing.csv", index=False)
+    if len(maturing):
+        soon = maturing.head(3)
+        print(f"Maturing: {len(maturing)} names under {MATURITY_SESSIONS} sessions "
+              f"(next to cross: {', '.join(soon['Symbol'])} around {soon['Reaches_200_Around'].iloc[0]})")
+    else:
+        print(f"Maturing: none; every published name has {MATURITY_SESSIONS}+ sessions")
 
     print(f"Decision date: {decision.date()}")
     print(f"Yahoo history: {start.date()} to {end.date()} exclusive")

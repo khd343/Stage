@@ -30,6 +30,7 @@ OWNED = (
     "data/latest_research.csv",
     "data/previous_research.csv",
     "data/breadth_history.csv",
+    "data/maturing.csv",
     "data/snapshots/**",
     "data/price_panel.npz",
     "data/ind_niftytotalmarket_list.csv",

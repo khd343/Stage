@@ -23,6 +23,7 @@
 data/latest_research.csv     merge=ours
 data/previous_research.csv   merge=ours
 data/breadth_history.csv     merge=ours
+data/maturing.csv            merge=ours
 data/snapshots/**            merge=ours
 
 # The universe itself. Upstream still runs update_nse_universe.yml and keeps
