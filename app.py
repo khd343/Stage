@@ -70,20 +70,34 @@ def write(markup: str) -> None:
     st.markdown(theme.collapse_blank_lines(markup), unsafe_allow_html=True)
 
 
-@st.cache_data(ttl=1800, show_spinner="Reading the validated snapshot…")
+# FRESHNESS, NOT JUST CACHING. The deployed checkout only changes on a container
+# rebuild (D-2.1.7), and that rebuild is not ours to trigger reliably -- so the
+# snapshot is read from GitHub at runtime with the checkout as fallback, and
+# every cache below is either short-lived or KEYED ON THE SNAPSHOT'S DATE, so a
+# process can never hold yesterday's data beside today's. See D-2.1.9.
+SNAPSHOT_TTL_SECONDS = 600
+
+
+@st.cache_data(ttl=SNAPSHOT_TTL_SECONDS, show_spinner="Reading the validated snapshot…")
 def cached_snapshot():
-    """The committed snapshot. Small enough to serialise on every rerun."""
-    return load_snapshot()
+    """The published snapshot, refreshed from GitHub within ten minutes."""
+    return load_snapshot(remote=True)
 
 
-@st.cache_resource(show_spinner="Loading price history…")
-def cached_panel():
-    """The price panel, loaded once and held by reference.
+def _decision_key() -> str:
+    """The snapshot's session, as the cache key everything derived from it uses."""
+    stamp = cached_snapshot().decision_date
+    return "" if stamp is None else stamp.strftime("%Y-%m-%d")
 
-    Deliberately cache_resource, not cache_data: cache_data serialises its value
-    on every rerun, and the panel is by far the largest artifact. It is also
-    loaded lazily — only the two views that draw price history ask for it, so a
-    problem reading it degrades those two rather than the whole terminal.
+
+@st.cache_resource(ttl=3600, show_spinner="Loading price history…")
+def _cached_panel(decision_key: str):
+    """The price panel for ONE snapshot session, held by reference.
+
+    cache_resource, not cache_data: the panel is by far the largest artifact and
+    cache_data would serialise it on every rerun. The session is the key, so a
+    new snapshot fetches a new panel instead of reusing one that panel_matches
+    would reject -- which used to leave every chart withheld until a restart.
     """
     panel, error = load_price_panel()
     if panel is not None:
@@ -93,11 +107,19 @@ def cached_panel():
     return panel, error
 
 
-@st.cache_resource(show_spinner=False)
+def cached_panel():
+    return _cached_panel(_decision_key())
+
+
+@st.cache_resource(ttl=3600, show_spinner=False)
+def _cached_sparklines(sessions: int, decision_key: str):
+    panel, _ = _cached_panel(decision_key)
+    return {} if panel is None else panel.tails(sessions)
+
+
 def cached_sparklines(sessions: int = 63):
     """Trailing closes per symbol for the sparkline column."""
-    panel, _ = cached_panel()
-    return {} if panel is None else panel.tails(sessions)
+    return _cached_sparklines(sessions, _decision_key())
 
 
 SNAP = cached_snapshot()

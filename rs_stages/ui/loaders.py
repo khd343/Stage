@@ -40,6 +40,19 @@ PANEL_URL = os.environ.get(
     "https://github.com/khd343/Stage/releases/download/data-latest/price_panel.npz",
 )
 PANEL_TIMEOUT_SECONDS = 30
+
+#: Where the published data files are read from at runtime. The deployed
+#: checkout only changes when the container is rebuilt (D-2.1.7), and that
+#: rebuild is outside our control -- slow, skipped, or bypassed when the app
+#: wakes from sleep -- so a terminal reading its data from the checkout shows
+#: yesterday's session until something restarts it. The panel already avoids
+#: this by fetching from GitHub at runtime; the data files now do the same.
+#: Empty string disables remote reads. See D-2.1.9.
+DATA_URL = os.environ.get(
+    "RS_STAGES_DATA_URL",
+    "https://raw.githubusercontent.com/khd343/Stage/main/data",
+)
+DATA_TIMEOUT_SECONDS = 20
 BREADTH_PATH = DATA_DIR / "breadth_history.csv"
 
 #: Fields introduced by locked-spec v2.1. A snapshot published before that
@@ -116,6 +129,8 @@ class Snapshot:
     previous: pd.DataFrame | None = None
     breadth: pd.DataFrame | None = None
     missing: dict[str, str] = field(default_factory=dict)
+    #: "remote" when the data files came from GitHub, "local" from the checkout.
+    source: str = "local"
 
     @property
     def decision_date(self) -> pd.Timestamp | None:
@@ -141,7 +156,7 @@ class Snapshot:
         return all(column in self.research.columns for column in columns)
 
 
-def _read_research(path: Path, universe: pd.DataFrame) -> pd.DataFrame:
+def _read_research(path: "Path | io.BytesIO", universe: pd.DataFrame) -> pd.DataFrame:
     frame = pd.read_csv(path)
     frame["Symbol"] = frame["Symbol"].astype(str).str.strip()
 
@@ -272,15 +287,46 @@ def panel_matches(panel: PricePanel, research: pd.DataFrame) -> str | None:
     )
 
 
-def load_snapshot() -> Snapshot:
-    """Read every published artifact, recording whatever is unavailable."""
+def _published_set(remote: bool) -> tuple[dict[str, "io.BytesIO | Path | None"], str]:
+    """The three audit outputs, all from GitHub or all from the checkout.
+
+    Atomic on purpose. A mix -- today's research fetched remotely beside a
+    previous-session file left over in an older checkout -- would compare two
+    sessions the audit never paired, which is exactly the drift panel_matches
+    exists to refuse elsewhere. So any remote failure sends the WHOLE set to
+    the local files, and the caller is told which it got.
+    """
+    names = {"research": RESEARCH_PATH, "previous": PREVIOUS_PATH, "breadth": BREADTH_PATH}
+    if remote and DATA_URL:
+        fetched: dict[str, "io.BytesIO | Path | None"] = {}
+        try:
+            for key, path in names.items():
+                url = f"{DATA_URL.rstrip('/')}/{path.name}"
+                with urllib.request.urlopen(url, timeout=DATA_TIMEOUT_SECONDS) as response:
+                    fetched[key] = io.BytesIO(response.read())
+            return fetched, "remote"
+        except (urllib.error.URLError, OSError, ValueError):
+            pass
+    return {key: (path if path.exists() else None) for key, path in names.items()}, "local"
+
+
+def load_snapshot(remote: bool = False) -> Snapshot:
+    """Read every published artifact, recording whatever is unavailable.
+
+    ``remote=True`` reads the audit outputs from GitHub with the checkout as
+    fallback; the default reads the checkout only, so tests and offline work
+    never touch the network.
+    """
+    files, source = _published_set(remote)
     missing: dict[str, str] = {}
     # The same locked loader the audit uses, so the UI's universe *is* the
     # analytical universe. Reading the CSV raw here counted the DUMMY rows NSE
     # reserves for corporate actions, so the header advertised 752 constituents
     # while every figure beneath it was computed over 750.
     universe = load_nse_constituents_csv(UNIVERSE_PATH)
-    research = _read_research(RESEARCH_PATH, universe)
+    if files["research"] is None:
+        raise FileNotFoundError(f"{RESEARCH_PATH} is not published")
+    research = _read_research(files["research"], universe)
 
     absent = [column for column in V21_FIELDS if column not in research.columns]
     if absent:
@@ -302,9 +348,9 @@ def load_snapshot() -> Snapshot:
         )
 
     previous = None
-    if PREVIOUS_PATH.exists():
+    if files["previous"] is not None:
         try:
-            previous = _read_research(PREVIOUS_PATH, universe)
+            previous = _read_research(files["previous"], universe)
         except (OSError, ValueError, KeyError) as exc:
             missing["previous"] = f"The previous-session snapshot could not be read ({type(exc).__name__})."
     else:
@@ -314,9 +360,9 @@ def load_snapshot() -> Snapshot:
         )
 
     breadth = None
-    if BREADTH_PATH.exists():
+    if files["breadth"] is not None:
         try:
-            breadth = pd.read_csv(BREADTH_PATH)
+            breadth = pd.read_csv(files["breadth"])
             breadth["Date"] = pd.to_datetime(breadth["Date"], errors="coerce")
             breadth = breadth.dropna(subset=["Date"]).sort_values("Date")
         except (OSError, ValueError) as exc:
@@ -334,4 +380,5 @@ def load_snapshot() -> Snapshot:
         previous=previous,
         breadth=breadth,
         missing=missing,
+        source=source,
     )

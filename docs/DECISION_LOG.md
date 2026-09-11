@@ -190,6 +190,40 @@ guard was verified to fail against the configuration it replaced.
 
 ## 2026-08-25 — v2.2 decisions
 
+### D-2.1.10 \u2014 The terminal reads its data from GitHub at runtime
+
+**Problem.** The deployed checkout changes only when the container is rebuilt
+(D-2.1.7). That rebuild follows a commit and is not ours to trigger reliably:
+it is slow, sometimes skipped, and bypassed entirely when Community Cloud
+wakes a sleeping app on its old container. So a terminal that reads
+`data/*.csv` from the checkout shows yesterday's session until something
+restarts it \u2014 "there is yesterday's data in the cache". The price panel never
+had this problem because it is fetched from the release at runtime; the data
+files did not do the same.
+
+**A second defect in the same place.** The panel was held in `cache_resource`
+with no ttl and no key \u2014 for the life of the process. When the snapshot did
+move, the old panel failed `panel_matches` against it and nothing ever fetched
+another, so every chart was withheld with a "re-run the audit" notice until a
+restart. Correct refusal, permanent consequence.
+
+**Resolution.** `load_snapshot(remote=True)` reads the three audit outputs
+from `RS_STAGES_DATA_URL` (raw GitHub, `main/data`) with the checkout as
+fallback; the default stays local so tests and offline work never touch the
+network. The read is **atomic**: any remote failure sends the whole set to the
+checkout, because today's research beside an older checkout's previous file
+would compare two sessions the audit never paired. `Snapshot.source` says
+which was used. In the app the snapshot cache ttl is ten minutes (raw GitHub's
+own CDN adds up to five), and the panel and sparkline caches are keyed on the
+snapshot's session and given a one-hour ttl through thin wrappers, so the
+seven call sites are untouched and no process can hold yesterday's panel beside
+today's table.
+
+**Not done, on purpose.** The universe file still reads from the checkout: it
+changes only through commits, which do rebuild the container. And no
+"refresh" button \u2014 the failure was that freshness depended on a person or a
+platform doing something; the fix is that it depends on neither.
+
 ### D-2.2.1 — A third source authority
 
 The screen implemented two authorities: Weinstein for stage structure and
