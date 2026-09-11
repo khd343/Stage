@@ -6,8 +6,16 @@ still listed with history covering the period, so the detector can be measured
 against a reading made by the method's author rather than against our own
 fixtures.
 
-This cannot run in the development sandbox: Yahoo is unreachable there. It runs
-on a CI runner, which has the same network access the nightly audit uses.
+Run locally, on demand, with network access:
+
+    PYTHONPATH=. python scripts/validate_vcp_footprints.py
+
+It once had its own workflow. That was removed on 2026-09-11: every detector it
+checks belongs to an investigation the decision log closed (D-2.3.2, "five
+attempts is enough"), so the run FAILS BY DESIGN, and a manual red button that
+does not say so is a trap -- its first-ever run was mistaken for a production
+defect. The script stays because the log says a sixth attempt should start from
+evidence rather than from prose, and this is the evidence.
 
 The breakout dates in the source are given to the month, so rather than guess a
 session this scans candidate decision dates across the month and reports the

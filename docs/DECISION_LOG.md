@@ -393,6 +393,21 @@ caution. A test asserts the recovery detector stays out of the published pivot,
 and a second pins the failure so a sixth attempt starts from evidence rather
 than from this prose.
 
+### D-2.3.3 — The VCP validation workflow removed; the script stays
+
+`validate_vcp.yml` ran for the first time on 11 Sep 2026 and failed, and the
+failure was read as a production defect. It was not: the script checks
+`vcp_footprint`, one of the five closed attempts above, against MELI 2007 and
+NFLX 2009, and reports "no base" for both — the cascade's restart-on-deeper-leg
+rule discards the real base and leaves a one-week tail that fails
+`VCP_MIN_BASE_WEEKS`. That is D-2.3.2's recorded outcome, reproduced. The
+published VCP fields come from the block detector and `vcp_pivot`, which this
+never touched.
+
+A manual workflow that fails by design, with nothing saying so, is a trap. The
+workflow is removed. The script is kept and its docstring now says why it
+fails, because this entry says a sixth attempt starts from evidence.
+
 ### D-2.2.8 — A snapshot's date can split across the universe, and now says so
 
 The header showed one "Validated snapshot" date, computed as the max of a
