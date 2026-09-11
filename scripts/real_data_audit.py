@@ -10,6 +10,7 @@ import pandas as pd
 
 from rs_stages.actions import with_actions
 from rs_stages.market import breadth_history_from_trends
+from rs_stages.track_record import archive_snapshot
 from rs_stages.pipeline import acquire_universe_histories
 from rs_stages.screener import analyze_universe, analyze_universe_with_trend
 from rs_stages.quant import rs_blend, rs_returns, calendar_asof
@@ -828,6 +829,13 @@ def main() -> None:
 
     if failures:
         raise SystemExit("Independent research-output reconciliation failures:\n" + "\n".join(failures[:100]))
+
+    # THE FORWARD RECORD. Frozen under the session it describes, only after the
+    # reconciliation gate, first write wins. This is the one output of the audit
+    # that can ever be graded, because it is the only one never overwritten.
+    frozen = archive_snapshot(result, output_dir / "snapshots", boundary)
+    print(f"Archived {frozen.name} to the forward record." if frozen else
+          f"Snapshot for {boundary.date()} already archived; left untouched.")
 
     # Who is still maturing, from the engine's own verdict. Written beside the
     # snapshot every run so the answer is always current without anyone asking.

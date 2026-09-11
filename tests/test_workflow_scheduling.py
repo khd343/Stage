@@ -96,7 +96,8 @@ def test_the_audit_is_the_only_workflow_that_writes_published_data():
     the schedule that revives it. If it ever learns to write under data/, it
     becomes a second publisher and this ordering no longer holds.
     """
-    assert set(_pushing_workflows()) == {"real_data_audit.yml", "keepalive.yml"}
+    assert set(_pushing_workflows()) == {"real_data_audit.yml", "keepalive.yml",
+                                         "monthly_track_record.yml"}
 
     # Comments stripped first. An earlier version of this check matched the bare
     # string and failed on the workflow's own comment explaining that the AUDIT
@@ -105,6 +106,17 @@ def test_the_audit_is_the_only_workflow_that_writes_published_data():
                         _workflows()["keepalive.yml"].splitlines())
     assert "data/" not in code, "the keepalive must never write published data"
     assert "git add .keepalive" in code, "the keepalive must stage only its own timestamp"
+
+    # The record job also pushes, and may write exactly one file under data/:
+    # the record itself. Everything the audit publishes stays the audit's.
+    rec = chr(10).join(line.split("#", 1)[0] for line in
+                       _workflows()["monthly_track_record.yml"].splitlines())
+    assert "git add data/track_record.csv" in rec
+    # Paths, not words: the step is NAMED "Grade aged snapshots" and that is
+    # prose. What must never appear is a path the audit publishes.
+    for theirs in ("data/latest_research", "data/previous_research", "data/breadth_history",
+                   "data/maturing", "data/snapshots", "data/price_panel"):
+        assert theirs not in rec, f"the record job must never write the audit's {theirs}"
 
 
 def _weekly_minutes(text: str) -> set[int]:

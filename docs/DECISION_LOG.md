@@ -912,6 +912,47 @@ question about the *rule*, not an invitation to change the *boundary*. A
 recommendation that widens what a system is about needs the owner's yes on
 that specific point, not a general "proceed".
 
+## 2026-09-11 — The forward record
+
+### D-2.4.1 — Nothing this system published could ever be graded. Now it can.
+
+**Problem.** Every run overwrote the last. The one `BUY★` the system
+emitted on 28 Aug is gone; no signal it has ever produced can be checked
+against what happened next. The honest answer to *does this work* was not
+"we don't know" but "no data exists that could answer".
+
+**Resolution.** `rs_stages/track_record.py` + `scripts/grade_track_record.py`
++ `monthly_track_record.yml`, built on one idea: a forecast is evidence only
+if it was written before its outcome existed and never edited after.
+
+* **Archive.** Each validated snapshot is frozen as
+  `data/snapshots/<session>.csv.gz` — the 14 columns every cohort and grade
+  can be built from (~64 KB/day, ~16 MB/year), written only after the
+  reconciliation gate, keyed on the session not the run, first write wins.
+* **Pre-registered cohorts.** `universe` (the control), `buy_star`,
+  `stage2_rs80`, `trend_template`, `breakout_confirmed`; horizons 4, 8 and 13
+  weeks; benchmarks the universe median and Nifty 500. Pinned verbatim by a
+  test, and `rules_version()` rides in every graded row so a changed rule is
+  visible in the data. Changing one is a new record, never an edit.
+* **Single basis.** Forward returns take both endpoints from one fresh price
+  series per symbol — never the archived Close, which was adjusted as of its
+  day while the download is adjusted as of today; one split between them would
+  make the return a fiction. Pinned structurally.
+* **Coverage is recorded.** `n` and `n_priced` per row. A symbol Yahoo no
+  longer knows is a visible hole; a cohort whose losers vanished would
+  otherwise grade as a winner.
+* **Append-only.** A (snapshot, horizon, cohort) row is never recomputed.
+  Running the grader twice writes nothing the second time.
+
+**The mistake designed out.** Results will be noisy and arrive in months. The
+one act that makes a forward record worthless is tuning `RS >= 80` to
+`>= 75` because it looked better. The cohort pin exists so that act fails a
+test instead of quietly succeeding.
+
+**Timing.** First archive: the next audit. First 4-week grades: mid October;
+13-week: mid December. Until then the monthly job prints that nothing is
+gradeable and writes nothing.
+
 ## Syncing from upstream (2026-08-26)
 
 This repo tracks `Pareshking/RS-Stages` as `upstream`. To take their code changes:

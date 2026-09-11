@@ -1,0 +1,63 @@
+name: Monthly Track Record
+
+# Grades every archived snapshot that has aged past a horizon, and appends the
+# results to data/track_record.csv. Append-only by construction: a grade once
+# written is never recomputed, so a re-run writes nothing new.
+#
+# 03:17 UTC on the 2nd of the month -- 08:47 IST. Off the contended minute,
+# outside the 00:00-02:30 UTC band where every dropped slot we have measured
+# lives, and a day after the keepalive so two pushing jobs never share a slot.
+# workflow_dispatch for a manual grade whenever one is wanted.
+on:
+  schedule:
+    - cron: "17 3 2 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  grade:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements.txt
+
+      - name: Grade aged snapshots
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python scripts/grade_track_record.py
+
+      - name: Publish the record
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/track_record.csv
+          if git diff --cached --quiet; then
+            echo "Record unchanged; nothing to publish."
+            exit 0
+          fi
+          git commit -m "record: grade aged snapshots $(date -u +%Y-%m-%d)"
+          # Rebase-and-retry: the audit can land while this job is between
+          # commit and push. This job writes only data/track_record.csv and the
+          # audit never touches it, so a rebase can never conflict.
+          for attempt in 1 2 3; do
+            if git push; then
+              echo "Record published on attempt $attempt."
+              exit 0
+            fi
+            echo "Push rejected; rebasing onto origin/main (attempt $attempt)."
+            git pull --rebase origin main
+          done
+          echo "Could not publish the record after 3 attempts." >&2
+          exit 1

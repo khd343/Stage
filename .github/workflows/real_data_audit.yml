@@ -167,7 +167,8 @@ jobs:
           git add data/latest_research.csv \
                   data/previous_research.csv \
                   data/breadth_history.csv \
-                  data/maturing.csv
+                  data/maturing.csv \
+                  data/snapshots
           if git diff --cached --quiet; then
             echo "Validated research snapshot unchanged."
             exit 0
@@ -209,4 +210,5 @@ jobs:
             data/price_panel.npz
             data/breadth_history.csv
             data/maturing.csv
+            data/snapshots/
           retention-days: 30
