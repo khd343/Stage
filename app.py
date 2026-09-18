@@ -1010,6 +1010,16 @@ def page_stock() -> None:
         f'<span style="color:var(--sub)">{ui.esc(row.get("Action_Reason", ""))}</span></div>'
     )
 
+    # Directly under the decision, because the decision is the thing it
+    # contradicts: a demerged parent reads SELL on a fall that never happened.
+    notice = ui.corporate_action_notice(
+        row.get("Corporate_Action"),
+        row.get("Corporate_Action_Date", ""),
+        row.get("Corporate_Action_Kind", ""),
+    )
+    if notice:
+        write(notice)
+
     _stock_chart(symbol, row)
 
     left, right = st.columns(2, gap="medium")

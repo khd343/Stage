@@ -385,6 +385,36 @@ def missing_notice(title: str, detail: str) -> str:
     return f'<div class="ws-missing"><b>{esc(title)}</b><br>{esc(detail)}</div>'
 
 
+def corporate_action_notice(flagged: object, when: str, looks_like: str) -> str:
+    """Warn that a row's history contains a corporate action, not a price move.
+
+    The engine reports the prices it was given, and yfinance restates splits
+    but not demergers. So a demerged parent reads as a catastrophic decline:
+    Stage 4, SELL, relative strength in the bottom decile, down 60% from a
+    52-week high that is the pre-demerger price. Every one of those numbers is
+    arithmetically correct and none of them means what it appears to mean.
+
+    Returns empty for a clean row, and for a row from a snapshot frozen before
+    the flag existed -- the app reads published CSVs it did not write.
+    """
+    if flagged is None or flagged is False:
+        return ""
+    if isinstance(flagged, float) and flagged != flagged:  # NaN
+        return ""
+    if flagged is not True and str(flagged).strip().lower() not in {"true", "1"}:
+        return ""
+    stamp = f" on {esc(str(when))}" if str(when).strip() else ""
+    guess = f" It resembles a {esc(str(looks_like))}." if str(looks_like).strip() else ""
+    return (
+        '<div class="ws-missing"><b>Corporate action in this history'
+        f'{stamp}.</b><br>A single session moved more than a circuit limit allows, '
+        "so it is not a price move.{guess} The stage, the returns and the 52-week "
+        "high are measured across it and are not a decline in the business. "
+        "Nothing here has been corrected."
+        "</div>"
+    ).replace("{guess}", guess)
+
+
 # --- the dense screener table ----------------------------------------------
 
 #: Column key -> (header label, alignment, hide-on-mobile)

@@ -912,6 +912,94 @@ question about the *rule*, not an invitation to change the *boundary*. A
 recommendation that widens what a system is about needs the owner's yes on
 that specific point, not a general "proceed".
 
+## 2026-09-18 — Corporate actions, and a wider archive
+
+### D-2.4.2 — The audit checks its arithmetic, not its inputs
+
+**Problem.** The reconciliation re-implements every metric independently and
+compares. That proves the calculation is right. It cannot prove the price was
+real, because both implementations read the same price and agree perfectly on
+the wrong answer.
+
+NSE circuit bands cap almost everything at 20%, so a session moving 35% is not
+a price move. Measured on this repo's own published panel (342 sessions, 750
+symbols): six such sessions, five matching no clean split ratio, which makes
+them demergers — the case `auto_adjust` does not restate. On the snapshot of
+17 Sep 2026 four still sat inside their 52-week window:
+
+| Symbol | Event | Published reading |
+|---|---|---|
+| SKFINDIA | 2025-10-15, −55% | Stage 4, SELL, RS 18, "down 69% from the 52-week high" |
+| TMPV | 2025-10-14, −40% | Stage 4, SELL, RS 16 |
+| VEDL | 2026-04-30, −65% | Stage 4, SELL, RS 2 |
+| TRIVENI | 2026-07-22, −42% | Stage 4, SELL, RS 2 |
+
+Against a universe median RS of 50. None of them declined. The holder received
+shares in the new entity.
+
+**Resolution.** `rs_stages/corporate_actions.py` detects and classifies. It
+never rewrites a price: telling a split from a demerger needs information the
+price series does not carry, and a wrong correction applied silently is worse
+than a flagged anomaly.
+
+* **On the row.** `Corporate_Action`, `_Date` and `_Kind`, written every run so
+  no consumer has to guard against a column that appears only on bad days.
+  Added AFTER `with_actions` on purpose — the flag must not be able to move an
+  Action, because the Action is what the forward record grades.
+* **Beside the snapshot.** `data/corporate_actions.csv`, the way the maturing
+  list is written.
+* **In the app.** A banner directly under the action ribbon, because the ribbon
+  is the thing it contradicts.
+* **In the grader.** A forward return whose window contains an action returns
+  NaN: counted in `n`, absent from `n_priced`. One series is not enough, it
+  must also be continuous. The interval is half-open at the start, since an
+  action ON the snapshot day leaves both endpoints on the same basis.
+* **The window is 52 weeks**, because that is exactly what the distorted fields
+  read. An older action has aged out and flagging it would cry wolf forever.
+  ABFRL and JSLL carry events from May and June 2025 and are correctly silent.
+
+**The guard.** Nine names cannot genuinely move 35% on one session; that is the
+vendor serving unadjusted prices. Counted at the boundary session only, a
+backlog never trips it. Measured base rate: 0.04 events per session.
+
+**Timing.** Before mid-October, when the first grades freeze. The record is
+append-only, so a fiction written once can never be taken back.
+
+### D-2.4.3 — The archive is wide; the rules stay narrow
+
+**Problem.** The archive froze 14 columns and discarded 52 that the engine had
+already computed. Curating that list is guessing which question matters in
+2027, and a column not written is unanswerable forever.
+
+**Resolution.** Keep everything except three static lookups — company name,
+industry and series never change and already live in the version-controlled
+universe file, so any snapshot can be joined back to them. Floats are rounded
+to four decimals on the way in, which is a hundredth of a paisa and which
+nothing reads as a number, since the cross-basis rule forbids the archived
+Close from being a return endpoint.
+
+| Scope | Cost |
+|---|---|
+| 14 columns, raw | 15 MB/year |
+| 66 columns, raw | 123 MB/year |
+| **66 columns, rounded (shipped)** | **55 MB/year** |
+
+**The distinction that matters.** Archiving evidence and pre-registering a
+hypothesis are different acts, and only the second is graded. The cohorts stay
+at five. A wide archive lets 2027 ask new questions as exploration; it must not
+quietly become a wide set of claims, which is the multiple-comparisons version
+of the threshold-tuning trap D-2.4.1 exists to prevent.
+
+So `rules_version()` no longer hashes the archive schema. `GRADE_COLUMNS`
+became `REQUIRED_COLUMNS`, the minimum that makes a snapshot gradeable, pinned
+against the cohort rules themselves: the archive may grow freely and can never
+lose a column a cohort reads. The four snapshots frozen before this are never
+rewritten, and still grade.
+
+**Verification.** 44 new tests; 11 mutations run, 11 caught. The detector
+reproduces all six real events exactly, and the flag marks the four names still
+inside the window and neither of the two that have aged out.
+
 ## 2026-09-11 — The forward record
 
 ### D-2.4.1 — Nothing this system published could ever be graded. Now it can.

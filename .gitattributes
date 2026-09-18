@@ -24,6 +24,7 @@ data/latest_research.csv     merge=ours
 data/previous_research.csv   merge=ours
 data/breadth_history.csv     merge=ours
 data/maturing.csv            merge=ours
+data/corporate_actions.csv   merge=ours
 data/track_record.csv        merge=ours
 data/snapshots/**            merge=ours
 

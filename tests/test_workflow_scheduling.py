@@ -115,7 +115,8 @@ def test_the_audit_is_the_only_workflow_that_writes_published_data():
     # Paths, not words: the step is NAMED "Grade aged snapshots" and that is
     # prose. What must never appear is a path the audit publishes.
     for theirs in ("data/latest_research", "data/previous_research", "data/breadth_history",
-                   "data/maturing", "data/snapshots", "data/price_panel"):
+                   "data/maturing", "data/snapshots", "data/price_panel",
+                   "data/corporate_actions"):
         assert theirs not in rec, f"the record job must never write the audit's {theirs}"
 
 

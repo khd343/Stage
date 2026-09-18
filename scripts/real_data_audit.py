@@ -8,6 +8,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+from rs_stages import corporate_actions as corp
 from rs_stages.actions import with_actions
 from rs_stages.market import breadth_history_from_trends
 from rs_stages.track_record import archive_snapshot
@@ -143,6 +144,62 @@ def maturing_report(result: pd.DataFrame, snapshots: dict, boundary: pd.Timestam
                      "Reaches_200_Around": (pd.Timestamp(boundary) + pd.tseries.offsets.BDay(to_go)).date()})
     return pd.DataFrame(rows, columns=cols).sort_values(["Sessions_To_Go", "Symbol"]).reset_index(drop=True)
 
+
+
+def corporate_action_report(snapshots: dict, boundary: pd.Timestamp, universe_size: int) -> pd.DataFrame:
+    """Suspect sessions inside the 52-week window, and the guard against a mass failure.
+
+    THE WINDOW IS 52 WEEKS because that is what the distorted metrics read: the
+    52-week high and low, the distance from the high, and the 12-month leg of
+    the relative-strength blend. An action older than that has aged out of every
+    published field, the row is sound again, and flagging it would cry wolf
+    forever.
+
+    NOTHING IS CORRECTED. Telling a split from a demerger needs information the
+    price series does not carry, and yfinance restates the first but not the
+    second. A wrong correction applied silently is worse than a flagged
+    anomaly, so this says which rows are not to be believed and stops there.
+
+    THE GUARD ASKS ABOUT THIS SESSION ONLY. A backlog of actions from different
+    weeks is ordinary. A dozen names moving 35% on ONE session is not a market
+    event -- circuit limits forbid it -- it is the vendor serving unadjusted
+    prices, and publishing that would freeze fiction into an archive whose
+    first write wins.
+    """
+    boundary = pd.Timestamp(boundary)
+    closes = {}
+    for symbol, snap in snapshots.items():
+        data = getattr(snap, "data", None)
+        if data is not None and "Close" in getattr(data, "columns", []):
+            closes[symbol] = data["Close"]
+    found = corp.scan(closes, since=boundary - pd.Timedelta(weeks=52))
+    today = 0 if found.empty else int((pd.to_datetime(found["Date"]) == boundary).sum())
+    if corp.is_mass_failure(today, universe_size):
+        raise SystemExit(
+            f"{today} corporate-action sized moves on {boundary.date()} across {universe_size} "
+            "symbols. Circuit limits make that impossible as price action; the provider is "
+            "serving unadjusted prices. Refusing to publish."
+        )
+    return found
+
+
+def flag_corporate_actions(result: pd.DataFrame, events: pd.DataFrame) -> pd.DataFrame:
+    """Mark rows distorted by a corporate action, with the date of the latest one.
+
+    Written every run whether or not anything was found: a column that appears
+    only on bad days is a column every consumer has to guard against missing.
+    """
+    out = result.copy()
+    latest: dict[str, tuple[str, str]] = {}
+    if events is not None and not events.empty:
+        newest = events.sort_values("Date").groupby("Symbol").tail(1)
+        latest = {str(r.Symbol): (pd.Timestamp(r.Date).date().isoformat(), str(r.Looks_Like))
+                  for r in newest.itertuples()}
+    found = [latest.get(str(symbol), ("", "")) for symbol in out.index]
+    out["Corporate_Action"] = [bool(stamp) for stamp, _ in found]
+    out["Corporate_Action_Date"] = [stamp for stamp, _ in found]
+    out["Corporate_Action_Kind"] = [kind for _, kind in found]
+    return out
 
 
 def published_boundary(path: Path) -> pd.Timestamp | None:
@@ -729,15 +786,35 @@ def main() -> None:
 
     result = result.join(universe.set_index("Symbol"), how="left", rsuffix="_NSE")
     result = with_actions(result)
+
+    # Corporate actions. Flagged on the row and listed beside the snapshot,
+    # never corrected. Added AFTER with_actions on purpose: the flag must not
+    # be able to change an Action, because the Action is what the forward
+    # record grades and this signal has never been validated forward.
+    events = corporate_action_report(snapshots, boundary, len(result))
+    result = flag_corporate_actions(result, events)
     result.to_csv(args.output)
 
     output_dir = Path(args.output).resolve().parent
+    events.to_csv(output_dir / "corporate_actions.csv", index=False)
+    if len(events):
+        recent = events.head(3)
+        print(f"Corporate actions: {events['Symbol'].nunique()} name(s) distorted inside the "
+              f"52-week window, e.g. " + ", ".join(
+                  f"{r.Symbol} {r.Move_Pct:+.0f}% on {pd.Timestamp(r.Date).date()} ({r.Looks_Like})"
+                  for r in recent.itertuples()))
+    else:
+        print("Corporate actions: none inside the 52-week window.")
 
     # Previous-session snapshot: same columns, boundary moved back one session.
     previous_path = output_dir / "previous_research.csv"
     if not previous_result.empty:
         previous_result = previous_result.join(universe.set_index("Symbol"), how="left", rsuffix="_NSE")
         previous_result = with_actions(previous_result)
+        previous_result = flag_corporate_actions(
+            previous_result,
+            corporate_action_report(previous_snapshots, previous_boundary, len(previous_result)),
+        )
         previous_result.to_csv(previous_path)
 
     # Price panel: Close only. The moving averages are deliberately not stored —

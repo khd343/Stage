@@ -80,14 +80,14 @@ def _tmpdir() -> pathlib.Path:
     return d
 
 
-def test_archive_freezes_the_grading_columns_and_first_write_wins():
+def test_archive_freezes_the_snapshot_and_first_write_wins():
     d = _tmpdir()
     result = _frame().set_index("Symbol")            # the audit's frame is Symbol-indexed
     day = pd.Timestamp("2026-09-10")
     path = tr.archive_snapshot(result, d, day)
     assert path is not None and path.name == "2026-09-10.csv.gz"
     back = tr.read_snapshot(path)
-    assert list(back.columns) == tr.GRADE_COLUMNS
+    assert list(back.columns) == list(_frame().columns), "every column, in order"
     assert len(back) == 5 and set(back["Symbol"]) == {"A", "B", "C", "D", "E"}
 
     first = path.read_bytes()
@@ -133,7 +133,8 @@ def test_the_archived_close_is_never_a_return_endpoint():
     """
     import inspect
     params = list(inspect.signature(tr.forward_return).parameters)
-    assert params == ["closes", "start", "weeks"]
+    assert params[:3] == ["closes", "start", "weeks"], "a series and nothing else"
+    assert "frame" not in params and "archived" not in params
     src = inspect.getsource(tr.grade_snapshot)
     assert 'frame["Close"]' not in src and "frame.Close" not in src
 
@@ -194,3 +195,124 @@ def test_the_grading_workflow_only_ever_publishes_the_record():
     assert "data/snapshots" not in code and "latest_research" not in code, "the record job never touches the audit's outputs"
     assert "git pull --rebase" in code, "it pushes, so it must survive a moved main"
     assert "workflow_dispatch" in code
+
+
+# --- corporate actions must never become a forward return ----------------------
+
+def _split_series() -> pd.Series:
+    """A clean advance with a 1:2 split at position 45."""
+    idx = pd.bdate_range("2026-09-01", periods=80)
+    v = np.linspace(100.0, 140.0, 80)
+    v[45:] = v[45:] / 2.0
+    return pd.Series(v, index=idx)
+
+
+def test_a_forward_return_across_a_corporate_action_is_refused():
+    """The endpoints sit on different bases, so the return is a fiction. The
+    record is append-only, so a fiction written once is permanent."""
+    s = _split_series()
+    start, split_day = s.index[0], s.index[45]
+    assert start + pd.Timedelta(weeks=13) > split_day, "fixture: 13w must span the split"
+    assert np.isnan(tr.forward_return(s, start, 13))
+
+
+def test_a_forward_return_clear_of_a_corporate_action_is_computed():
+    s = _split_series()
+    start, split_day = s.index[0], s.index[45]
+    assert start + pd.Timedelta(weeks=4) < split_day, "fixture: 4w must end before the split"
+    assert np.isfinite(tr.forward_return(s, start, 4))
+
+
+def test_a_corporate_action_on_the_snapshot_day_does_not_block_the_return():
+    """Both endpoints are then on the post-split basis. Refusing this would
+    discard a year of gradeable rows for any name that split on a snapshot day."""
+    s = _split_series()
+    assert np.isfinite(tr.forward_return(s, s.index[45], 4))
+
+
+def test_a_refused_return_is_a_visible_coverage_hole_not_a_silent_drop():
+    f = _frame()
+    idx = pd.bdate_range("2026-09-01", periods=60)
+    good = pd.Series(np.linspace(100, 130, 60), index=idx)
+    tainted = pd.Series(np.linspace(100, 130, 60), index=idx)
+    tainted.iloc[20:] = tainted.iloc[20:] / 2.0
+    closes = {"A": tainted, "B": good, "C": good, "D": good, "E": good}
+    bench = pd.Series(np.linspace(1000, 1050, 60), index=idx)
+    out = tr.grade_snapshot(f, closes, bench, idx[0], 4)
+    uni = out[out.cohort == "universe"].iloc[0]
+    assert uni.n == 5 and uni.n_priced == 4, "the tainted name is counted, not priced"
+    star = out[out.cohort == "buy_star"].iloc[0]
+    assert star.n == 1 and star.n_priced == 0, "a cohort can be entirely unpriceable"
+    assert pd.isna(star.median_return_pct)
+
+
+# --- the archive keeps evidence; the rules stay narrow --------------------------
+
+def _wide_frame() -> pd.DataFrame:
+    f = _frame()
+    f["ATR_Pct"] = [3.601234567, 2.0, 1.0, 5.0, 4.0]
+    f["R12M"] = [32.349999, 10.0, -5.0, -20.0, 0.0]
+    f["Company Name"] = ["A Ltd", "B Ltd", "C Ltd", "D Ltd", "E Ltd"]
+    f["Industry"] = ["Steel"] * 5
+    f["Series"] = ["EQ"] * 5
+    return f
+
+
+def test_the_archive_keeps_every_column_the_engine_produced():
+    """Curating now is guessing which question matters in 2027. Storage is
+    cheap; a column not written is unanswerable forever."""
+    d = _tmpdir()
+    path = tr.archive_snapshot(_wide_frame(), d, pd.Timestamp("2026-09-10"))
+    back = tr.read_snapshot(path)
+    assert "ATR_Pct" in back.columns and "R12M" in back.columns
+    assert set(tr.REQUIRED_COLUMNS) <= set(back.columns)
+
+
+def test_the_archive_drops_only_the_static_lookups():
+    """Company name, industry and series never change and already live in the
+    versioned universe file, so archiving them daily buys nothing."""
+    d = _tmpdir()
+    back = tr.read_snapshot(tr.archive_snapshot(_wide_frame(), d, pd.Timestamp("2026-09-10")))
+    assert tr.ARCHIVE_EXCLUDE == {"Company Name", "Industry", "Series"}
+    for dropped in tr.ARCHIVE_EXCLUDE:
+        assert dropped not in back.columns
+
+
+def test_the_archive_rounds_floats_so_a_wide_snapshot_stays_affordable():
+    """Four decimals on a rupee price is a hundredth of a paisa. Nothing in the
+    record reads the archived Close as a number, by the cross-basis rule."""
+    d = _tmpdir()
+    back = tr.read_snapshot(tr.archive_snapshot(_wide_frame(), d, pd.Timestamp("2026-09-10")))
+    assert back.loc[0, "ATR_Pct"] == pytest.approx(3.6012)
+    assert back.loc[0, "R12M"] == pytest.approx(32.35)
+
+
+def test_every_column_a_cohort_reads_must_be_required():
+    """The archive may grow freely, but it can never lose a column a cohort
+    needs, or a snapshot would be frozen and ungradeable."""
+    import inspect
+    src = inspect.getsource(tr.cohort_members)
+    for column in ("Action", "Stage", "RS_Score", "Trend_Template_Pass", "Breakout_Confirmed"):
+        assert f'"{column}"' in src, "fixture drift"
+        assert column in tr.REQUIRED_COLUMNS, f"{column} is read by a cohort but not required"
+
+
+def test_the_rules_version_ignores_the_archive_schema(monkeypatch):
+    """Widening the archive is not a rule change. If it moved the hash, every
+    later row would claim the rules had changed when they had not."""
+    before = tr.rules_version()
+    monkeypatch.setattr(tr, "ARCHIVE_EXCLUDE", frozenset({"Series"}))
+    assert tr.rules_version() == before
+    monkeypatch.setitem(tr.COHORTS, "buy_star", "Action == 'BUY'")
+    assert tr.rules_version() != before, "a cohort change must still move it"
+
+
+def test_a_narrow_snapshot_from_before_the_widening_still_grades():
+    """Four snapshots were frozen with fourteen columns. First write wins, so
+    they are never rewritten, and they must keep grading."""
+    d = _tmpdir()
+    narrow = _frame()[["Symbol", "Date", "Close", "Action", "Stage", "RS_Score",
+                       "Trend_Template_Pass", "Breakout_Confirmed"]]
+    path = tr.archive_snapshot(narrow, d, pd.Timestamp("2026-09-10"))
+    back = tr.read_snapshot(path)
+    assert list(tr.cohort_members(back, "buy_star")) == ["A"]

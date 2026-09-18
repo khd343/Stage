@@ -17,6 +17,13 @@ edited after. So:
   * APPEND ONLY -- a grade, once written, is never recomputed. Coverage is
                    recorded so a symbol that died is a visible hole, not a
                    silent omission.
+
+The archive is deliberately WIDE and the rules are deliberately NARROW. Keeping
+a column costs kilobytes; not keeping it costs the question, permanently. But a
+wide archive must not become a wide set of claims -- archiving evidence and
+pre-registering a hypothesis are different acts, and only the second one is
+graded. So ARCHIVE_EXCLUDE may shrink freely while COHORTS stays fixed, and
+rules_version() ignores the archive schema entirely.
 """
 from __future__ import annotations
 
@@ -29,15 +36,34 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-#: The columns archived per snapshot. Enough to rebuild every cohort and grade
-#: every signal the system emits; none of the derived intermediates. Measured:
-#: ~64 KB/day gzipped, ~16 MB/year.
-GRADE_COLUMNS = [
+from rs_stages.corporate_actions import spans_discontinuity
+
+#: The minimum a snapshot must carry to be gradeable at all: identity, plus
+#: every column a pre-registered cohort reads. Archiving is refused without
+#: these, because a snapshot frozen without them can never be graded and first
+#: write wins, so the loss is permanent. A test pins this against the cohort
+#: rules themselves.
+REQUIRED_COLUMNS = [
     "Symbol", "Date", "Close", "Action", "Stage", "RS_Score",
-    "Trend_Template_Score", "Trend_Template_Pass", "Above_MA_30W",
-    "Pct_From_52W_High", "VCP_Contractions", "Breakout", "Breakout_Confirmed",
-    "Volume_Ratio",
+    "Trend_Template_Pass", "Breakout_Confirmed",
 ]
+
+#: Everything else the engine produced is archived too. Curating the list now
+#: means guessing which question matters in 2027, and this repo has a standing
+#: lesson about confident predictions of what the data will show. A column not
+#: written is unanswerable forever; a column written and never used costs
+#: kilobytes.
+#:
+#: These three are the exception, and only because they are genuinely free to
+#: recover: they never change, and they already live in the version-controlled
+#: universe file, so any historical snapshot can be joined back to them.
+ARCHIVE_EXCLUDE = frozenset({"Company Name", "Industry", "Series"})
+
+#: Floats are rounded on the way in. Four decimals on a rupee price is a
+#: hundredth of a paisa, and nothing reads the archived Close as a number --
+#: the cross-basis rule forbids it. Measured over the live 1,784-row snapshot:
+#: 63 columns raw cost 123 MB/year, rounded 63 MB/year.
+ARCHIVE_DECIMALS = 4
 
 #: Calendar weeks forward at which each snapshot is graded.
 HORIZONS_WEEKS = (4, 8, 13)
@@ -72,7 +98,7 @@ TRACK_COLUMNS = [
 def rules_version() -> str:
     """A fingerprint of everything that defines a grade. Changes when the rules do."""
     blob = json.dumps({"cohorts": COHORTS, "horizons": HORIZONS_WEEKS,
-                       "columns": GRADE_COLUMNS, "settle": SETTLE_SESSIONS}, sort_keys=True)
+                       "required": REQUIRED_COLUMNS, "settle": SETTLE_SESSIONS}, sort_keys=True)
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()[:12]
 
 
@@ -114,11 +140,14 @@ def archive_snapshot(result: pd.DataFrame, snapshots_dir: Path, boundary: pd.Tim
     if path.exists():
         return None
     frame = result.reset_index() if "Symbol" not in result.columns else result
-    keep = [c for c in GRADE_COLUMNS if c in frame.columns]
-    missing = sorted(set(GRADE_COLUMNS) - set(keep))
+    missing = sorted(set(REQUIRED_COLUMNS) - set(frame.columns))
     if missing:
         raise ValueError(f"snapshot lacks grading column(s) {missing}; refusing to archive a partial record")
-    payload = frame[keep].to_csv(index=False).encode("utf-8")
+    frozen = frame[[c for c in frame.columns if c not in ARCHIVE_EXCLUDE]].copy()
+    for column in frozen.columns:
+        if pd.api.types.is_float_dtype(frozen[column]):
+            frozen[column] = frozen[column].round(ARCHIVE_DECIMALS)
+    payload = frozen.to_csv(index=False).encode("utf-8")
     path.write_bytes(gzip.compress(payload, compresslevel=9))
     return path
 
@@ -132,7 +161,8 @@ def snapshot_date(path: Path) -> pd.Timestamp:
     return pd.Timestamp(path.name.split(".", 1)[0])
 
 
-def forward_return(closes: pd.Series, start: pd.Timestamp, weeks: int) -> float:
+def forward_return(closes: pd.Series, start: pd.Timestamp, weeks: int,
+                   guard_corporate_actions: bool = True) -> float:
     """Close-to-close return, percent, both ends from ONE series.
 
     The start is the session on `start` itself (the snapshot's session); the
@@ -140,6 +170,14 @@ def forward_return(closes: pd.Series, start: pd.Timestamp, weeks: int) -> float:
     never a substituted neighbour. The archived Close is deliberately NOT the
     start: it was adjusted as of its day, this series as of today, and one
     split between them would make the return a fiction.
+
+    ONE SERIES IS NOT ENOUGH; IT MUST ALSO BE CONTINUOUS. A demerger inside the
+    window moves the two endpoints onto different bases even though both came
+    from this download, and yfinance's auto_adjust does not restate demergers.
+    Measured on this universe: roughly one such event per two gradings of a
+    selective cohort. A refused return becomes a coverage hole, counted in `n`
+    and absent from `n_priced`, which is the honest report -- the record is
+    append-only, so a fiction written once can never be taken back.
     """
     s = closes.sort_index().dropna()
     if s.empty:
@@ -153,6 +191,8 @@ def forward_return(closes: pd.Series, start: pd.Timestamp, weeks: int) -> float:
         return float("nan")
     a, b = float(s.loc[start]), float(s.iloc[pos])
     if not (a > 0):
+        return float("nan")
+    if guard_corporate_actions and spans_discontinuity(s, start, s.index[pos]):
         return float("nan")
     return (b / a - 1.0) * 100.0
 
