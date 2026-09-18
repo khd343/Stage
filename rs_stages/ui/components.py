@@ -139,14 +139,36 @@ def stage_cell(stage: Any) -> str:
     return f'<span class="ws-stage">{dot(stage_color(stage))}{esc(stage_display(stage))}</span>'
 
 
-def symbol_cell(symbol: Any, subtitle: Any, stage: Any) -> str:
-    """Avatar tile plus symbol and industry, linking into the Stock view."""
+#: Marks a row whose history contains a corporate action. Rare by construction
+#: -- 21 of 1,784 on the snapshot of 18 Sep 2026 -- so it stays legible.
+CORPORATE_ACTION_MARK = "⚠"
+
+
+def symbol_cell(symbol: Any, subtitle: Any, stage: Any, corporate_action: object = False) -> str:
+    """Avatar tile plus symbol and industry, linking into the Stock view.
+
+    The mark belongs HERE, not only on the detail page, because this is where
+    a name is picked. The dangerous direction is an upward phantom: a session
+    no circuit limit allows manufactures strength, and the row then sits at the
+    top of a table sorted by it. Measured on 18 Sep 2026, two of the strongest
+    names in the universe carried one.
+    """
     color = stage_color(stage)
+    mark = ""
+    if corporate_action is True or (
+        corporate_action not in (None, False) and str(corporate_action).strip().lower() in {"true", "1"}
+    ):
+        mark = (
+            f'<span title="Corporate action in this history: a session moved more than a '
+            f'circuit limit allows, so the stage, returns and 52-week high are measured '
+            f'across it." style="color:var(--warn,#b45309);margin-left:5px;font-size:11px">'
+            f'{CORPORATE_ACTION_MARK}</span>'
+        )
     return (
         f'<a class="ws-sym-cell" target="_self" href="{stock_href(symbol)}">'
         f'<span class="ws-tile" style="background:{color}14;color:{color}">{esc(initials(symbol))}</span>'
         f'<span style="display:flex;flex-direction:column;min-width:0">'
-        f'<span class="ws-sym">{esc(symbol)}</span>'
+        f'<span class="ws-sym">{esc(symbol)}{mark}</span>'
         f'<span class="ws-sym-sub col-hide-sm">{esc(subtitle) if subtitle and str(subtitle) != "nan" else ""}</span>'
         f"</span></a>"
     )
@@ -459,7 +481,8 @@ SETUP_CONDITIONS = (
 
 def _cell(key: str, row: pd.Series, trend: Sequence[float] | None) -> str:
     if key == "symbol":
-        return symbol_cell(row.get("Symbol"), row.get("Industry"), row.get("Stage"))
+        return symbol_cell(row.get("Symbol"), row.get("Industry"), row.get("Stage"),
+                           row.get("Corporate_Action", False))
     if key == "trend":
         return sparkline(trend) if trend is not None else f'<span style="color:var(--faint)">{DASH}</span>'
     if key == "rs":

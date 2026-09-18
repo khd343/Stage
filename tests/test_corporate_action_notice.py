@@ -49,3 +49,60 @@ def test_a_missing_flag_reads_as_clean():
     reads published CSVs it did not write."""
     assert ui.corporate_action_notice(pd.NA, "", "") == ""
     assert ui.corporate_action_notice(float("nan"), "", "") == ""
+
+
+# --- the table, where names are actually picked --------------------------------
+
+def _rows() -> pd.DataFrame:
+    """MBECL is the real case: RS 99, Stage 2, and a +242% session that no
+    circuit limit allows. Scanning the table for leaders finds it first."""
+    return pd.DataFrame([
+        {"Symbol": "CLEAN", "Industry": "Steel", "Stage": "Stage 2 — Advancing",
+         "RS_Score": 98.0, "Action": "BUY", "Corporate_Action": False},
+        {"Symbol": "MBECL", "Industry": "Steel", "Stage": "Stage 2 — Advancing",
+         "RS_Score": 99.0, "Action": "BUY", "Corporate_Action": True},
+    ])
+
+
+def test_a_flagged_leader_is_marked_in_the_table():
+    """The banner on the detail page is too late: the pick happens here, and
+    the dangerous direction is an UPWARD phantom that manufactures strength."""
+    html = ui.screener_table(_rows(), columns=["symbol", "rs", "stage", "action"])
+    before, _, after = html.partition("MBECL")
+    assert ui.CORPORATE_ACTION_MARK in after[:400], "the mark rides with the flagged symbol"
+    assert ui.CORPORATE_ACTION_MARK not in before, "and not with the clean one"
+
+
+def test_the_table_is_unmarked_when_nothing_is_flagged():
+    frame = _rows()
+    frame["Corporate_Action"] = False
+    html = ui.screener_table(frame, columns=["symbol", "rs", "stage", "action"])
+    assert ui.CORPORATE_ACTION_MARK not in html
+
+
+def test_a_frame_without_the_column_still_renders():
+    """The app reads published snapshots it did not write, including ones
+    frozen before this column existed."""
+    frame = _rows().drop(columns=["Corporate_Action"])
+    html = ui.screener_table(frame, columns=["symbol", "rs"])
+    assert "MBECL" in html and ui.CORPORATE_ACTION_MARK not in html
+
+
+def test_the_mark_explains_itself_on_hover():
+    html = ui.screener_table(_rows(), columns=["symbol"])
+    assert "title=" in html
+    assert "corporate action" in html.lower()
+
+
+def test_the_string_false_from_a_csv_round_trip_is_not_a_flag():
+    """The app reads published CSVs, where a boolean column can arrive as the
+    strings "True"/"False". Treating any non-empty value as truthy would mark
+    every row in the universe and make the mark meaningless."""
+    frame = _rows()
+    frame["Corporate_Action"] = ["False", "True"]
+    html = ui.screener_table(frame, columns=["symbol"])
+    before, _, after = html.partition("MBECL")
+    assert ui.CORPORATE_ACTION_MARK in after[:400]
+    assert ui.CORPORATE_ACTION_MARK not in before, "the string 'False' is not a flag"
+    assert ui.corporate_action_notice("False", "", "") == ""
+    assert ui.corporate_action_notice("True", "2026-09-01", "") != ""
