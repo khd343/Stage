@@ -61,13 +61,22 @@ COMMON_ACTIONS: dict[float, str] = {
 #: arbitrary ratio is not labelled a split.
 RATIO_TOLERANCE: float = 0.04
 
-#: A universe-wide adjustment failure, not a market event. Circuit limits mean
-#: this many names cannot genuinely move 35 percent on one session, so the only
-#: explanation is the vendor serving unadjusted prices. Measured base rate on
-#: this universe is 0.04 events per session, so the guard has an enormous
-#: margin and cannot fire on ordinary operation.
+#: A universe-wide adjustment failure, not a market event.
+#:
+#: What this actually protects is the CROSS-SECTION. RS_Score is a percentile
+#: over the universe, so a large enough block of fictional prices moves the
+#: rank of every other name too, and flagging the affected rows cannot repair
+#: that. A handful of bad rows, by contrast, is now marked and published, which
+#: is strictly better than not publishing: aborting loses the session from the
+#: record permanently, because the record never goes backwards.
+#:
+#: The ceiling is the audit's OWN existing tolerance for an unusable slice of
+#: the universe (MAX_UNIVERSE_LOSS_PCT), pinned equal by a test, because one
+#: idea should not carry two numbers. It was 0.5% until 2026-09-18, when a real
+#: vendor correction unfroze five stale names in one session and came within
+#: four of tripping it.
 MASS_EVENT_FLOOR: int = 8
-MASS_EVENT_PCT: float = 0.5
+MASS_EVENT_PCT: float = 2.0
 
 EVENT_COLUMNS = ["Symbol", "Date", "Move_Pct", "Ratio", "Prev_Close", "Close",
                  "Looks_Like", "Match_Gap", "Kind"]

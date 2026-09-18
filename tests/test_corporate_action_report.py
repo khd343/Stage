@@ -14,7 +14,9 @@ import pandas as pd
 import pytest
 
 from rs_stages.data import build_decision_snapshot
-from scripts.real_data_audit import corporate_action_report, flag_corporate_actions
+from rs_stages import corporate_actions as ca
+from scripts.real_data_audit import (MAX_UNIVERSE_LOSS_PCT, corporate_action_report,
+                                     flag_corporate_actions)
 
 BOUNDARY = pd.Timestamp("2026-09-10")
 DECISION = pd.Timestamp("2026-09-11")
@@ -110,3 +112,10 @@ def test_a_backlog_of_old_actions_never_aborts_the_audit():
     snaps = {f"S{i}": _snapshot(_with_action_at(250 + i)) for i in range(12)}
     report = corporate_action_report(snaps, BOUNDARY, universe_size=12)
     assert len(report) == 12
+
+
+def test_the_two_tolerances_are_one_number():
+    """The audit already refuses to publish when more than 2% of the universe
+    is unusable. A block of fictional prices is unusable in exactly the same
+    way, so it gets the same ceiling. Two numbers for one idea would drift."""
+    assert ca.MASS_EVENT_PCT == MAX_UNIVERSE_LOSS_PCT

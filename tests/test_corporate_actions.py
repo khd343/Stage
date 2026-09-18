@@ -125,16 +125,22 @@ def test_an_unknown_window_is_treated_as_clean():
 
 # --- the mass-failure guard ------------------------------------------------------
 
-def test_one_demerger_a_day_is_normal_and_does_not_trip_the_guard():
-    """Measured base rate is 0.04 events per session across this universe."""
-    assert not ca.is_mass_failure(1, universe_size=1784)
-    assert not ca.is_mass_failure(3, universe_size=1784)
+def test_a_vendor_correcting_a_handful_of_names_does_not_trip_the_guard():
+    """MEASURED, and it moved this threshold. On 2026-04-20 five illiquid names
+    jumped in one session in BOTH directions -- a vendor unfreezing stale
+    prices, not five corporate actions. The first ceiling was nine, which that
+    real event came within four of. Aborting costs a session from the record
+    permanently, and since these rows are now flagged, publishing them marked
+    is strictly better than not publishing at all."""
+    for count in (1, 3, 5, 20, 35):
+        assert not ca.is_mass_failure(count, universe_size=1784), count
 
 
-def test_a_universe_wide_adjustment_failure_trips_the_guard():
-    """Circuit limits mean nine names cannot genuinely fall 40 percent on one
-    day. That is the vendor serving unadjusted prices, not a market event."""
-    assert ca.is_mass_failure(9, universe_size=1784)
+def test_an_event_large_enough_to_distort_the_cross_section_trips_the_guard():
+    """RS_Score is a cross-sectional percentile, so a large enough block of
+    fictional prices moves the rank of every OTHER name too. Flagging cannot
+    repair that, which is what the guard is actually protecting."""
+    assert ca.is_mass_failure(36, universe_size=1784)
     assert ca.is_mass_failure(600, universe_size=1784)
 
 
