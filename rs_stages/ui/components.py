@@ -437,6 +437,54 @@ def corporate_action_notice(flagged: object, when: str, looks_like: str) -> str:
     ).replace("{guess}", guess)
 
 
+#: The windows, paired. Both halves of each pair describe ONE period: a return
+#: shown against a drawdown from a different window would be worse than showing
+#: no drawdown at all.
+RETURN_WINDOWS = (("3M", "R3M", "MaxDD_3M"), ("6M", "R6M", "MaxDD_6M"),
+                  ("9M", "R9M", "MaxDD_9M"), ("12M", "R12M", "MaxDD_12M"))
+
+
+def return_and_cost(row: Any) -> str:
+    """Each window's return with what it cost, stacked so they read as one fact.
+
+    Relative strength ranks the gain and is silent on the path. Two names both
+    up 32% over a year are not the same holding if one fell 9% along the way
+    and the other fell 35%, and that difference is usually what decides whether
+    a winner is actually held to the end.
+
+    The cost sits directly under its own return rather than in a separate
+    block, because a gain read alone is the thing this is meant to prevent. A
+    blank is a dash, never a zero: unknown and "never fell" are opposite
+    statements and a zero would assert the flattering one.
+    """
+    cells = []
+    for label, return_key, drawdown_key in RETURN_WINDOWS:
+        fall = to_float(row.get(drawdown_key))
+        fall_text = DASH if math.isnan(fall) else f"{fall * 100.0:.1f}%"
+        fall_color = "var(--faint)" if math.isnan(fall) else (
+            NEGATIVE if fall <= -0.20 else "var(--sub)")
+        cells.append(
+            '<div style="text-align:center">'
+            f'<div class="ws-kv-label">{label}</div>'
+            f'<div class="num" style="font-size:15px;font-weight:700;'
+            f'color:{signed_color(to_float(row.get(return_key)))}">{fmt_return(row.get(return_key))}</div>'
+            f'<div class="num" style="font-size:11.5px;font-weight:600;margin-top:1px;'
+            f'color:{fall_color}">{fall_text}</div></div>'
+        )
+    share = to_float(row.get("Up_Days_Pct_6M"))
+    texture = ""
+    if not math.isnan(share):
+        texture = (
+            f'<div class="ws-note" style="margin-top:7px">{share:.1f}% of sessions closed '
+            "higher over the last six months.</div>"
+        )
+    return (
+        f'<div style="display:flex;justify-content:space-between;gap:10px">{"".join(cells)}</div>'
+        '<div class="ws-note" style="margin-top:7px">Lower figure is the worst fall inside '
+        "each window.</div>" + texture
+    )
+
+
 # --- the dense screener table ----------------------------------------------
 
 #: Column key -> (header label, alignment, hide-on-mobile)
@@ -449,6 +497,10 @@ SCREENER_COLUMNS = {
     "ud": ("U/D", "right", True),
     "ext": ("Ext %", "right", True),
     "range": ("52W range", "left", True),
+    # Beside the 52-week range because both describe the year. Relative
+    # strength ranks the gain and says nothing about what it cost, so two
+    # names with the same score can be very different holdings.
+    "maxdd": ("12M DD", "right", True),
     "r3m": ("3M", "right", True),
     # --- v2.2 pre-breakout structure ---
     "evidence": ("Evidence", "left", False),
@@ -586,6 +638,14 @@ def _cell(key: str, row: pd.Series, trend: Sequence[float] | None) -> str:
         if math.isnan(value):
             return f'<span style="color:var(--faint)">{DASH}</span>'
         return f'<span class="num" style="color:var(--sub);font-weight:600">{value:.1f}%</span>'
+    if key == "maxdd":
+        value = to_float(row.get("MaxDD_12M"))
+        if math.isnan(value):
+            # Unknown, which is not the same as never having fallen. A zero
+            # here would read as a flawless advance.
+            return f'<span style="color:var(--faint)">{DASH}</span>'
+        return (f'<span class="num" style="color:{NEGATIVE if value < -0.20 else "var(--sub)"};'
+                f'font-weight:600">{value * 100.0:.1f}%</span>')
     return DASH
 
 

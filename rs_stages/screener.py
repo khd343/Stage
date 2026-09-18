@@ -17,6 +17,8 @@ from .quant import (
     ma_30w,
     ma_30w_series,
     ma_slope_pct,
+    max_drawdowns,
+    up_days_pct,
     contraction_ratio,
     pct_to_pivot,
     range_blocks,
@@ -102,6 +104,13 @@ def _analyze_symbol(
         row["RS_Blend"] = rs_blend(returns)
     except (ValueError, KeyError):
         row["RS_Blend"] = float("nan")
+
+    # What each of those returns COST. The same windows deliberately: a +32%
+    # that gave back 35% on the way is a different holding from a +32% that
+    # gave back 9%, and nothing else on the row separates them. Display and
+    # sort only -- neither feeds RS_Blend, the Stage, or the Action.
+    row.update({f"MaxDD_{m}M": v for m, v in max_drawdowns(close, t).items()})
+    row["Up_Days_Pct_6M"] = up_days_pct(close, t)
 
     ma_30w_full = ma_10w_full = None
     try:

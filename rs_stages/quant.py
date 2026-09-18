@@ -39,6 +39,78 @@ def rs_returns(close: pd.Series, latest: pd.Timestamp) -> dict[int, float]:
     return out
 
 
+def max_drawdown(close: pd.Series, start: pd.Timestamp, end: pd.Timestamp) -> float:
+    """Worst peak-to-trough fall inside a window, as a decimal fraction (<= 0).
+
+    The peak is the running maximum measured FROM the window's own first
+    session. A higher price before the window is not this window's peak, and
+    counting it would report a fall the holder of this window never lived
+    through -- the same class of error as reading a 52-week high from outside
+    the 52 weeks.
+
+    NaN when the window holds fewer than two observed sessions: no fall can be
+    measured, which is not the same as no fall having occurred.
+    """
+    clean = pd.Series(close).sort_index().dropna()
+    if clean.empty:
+        return float("nan")
+    window = clean.loc[pd.Timestamp(start):pd.Timestamp(end)]
+    if len(window) < 2:
+        return float("nan")
+    return float((window / window.cummax() - 1.0).min())
+
+
+def max_drawdowns(close: pd.Series, latest: pd.Timestamp) -> dict[int, float]:
+    """Worst fall inside each of the 3/6/9/12-calendar-month windows.
+
+    The windows are deliberately the RETURN windows: the two are read as a
+    pair, so a +32% that cost a 35% drawdown can be told from a +32% that cost
+    9%, and a pair that described two different periods would be worse than
+    useless. A window whose start predates the history is blank, exactly as the
+    matching return is.
+    """
+    clean = pd.Series(close).sort_index().dropna()
+    out: dict[int, float] = {}
+    for months in (3, 6, 9, 12):
+        try:
+            t = calendar_asof(clean.index, pd.Timestamp(latest))
+            start = calendar_asof(clean.index, t - pd.DateOffset(months=months))
+        except ValueError:
+            out[months] = float("nan")
+            continue
+        out[months] = max_drawdown(clean, start, t)
+    return out
+
+
+def up_session_share(close: pd.Series, start: pd.Timestamp, end: pd.Timestamp) -> float:
+    """Share of sessions in a window that closed higher, in percentage points.
+
+    The texture of an advance, not its size. A rise delivered in many small
+    positive sessions is a different thing from the same rise delivered in two
+    gaps, and nothing else in the snapshot separates them. A flat session is
+    not an up session.
+    """
+    clean = pd.Series(close).sort_index().dropna()
+    if clean.empty:
+        return float("nan")
+    window = clean.loc[pd.Timestamp(start):pd.Timestamp(end)]
+    if len(window) < 2:
+        return float("nan")
+    steps = window.diff().dropna()
+    return float((steps > 0).sum()) / float(len(steps)) * 100.0
+
+
+def up_days_pct(close: pd.Series, latest: pd.Timestamp, months: int = 6) -> float:
+    """The published up-session share: six months back from the decision session."""
+    clean = pd.Series(close).sort_index().dropna()
+    try:
+        t = calendar_asof(clean.index, pd.Timestamp(latest))
+        start = calendar_asof(clean.index, t - pd.DateOffset(months=months))
+    except ValueError:
+        return float("nan")
+    return up_session_share(clean, start, t)
+
+
 def rs_blend(returns: dict[int, float]) -> float:
     return 0.40 * returns[3] + 0.20 * returns[6] + 0.20 * returns[9] + 0.20 * returns[12]
 

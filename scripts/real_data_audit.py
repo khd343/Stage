@@ -347,6 +347,88 @@ def _finite(values: list[float]) -> list[float]:
     return [v for v in values if v == v]
 
 
+def _session_at_or_before(stamps: list, target: pd.Timestamp, limit: int) -> int:
+    """Position of the last session on or before `target`, searching by hand.
+
+    A linear scan rather than the production as-of helper: a second opinion
+    that calls the first one is not a second opinion.
+    """
+    found = -1
+    for i in range(limit + 1):
+        if stamps[i] <= pd.Timestamp(target):
+            found = i
+    return found
+
+
+def independent_drawdowns(close: pd.Series, decision: pd.Timestamp) -> dict[int, float]:
+    """Worst peak-to-trough fall per window, without the locked helpers.
+
+    An explicit running peak over a positionally sliced window, against the
+    production vectorised expanding maximum. Blank when the window cannot be
+    formed or holds fewer than two sessions.
+    """
+    windows = (3, 6, 9, 12)
+    s = pd.to_numeric(pd.Series(close), errors="coerce").sort_index().dropna()
+    if s.empty:
+        return {m: float("nan") for m in windows}
+    stamps = list(s.index)
+    end_i = _session_at_or_before(stamps, pd.Timestamp(decision), len(stamps) - 1)
+    if end_i < 0:
+        return {m: float("nan") for m in windows}
+    out: dict[int, float] = {}
+    for months in windows:
+        start_i = _session_at_or_before(stamps, stamps[end_i] - pd.DateOffset(months=months), end_i)
+        if start_i < 0 or end_i - start_i < 1:
+            out[months] = float("nan")
+            continue
+        peak, worst = float("-inf"), 0.0
+        for position in range(start_i, end_i + 1):
+            value = float(s.iloc[position])
+            if value > peak:
+                peak = value
+            if peak > 0.0:
+                worst = min(worst, value / peak - 1.0)
+        out[months] = worst
+    return out
+
+
+def independent_up_days(close: pd.Series, decision: pd.Timestamp) -> float:
+    """Share of six-month sessions closing higher, counted one pair at a time."""
+    s = pd.to_numeric(pd.Series(close), errors="coerce").sort_index().dropna()
+    if s.empty:
+        return float("nan")
+    stamps = list(s.index)
+    end_i = _session_at_or_before(stamps, pd.Timestamp(decision), len(stamps) - 1)
+    if end_i < 0:
+        return float("nan")
+    start_i = _session_at_or_before(stamps, stamps[end_i] - pd.DateOffset(months=6), end_i)
+    if start_i < 0 or end_i - start_i < 1:
+        return float("nan")
+    ups = sum(1 for i in range(start_i + 1, end_i + 1)
+              if float(s.iloc[i]) > float(s.iloc[i - 1]))
+    return ups / float(end_i - start_i) * 100.0
+
+
+def reconcile_texture(symbol: str, row, close: pd.Series, decision: pd.Timestamp) -> list[str]:
+    """Compare the published drawdown and up-day columns against a second opinion.
+
+    An ABSENT column is a mismatch, not a skip. Skipping it would let the
+    engine quietly stop publishing a metric and still pass its own audit --
+    the "unverifiable is not passed" failure, where the check certifies on
+    missing evidence.
+    """
+    failures: list[str] = []
+    for months, expected in independent_drawdowns(close, decision).items():
+        published = float(row.get(f"MaxDD_{months}M", float("nan")))
+        if not np.isclose(expected, published, rtol=0, atol=1e-12, equal_nan=True):
+            failures.append(f"{symbol}: MaxDD_{months}M mismatch")
+    expected_up = independent_up_days(close, decision)
+    published_up = float(row.get("Up_Days_Pct_6M", float("nan")))
+    if not np.isclose(expected_up, published_up, rtol=0, atol=1e-12, equal_nan=True):
+        failures.append(f"{symbol}: Up_Days_Pct_6M mismatch")
+    return failures
+
+
 def independent_sma(close: pd.Series, decision: pd.Timestamp, sessions: int) -> float:
     """v2.2 §5.1 — session average by plain summation, no rolling window.
 
@@ -646,6 +728,7 @@ def main() -> None:
     # HERCULES) aborted the audit by agreeing correctly.
     failures = []
     checked_stage = checked_high = checked_volume = checked_ud = checked_liquidity = 0
+    checked_texture = 0
     checked_ma_10w = checked_low = checked_trend = 0
     checked_sma = checked_contraction = checked_dryup = checked_pivot = 0
     for symbol, snap in snapshots.items():
@@ -664,6 +747,10 @@ def main() -> None:
                 failures.append(f"{symbol}: RS blend mismatch")
         except ValueError:
             pass
+
+        texture = reconcile_texture(symbol, result.loc[symbol], close, t)
+        checked_texture += 1
+        failures.extend(texture)
 
         try:
             ma, slope, stage = independent_stage(close, t)
@@ -929,7 +1016,7 @@ def main() -> None:
     print(f"Yahoo history: {start.date()} to {end.date()} exclusive")
     print(f"Universe rows after DUMMY exclusion: {len(universe)}")
     print(f"Research rows: {len(result)}")
-    print(f"Independent checks: stage={checked_stage}, high52={checked_high}, volume={checked_volume}, ud={checked_ud}, liquidity={checked_liquidity}")
+    print(f"Independent checks: stage={checked_stage}, high52={checked_high}, volume={checked_volume}, ud={checked_ud}, liquidity={checked_liquidity}, texture={checked_texture}")
     print(f"Independent checks (v2.1): ma10w={checked_ma_10w}, low52={checked_low}, trend_panel={checked_trend}")
     print(
         f"Independent checks (v2.2): sma={checked_sma}, contraction={checked_contraction}, "

@@ -484,6 +484,7 @@ SORTS = {
     "RS (high to low)": ("RS_Score", False, "rs"),
     "RS (low to high)": ("RS_Score", True, "rs"),
     "3-month return": ("R3M", False, "r3m"),
+    "Shallowest 12-month fall": ("MaxDD_12M", False, "maxdd"),
     "Extension above 30-week": ("Ext_Pct", False, "ext"),
     "U/D ratio": ("U_D", False, "ud"),
     "Symbol (A–Z)": ("Symbol", True, "symbol"),
@@ -1024,12 +1025,6 @@ def page_stock() -> None:
 
     left, right = st.columns(2, gap="medium")
     with left:
-        returns = "".join(
-            f'<div style="text-align:center"><div class="ws-kv-label">{label}</div>'
-            f'<div class="num" style="font-size:15px;font-weight:700;'
-            f'color:{theme.signed_color(to_float(row.get(key)))}">{fmt_return(row.get(key))}</div></div>'
-            for label, key in (("3M", "R3M"), ("6M", "R6M"), ("9M", "R9M"), ("12M", "R12M"))
-        )
         range_block = ""
         if pd.notna(row.get("Low_52W")) and pd.notna(row.get("High_52W")):
             range_block = (
@@ -1045,10 +1040,11 @@ def page_stock() -> None:
             )
         write(
             ui.card(
-                '<div class="ws-card-title">Calendar-month returns</div>'
-                f'<div style="display:flex;justify-content:space-between">{returns}</div>'
-                '<div class="ws-note" style="margin-top:10px">RS blends these as '
-                "0.40×3M + 0.20×6M + 0.20×9M + 0.20×12M, then ranks cross-sectionally.</div>"
+                '<div class="ws-card-title">Return, and what it cost</div>'
+                + ui.return_and_cost(row)
+                + '<div class="ws-note" style="margin-top:6px">RS blends the returns as '
+                "0.40×3M + 0.20×6M + 0.20×9M + 0.20×12M, then ranks "
+                "cross-sectionally. The falls are shown, never ranked.</div>"
                 + range_block
             )
         )

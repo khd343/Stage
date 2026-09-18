@@ -912,6 +912,65 @@ question about the *rule*, not an invitation to change the *boundary*. A
 recommendation that widens what a system is about needs the owner's yes on
 that specific point, not a general "proceed".
 
+## 2026-09-18 (later) — What the return cost
+
+### D-2.4.4 — Relative strength ranks the gain and is silent on the path
+
+**Problem.** Two names both up 32% over twelve months are not the same
+holding if one fell 9% along the way and the other fell 35%. Nothing on the
+snapshot separated them. RS_Score ranks the first number; the second did not
+exist. In practice that difference is what decides whether a winner is
+actually held to the end, so the screen was silent on the thing most likely
+to lose the trade.
+
+**Resolution.** Five columns, display and sort only.
+
+* `MaxDD_3M/6M/9M/12M` — worst peak-to-trough fall inside each window, as a
+  decimal fraction like the returns beside them.
+* `Up_Days_Pct_6M` — share of sessions that closed higher over six months,
+  in percentage points like `ATR_Pct`. The texture of an advance rather than
+  its size: the same rise delivered in many small positive sessions is a
+  different thing from the same rise delivered in two gaps.
+
+**The windows are the RETURN windows, deliberately.** They are read as a pair
+on screen, so a pair describing two different periods would be worse than
+showing no drawdown at all. A test pins the two ladders equal.
+
+**The peak is measured from inside the window.** A higher price before the
+window opened is not that window's peak, and counting it would report a fall
+the holder of that window never lived through — the same error class as
+reading a 52-week high from outside the 52 weeks.
+
+**Blank, never zero.** A window the history cannot fill reports nothing.
+Zero would assert "never fell", which is the flattering opposite of unknown.
+Pinned in the engine, in the table cell and in the detail card.
+
+**Reconciled like everything else.** `independent_drawdowns` and
+`independent_up_days` re-derive both by hand — a linear index scan and an
+explicit running peak, sharing no code path with the vectorised production
+version — and `reconcile_texture` fails the audit on any disagreement. An
+ABSENT column counts as a mismatch: skipping it would let the engine quietly
+stop publishing a metric and still pass its own audit, which is the
+"unverifiable is not passed" trap.
+
+**UI.** The table gains one column, `12M DD`, beside the 52-week range since
+both describe the year, plus a "Shallowest 12-month fall" sort. The detail
+card stacks each window's fall directly under its own return, because a gain
+read alone is exactly what this exists to prevent, with a caption naming the
+lower figure and the up-day share written as a sentence rather than a
+labelled number. Measured live on Reliance: —7.5% / —13.6% / —20.6% /
+—20.6%, 46.8% of sessions higher.
+
+**Display and sort only, and that is the load-bearing part.** None of these
+feed `RS_Blend`, the Stage, or the Action. Feeding an unvalidated signal into
+the thing the forward record grades is the mistake D-2.4.1 exists to prevent.
+Because the archive keeps every column the engine produces (D-2.4.3), all
+five enter the record automatically from the next run, so "do low-drawdown
+Stage 2 names outperform" becomes answerable later without being asserted
+now.
+
+**Verification.** 48 new tests, RED first. 16 mutations run, 16 caught.
+
 ## 2026-09-18 — Corporate actions, and a wider archive
 
 ### D-2.4.2 — The audit checks its arithmetic, not its inputs
