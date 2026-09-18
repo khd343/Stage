@@ -68,6 +68,24 @@ def pending(record: pd.DataFrame | None, calendar: pd.DatetimeIndex) -> list[tup
     return todo
 
 
+def ensure_record(dry_run: bool) -> None:
+    """Leave the record file in place even on a run that graded nothing.
+
+    CI stages `data/track_record.csv` unconditionally, and `git add` on a path
+    that does not exist fails under `set -e` -- which failed the first
+    dispatched run, and would have failed the scheduled runs of 2 October and
+    2 November, since no horizon closes before 9 October.
+
+    An empty record is a real state, not a placeholder: the schema is in place
+    from the first run and no consumer has to handle the file's absence. An
+    existing record is never touched, so a quiet month cannot erase real grades.
+    """
+    if dry_run or RECORD.exists():
+        return
+    pd.DataFrame(columns=TRACK_COLUMNS).to_csv(RECORD, index=False, lineterminator=chr(10))
+    print(f"No grades yet; wrote the empty record to {RECORD.name}.")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
@@ -76,6 +94,7 @@ def main() -> int:
     record = pd.read_csv(RECORD, dtype={"snapshot_date": str, "cohort": str}) if RECORD.exists() else None
     if not SNAPSHOTS.exists() or not any(SNAPSHOTS.glob("*.csv.gz")):
         print("No archived snapshots yet; nothing to grade.")
+        ensure_record(args.dry_run)
         return 0
 
     today = pd.Timestamp(date.today())
@@ -87,6 +106,7 @@ def main() -> int:
     if not todo:
         nxt = min((snapshot_date(p) + pd.Timedelta(weeks=min(HORIZONS_WEEKS)) for p in SNAPSHOTS.glob("*.csv.gz")), default=None)
         print(f"Nothing gradeable yet. Earliest horizon closes around {nxt.date() if nxt is not None else '-'}.")
+        ensure_record(args.dry_run)
         return 0
 
     frames = {path: read_snapshot(path) for path, _ in todo if path not in {}}
