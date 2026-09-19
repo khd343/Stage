@@ -426,7 +426,15 @@ def corporate_action_notice(flagged: object, when: str, looks_like: str) -> str:
     if flagged is not True and str(flagged).strip().lower() not in {"true", "1"}:
         return ""
     stamp = f" on {esc(str(when))}" if str(when).strip() else ""
-    guess = f" It resembles a {esc(str(looks_like))}." if str(looks_like).strip() else ""
+    # The classification gets its OWN line and the prose never bends around it.
+    # It is a data string: embedding it after an article is an implicit grammar
+    # contract between the engine and the copy, and that contract broke the
+    # first time a label was not a noun phrase ("It resembles a unmatched -
+    # possible demerger or spin-off", seen live). It would break again for the
+    # labels already frozen in published snapshots, which no code change can
+    # reach.
+    match = (f'<br><span style="color:var(--faint)">Closest match: '
+             f'{esc(str(looks_like))}</span>') if str(looks_like).strip() else ""
     # DIRECTION-NEUTRAL on purpose. An earlier version said the numbers were
     # "not a decline in the business", which is the wrong half of the problem
     # for an upward phantom: measured live, 5 of 21 flagged names moved UP, and
@@ -434,10 +442,10 @@ def corporate_action_notice(flagged: object, when: str, looks_like: str) -> str:
     return (
         '<div class="ws-missing"><b>Corporate action in this history'
         f'{stamp}.</b><br>A single session moved more than a circuit limit allows, '
-        "so it is not a price move." + guess + " The stage, the relative strength "
-        "and the 52-week figures are all measured across it, so they describe "
-        "this price series rather than the business. Nothing has been corrected."
-        "</div>"
+        "so it is not a price move. The stage, the relative strength and the "
+        "52-week figures are all measured across it, so they describe this "
+        "price series rather than the business. Nothing has been corrected."
+        + match + "</div>"
     )
 
 

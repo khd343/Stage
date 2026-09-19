@@ -131,8 +131,17 @@ def test_the_label_reads_as_a_noun_phrase_in_the_sentence():
     assert "demerger" in html
 
 
-def test_both_kinds_produce_a_readable_sentence():
-    for ratio in (0.5, 0.351, 5.0, 0.3333):
-        label = ca.classify_ratio(ratio)[0]
+def test_the_classification_is_never_embedded_in_a_sentence():
+    """THE ROOT CAUSE, not the symptom. The label is a data string; a sentence
+    template that puts it after an article is an implicit grammar contract
+    between the engine and the copy, and it broke the first time a label was
+    not a noun phrase. It also breaks for labels already frozen in published
+    snapshots, which no code change can reach. So the classification gets its
+    own line and the prose never bends around it."""
+    for label in ("1:2 split or 1:1 bonus", "5:1 reverse split",
+                  ca.classify_ratio(0.351)[0],
+                  "unmatched - possible demerger or spin-off"):  # a retired label, still in the archive
         html = ui.corporate_action_notice(True, "2026-09-01", label)
-        assert f"a {label}." in html, f"the sentence must accept {label!r}"
+        assert label in html, "the classification is still reported"
+        assert f"a {label}" not in html, f"no article may precede {label!r}"
+        assert "resembles" not in html.lower()
