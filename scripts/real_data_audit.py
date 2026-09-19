@@ -116,34 +116,69 @@ MATURITY_SESSIONS = 200
 
 
 def maturing_report(result: pd.DataFrame, snapshots: dict, boundary: pd.Timestamp) -> pd.DataFrame:
-    """Names in the snapshot the engine has not yet given a 52-week high.
+    """Names in the snapshot the engine has not yet given a 52-week high, and why.
 
-    The FLAG is the engine's own decision -- High_52W is NaN exactly when a name
-    has fewer than MATURITY_SESSIONS sessions in its 52-week window -- so this
-    report and the published snapshot cannot disagree. The count and the date
-    are informational: sessions with a Close inside the window, and the
-    business-day estimate of when the shortfall closes ("around", since
-    exchange holidays are not modelled).
+    THE ENGINE APPLIES TWO CONDITIONS, NOT ONE, and an earlier version of this
+    docstring asserted otherwise: that High_52W is NaN "exactly when a name has
+    fewer than MATURITY_SESSIONS sessions in its 52-week window". Live data
+    disproved it. `high_52w` first calls calendar_asof for the window start,
+    which RAISES when no session exists on or before it, so a name listed less
+    than 52 weeks ago never reaches the session-count check at all. On
+    2026-09-18, 38 of 130 rows here carried a count ABOVE 200 -- EUROPRATIK at
+    248 -- beside "1 session to go", which reads as a broken report.
+
+    So each row now names the condition that actually binds:
+
+      history   the listing is younger than the window. It matures when its
+                first session falls 52 weeks behind the boundary, which is a
+                CALENDAR fact and has nothing to do with counting sessions.
+      sessions  the history spans the window but holds fewer than
+                MATURITY_SESSIONS sessions inside it -- a name with real
+                trading gaps rather than a recent listing.
+
+    Dates are "around": exchange holidays are not modelled, so the business-day
+    estimate drifts by a day or two.
 
     This replaces a waiting list. Young names are IN the universe already; the
     night one crosses the line its RS, Stage and 52-week fields simply appear.
     Nothing moves between lists because there is one list. This just says who
-    is next.
+    is next, and what each one is actually waiting for.
     """
-    cols = ["Symbol", "Sessions_52W", "Sessions_To_Go", "Reaches_200_Around"]
+    cols = ["Symbol", "Sessions_52W", "Blocked_By", "Sessions_To_Go", "Matures_Around"]
     if "High_52W" not in result.columns or result.empty:
         return pd.DataFrame(columns=cols)
-    start = pd.Timestamp(boundary) - pd.Timedelta(weeks=52)
+    boundary = pd.Timestamp(boundary)
+    start = boundary - pd.Timedelta(weeks=52)
     rows = []
     for symbol in result.index[result["High_52W"].isna()]:
         snap = snapshots.get(symbol)
         if snap is None:
             continue
-        close = snap.data["Close"]
+        close = snap.data["Close"].dropna()
+        if close.empty:
+            continue
         n = int(close[(close.index > start) & (close.index <= boundary)].notna().sum())
-        to_go = max(MATURITY_SESSIONS - n, 1)
-        rows.append({"Symbol": symbol, "Sessions_52W": n, "Sessions_To_Go": to_go,
-                     "Reaches_200_Around": (pd.Timestamp(boundary) + pd.tseries.offsets.BDay(to_go)).date()})
+        # calendar_asof raises when nothing sits on or before the window start,
+        # which is the condition high_52w hits FIRST. Mirrored here, not guessed.
+        if close.index.min() > start:
+            # 52 weeks is exactly 364 days, so this lands on the SAME weekday
+            # as a trading session and is strictly after the boundary. The
+            # countdown is therefore at least one by construction and needs no
+            # clamp -- an earlier draft carried one, and it was unreachable.
+            matures_on = (close.index.min() + pd.Timedelta(weeks=52)).normalize()
+            to_go = len(pd.bdate_range(boundary, matures_on)) - 1
+            blocked = "history"
+        else:
+            # Also unclamped, and for the same kind of reason: high_52w counts
+            # a SUPERSET of this window (it includes the session on or before
+            # the window start), and reaching this branch means its count was
+            # already under the threshold. So the shortfall here is positive by
+            # construction.
+            to_go = MATURITY_SESSIONS - n
+            matures_on = pd.Timestamp(boundary) + pd.tseries.offsets.BDay(to_go)
+            blocked = "sessions"
+        rows.append({"Symbol": symbol, "Sessions_52W": n, "Blocked_By": blocked,
+                     "Sessions_To_Go": int(to_go), "Matures_Around": matures_on.date()})
     return pd.DataFrame(rows, columns=cols).sort_values(["Sessions_To_Go", "Symbol"]).reset_index(drop=True)
 
 

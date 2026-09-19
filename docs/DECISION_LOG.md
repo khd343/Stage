@@ -912,6 +912,51 @@ question about the *rule*, not an invitation to change the *boundary*. A
 recommendation that widens what a system is about needs the owner's yes on
 that specific point, not a general "proceed".
 
+## 2026-09-19 (later) — The maturing report described a rule the engine does not have
+
+### D-2.4.6 — A report that mirrors an engine must mirror the engine
+
+**Problem.** `maturing_report` claimed, in its own docstring, that High_52W is
+NaN "exactly when a name has fewer than MATURITY_SESSIONS sessions in its
+52-week window". Live data disproved it. On 2026-09-18, 38 of its 130 rows
+carried a session count ABOVE 200 — EUROPRATIK at 248 — beside "1 session to
+go". A reader comparing the two columns can only conclude the report is broken.
+
+**Cause.** `high_52w` never reaches its `min_sessions` check for these names.
+It first calls `calendar_asof` for the window start, which RAISES when no
+session exists on or before it. A name listed less than 52 weeks ago fails
+there, whatever its count. The engine has TWO conditions; the report knew one,
+so it had to describe the wrong one for every name blocked by the other.
+
+Measured after the fix on all 130 live names: **130 history, 0 sessions**. The
+old model was wrong for every row it had ever produced.
+
+**Resolution.** Each row now names the condition that actually binds.
+`Blocked_By` is `history` (the listing is younger than the window; it matures
+when its first session falls 52 weeks behind, a calendar fact) or `sessions`
+(the history spans the window but holds too few sessions inside it — a name
+with real trading gaps). `Reaches_200_Around` became `Matures_Around`, because
+for a history-blocked name nothing is reaching 200. EUROPRATIK now reads
+"2 sessions, matures around 2026-09-22", which is checkable.
+
+**Two pieces of dead defensive code deleted, both found by mutation testing.**
+Each countdown carried a `max(..., 1)` clamp that can never bind. In the
+history branch, 52 weeks is exactly 364 days, so the maturing date lands on the
+same weekday as a trading session and is strictly after the boundary — the
+countdown is at least one by construction. In the session branch, `high_52w`
+counts a SUPERSET of this window, so reaching that branch means the count was
+already short. Writing tests for unreachable branches would have been the wrong
+answer; deleting them was the right one.
+
+**Verification.** 12 tests, RED first. 9 mutations run, 9 caught. Three of the
+misses along the way were real holes in the tests rather than acceptable gaps:
+no test pinned the history countdown's arithmetic, none covered a first session
+sitting exactly on the window start (where `>` versus `>=` decides the blocker),
+and none pinned the count to the window rather than the whole history. All
+three closed. The one remaining difference, whether a session exactly 52 weeks
+back is counted, is pinned as a CONVENTION and labelled as one: it moves the
+count by at most one and cannot change the blocker.
+
 ## 2026-09-19 — Days the exchange was shut
 
 ### D-2.4.5 — A coverage rule cannot tell a closed market from an open one
