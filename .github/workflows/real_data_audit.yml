@@ -168,6 +168,7 @@ jobs:
                   data/previous_research.csv \
                   data/breadth_history.csv \
                   data/maturing.csv \
+                  data/corporate_actions.csv \
                   data/snapshots
           if git diff --cached --quiet; then
             echo "Validated research snapshot unchanged."
@@ -210,5 +211,6 @@ jobs:
             data/price_panel.npz
             data/breadth_history.csv
             data/maturing.csv
+            data/corporate_actions.csv
             data/snapshots/
           retention-days: 30
