@@ -96,7 +96,11 @@ def classify_ratio(ratio: float) -> tuple[str, float | None]:
                      key=lambda pair: pair[1])
     if gap <= RATIO_TOLERANCE:
         return label, gap
-    return "unmatched - possible demerger or spin-off", gap
+    # A NOUN PHRASE, because every consumer puts this after an article. The
+    # first version read "unmatched - possible demerger or spin-off", which
+    # produced "It resembles a unmatched - possible demerger..." on the live
+    # page. A label that cannot follow "a" is a label the sentence cannot use.
+    return "demerger or spin-off (no clean split ratio)", gap
 
 
 def _ratios(close: pd.Series) -> pd.Series:

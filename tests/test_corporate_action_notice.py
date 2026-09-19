@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import pandas as pd
 
+from rs_stages import corporate_actions as ca
 from rs_stages.ui import components as ui
 
 
@@ -20,7 +21,7 @@ def test_a_clean_row_gets_no_banner():
 
 
 def test_a_flagged_row_names_the_date_and_what_it_looks_like():
-    html = ui.corporate_action_notice(True, "2026-04-30", "unmatched - possible demerger or spin-off")
+    html = ui.corporate_action_notice(True, "2026-04-30", ca.classify_ratio(0.351)[0])
     assert "2026-04-30" in html
     assert "demerger" in html
 
@@ -106,3 +107,32 @@ def test_the_string_false_from_a_csv_round_trip_is_not_a_flag():
     assert ui.CORPORATE_ACTION_MARK not in before, "the string 'False' is not a flag"
     assert ui.corporate_action_notice("False", "", "") == ""
     assert ui.corporate_action_notice("True", "2026-09-01", "") != ""
+
+
+# --- the sentence itself, as a reader meets it ----------------------------------
+
+def test_the_warning_never_claims_a_decline():
+    """Found by looking at the live page. MBECL's phantom session was +242%,
+    and the banner told the reader the numbers were 'not a decline in the
+    business' -- true, irrelevant, and pointing the wrong way. The distortion
+    runs in both directions and the wording has to work for both."""
+    html = ui.corporate_action_notice(True, "2026-09-01", "1:2 split or 1:1 bonus").lower()
+    assert "decline" not in html
+    assert "fall" not in html
+
+
+def test_the_label_reads_as_a_noun_phrase_in_the_sentence():
+    """Also found on the live page: 'It resembles a unmatched - possible
+    demerger or spin-off.' A label that cannot follow an article is a label
+    the sentence cannot use."""
+    html = ui.corporate_action_notice(True, "2026-09-01",
+                                      ca.classify_ratio(0.351)[0]).lower()
+    assert "a unmatched" not in html and "an unmatched" not in html
+    assert "demerger" in html
+
+
+def test_both_kinds_produce_a_readable_sentence():
+    for ratio in (0.5, 0.351, 5.0, 0.3333):
+        label = ca.classify_ratio(ratio)[0]
+        html = ui.corporate_action_notice(True, "2026-09-01", label)
+        assert f"a {label}." in html, f"the sentence must accept {label!r}"

@@ -427,14 +427,18 @@ def corporate_action_notice(flagged: object, when: str, looks_like: str) -> str:
         return ""
     stamp = f" on {esc(str(when))}" if str(when).strip() else ""
     guess = f" It resembles a {esc(str(looks_like))}." if str(looks_like).strip() else ""
+    # DIRECTION-NEUTRAL on purpose. An earlier version said the numbers were
+    # "not a decline in the business", which is the wrong half of the problem
+    # for an upward phantom: measured live, 5 of 21 flagged names moved UP, and
+    # the worst of them manufactured relative strength of 99 out of 100.
     return (
         '<div class="ws-missing"><b>Corporate action in this history'
         f'{stamp}.</b><br>A single session moved more than a circuit limit allows, '
-        "so it is not a price move.{guess} The stage, the returns and the 52-week "
-        "high are measured across it and are not a decline in the business. "
-        "Nothing here has been corrected."
+        "so it is not a price move." + guess + " The stage, the relative strength "
+        "and the 52-week figures are all measured across it, so they describe "
+        "this price series rather than the business. Nothing has been corrected."
         "</div>"
-    ).replace("{guess}", guess)
+    )
 
 
 #: The windows, paired. Both halves of each pair describe ONE period: a return
