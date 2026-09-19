@@ -1025,6 +1025,24 @@ correction, not a rewrite of evidence. Published liquidity and session-count
 figures will shift slightly on the next run for this reason and not because
 the market moved.
 
+**The residual risk, named rather than discovered later.** The rule infers a
+closure from the data. It would be wrong if the vendor ever zeroed volume
+across the whole universe on a session that really traded — the one failure
+mode with no measured precedent. The cost would be one session missing from the
+record, not a corrupted one, since the boundary simply would not advance; but
+the archive is append-only, so that session would never be recoverable.
+
+THE AUTHORITATIVE ALTERNATIVE WAS CONSIDERED AND DECLINED. NSE publishes a
+daily bhavcopy, and a 200 response proves the market traded, which would settle
+the question outright. Paresh's repo does exactly that and lets the exchange
+outrank its own volume evidence. It is not adopted here because a non-200
+proves nothing (their note says so: rate limiting answers 403), so it can only
+ever veto, never confirm — while adding a second external dependency to a job
+that runs five times a day and currently needs only one. The measured
+separation is 0.0% against 99.16%, which does not need a tie-breaker. If a
+dropped real session is ever observed, the bhavcopy veto is the fix, and this
+paragraph is where to start.
+
 **Provenance.** Found by reading Paresh's repository, whose own note names
 2026-05-28 and 2026-06-26 — independently confirmed here on our data before
 being acted on. Rejected from the same repository, with reasons: a second
