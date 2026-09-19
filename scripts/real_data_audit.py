@@ -17,6 +17,8 @@ from rs_stages.screener import analyze_universe, analyze_universe_with_trend
 from rs_stages.quant import rs_blend, rs_returns, calendar_asof
 from rs_stages.data import (
     INDEX_TICKERS,
+    non_trading_sessions,
+    without_sessions,
     build_decision_snapshot,
     download_index_history,
     global_information_boundary,
@@ -596,6 +598,22 @@ def main() -> None:
     # the same download, so the previous-session snapshot cannot disagree with
     # the current one because of a provider revision between two calls.
     histories = acquire_universe_histories(args.universe, start, end)
+
+    # DAYS THE EXCHANGE WAS SHUT, removed before anything reads them. Yahoo
+    # prints a row for NSE holidays: the previous close carried forward with
+    # volume zero. The coverage rule cannot reach those -- a day the vendor
+    # carries every name forward looks BETTER covered than average, and two
+    # such days sat at 101% of a normal session in this repo's own breadth
+    # history -- so the test is volume, and it runs HERE, before snapshots,
+    # moving averages, the boundary or the archive can see the row.
+    closed = non_trading_sessions(histories)
+    if closed:
+        histories = without_sessions(histories, closed)
+        shown = ", ".join(str(s.date()) for s in closed[-5:])
+        print(f"Non-trading sessions removed: {len(closed)} "
+              f"(no symbol traded){' , latest: ' if closed else ''}{shown}")
+    else:
+        print("Non-trading sessions removed: none.")
 
     # A symbol the provider could not deliver is explicit insufficiency, not a
     # reason to lose the other 749. Three tickers timed out against Yahoo on the

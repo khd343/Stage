@@ -912,6 +912,90 @@ question about the *rule*, not an invitation to change the *boundary*. A
 recommendation that widens what a system is about needs the owner's yes on
 that specific point, not a general "proceed".
 
+## 2026-09-19 — Days the exchange was shut
+
+### D-2.4.5 — A coverage rule cannot tell a closed market from an open one
+
+**Problem.** Yahoo prints a row for NSE holidays: the previous close carried
+forward, volume exactly zero. Measured on 14 Sep 2026, 19 of the 20 largest
+names carried one. Nothing in this repo filtered them, so they entered every
+per-symbol calculation.
+
+The information boundary was the assumed protection and it cannot reach this.
+It admits a session at 98% coverage, but a day on which the vendor carries
+every name forward looks BETTER covered than average. In this repo's own
+published breadth history, five dead sessions appear and two of them recorded
+101% of a normal session's symbol count:
+
+| Session | Symbols recorded | vs a normal session |
+|---|---|---|
+| 2026-01-15 | 1,106 | 66% |
+| 2026-05-01 | 1,094 | 66% |
+| 2026-05-28 | 1,676 | **101%** |
+| 2026-06-26 | 1,689 | **101%** |
+| 2026-09-14 | 1,002 | 60% |
+
+No threshold on completeness reaches the 101% rows. Completeness is the wrong
+question; volume is the right one.
+
+**Resolution.** `non_trading_sessions` finds sessions on which no priced
+symbol traded; `without_sessions` removes them from every history. Both run in
+the audit BETWEEN acquisition and snapshot construction, so the row never
+reaches a moving average, a positional lookback, the boundary or the archive.
+A test pins that ordering, because filtering afterwards would be theatre.
+
+**The floor was set by measurement.** Over 78 sessions of the live universe a
+real session never fell below 99.16% of symbols trading, and a dead one sat at
+exactly 0.0%. The floor is 5%: deep inside that gap and deliberately close to
+the dead side, because the errors are not symmetric. Keeping a dead session
+costs a little accuracy; dropping a real one corrupts every metric for the
+whole universe on that day.
+
+**Three guards, each for a way this could go wrong.** A session with fewer
+than 20 volume observations is not judged at all, since a thin fetch and a
+closed exchange look alike and such a session cannot reach the boundary
+anyway. An unreported volume is UNKNOWN, never zero, or silence would
+fabricate closures. And flagging more than 15% of a window aborts the run
+rather than acting — an exchange does not close that often — though only
+once the window holds 60 sessions, since one holiday in four is 25% and
+entirely ordinary.
+
+**What it was costing.** Measured on the live universe: the twenty-session
+liquidity mean was understated by up to 20.7%, since a zero sat inside the
+average. Every positional lookback shifted by one per holiday in window — the
+ten-session moving-average slope, the twenty-session up/down ratio, the 50,
+150 and 200-day averages, the 200-session maturity gate, and the up-day share
+from D-2.4.4. Prices, returns, drawdowns and 52-week extremes were NOT
+affected: a carried-forward value cannot create a move or an extreme, so
+relative strength, the Stage label and the Action were sound throughout.
+
+**The part that mattered most.** No dead session had reached the archive, but
+that was fetch timing, not design. Nothing stopped the boundary landing on
+one, and the archive is append-only, so a snapshot dated on a day nobody
+traded would have been permanent.
+
+**Consequence to expect.** The breadth history is regenerated over a trailing
+window each run, so those five rows will disappear from it. That is a
+correction, not a rewrite of evidence. Published liquidity and session-count
+figures will shift slightly on the next run for this reason and not because
+the market moved.
+
+**Provenance.** Found by reading Paresh's repository, whose own note names
+2026-05-28 and 2026-06-26 — independently confirmed here on our data before
+being acted on. Rejected from the same repository, with reasons: a second
+price source (it carries no intraday high or low, so the 52-week high becomes
+a high of closes and true range collapses to 0.47x — that changes what half
+this engine means, mid-record); a price cache with healing (the source of
+several of their own defects; this repo downloads fresh every run and cannot
+have them); their all-time-high loader (a good blueprint, not needed yet);
+market-time handling (already at parity).
+
+**Verification.** 20 tests, RED first. 13 mutations run, 13 caught — two of
+which exposed holes in the tests themselves: a membership assertion satisfiable
+by coincidence, and a log check that matched the wrong branch. Both closed.
+Confirmed end to end on 120 real histories: 2026-06-26 and 2026-09-14 detected
+and removed, liquidity corrected by up to 20.7%.
+
 ## 2026-09-18 (later) — What the return cost
 
 ### D-2.4.4 — Relative strength ranks the gain and is silent on the path

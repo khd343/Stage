@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import math
 from collections import Counter
+from typing import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -51,6 +52,120 @@ def latest_completed_session(index: pd.DatetimeIndex, decision_date: pd.Timestam
     if pos < 0:
         raise ValueError("No completed market session exists before decision date")
     return idx[pos]
+
+
+#: Share of symbols that must have traded for a session to be a session.
+#:
+#: MEASURED over 78 sessions of the live universe: a real session never fell
+#: below 99.16% of symbols trading, and a day the exchange was shut sat at
+#: exactly 0.0%. The floor sits deep inside that gap and deliberately close to
+#: the dead side, because the two errors are not symmetric -- keeping a dead
+#: session costs a little accuracy in the volume and session-count metrics,
+#: while dropping a real one corrupts every metric for the entire universe on
+#: that day.
+TRADED_SHARE_FLOOR = 0.05
+
+#: Below this many volume observations a session is not judged at all. A thin
+#: fetch and a closed exchange look alike, and such a session cannot reach the
+#: information boundary anyway, so silence is the safe answer.
+MIN_SYMBOLS_TO_JUDGE = 20
+
+#: NSE closes about fifteen days a year, so a two-year window holds roughly 6%
+#: dead sessions. Far more than that means the rule has misfired, and acting on
+#: it would remove real sessions universe-wide.
+MAX_NON_TRADING_SHARE = 0.15
+
+#: The ceiling above is a RATE, and a rate over a handful of sessions is noise:
+#: one holiday in a four-session window is 25%, which is ordinary and not
+#: evidence of anything. Below a quarter's worth of sessions the ceiling is not
+#: applied at all.
+MIN_SESSIONS_TO_JUDGE_RATE = 60
+
+
+def _session_dates(frame: pd.DataFrame) -> pd.DatetimeIndex:
+    """Session dates of a raw provider frame, in the pipeline's own date space.
+
+    Deliberately mirrors normalize_session_index, including its tz handling. A
+    filter that named sessions differently from the code that builds snapshots
+    would drop rows the snapshot never had and keep the ones it did, so
+    agreement matters more here than any particular convention. A test pins the
+    two together.
+
+    (Noted, not changed: for a tz-AWARE index the shared convention shifts an
+    IST midnight back a day. Unreachable today -- yfinance returns tz-naive --
+    and fixing it belongs with normalize_session_index, not here.)
+    """
+    idx = pd.DatetimeIndex(frame.index)
+    if idx.tz is not None:
+        idx = idx.tz_convert(None)
+    return idx.normalize()
+
+
+def non_trading_sessions(histories: Mapping[str, pd.DataFrame]) -> list[pd.Timestamp]:
+    """Sessions the provider printed on days the exchange was shut.
+
+    Yahoo emits a row for NSE holidays carrying the previous close forward with
+    volume zero. Those rows enter every per-symbol calculation: the moving
+    averages average them, the twenty-session liquidity mean is diluted by a
+    zero, and every positional lookback shifts by one.
+
+    THE COVERAGE RULE CANNOT REACH THIS. The information boundary admits a
+    session at 98% coverage, but a day on which the vendor carries every name
+    forward looks BETTER covered than average -- 2026-05-28 and 2026-06-26 both
+    recorded 101% of a normal session's symbol count in this repo's own breadth
+    history while nothing traded. Completeness cannot distinguish a closed
+    exchange from an open one; volume can, and it does so without a judgement
+    call: a session on which no priced symbol traded is not a session.
+
+    A volume the provider did not report is UNKNOWN, never zero. Counting
+    silence as "did not trade" would fabricate closures, which is the failure
+    this must not have.
+    """
+    known: dict[pd.Timestamp, int] = {}
+    traded: dict[pd.Timestamp, int] = {}
+    for frame in histories.values():
+        if frame is None or len(frame) == 0 or "Volume" not in getattr(frame, "columns", []):
+            continue
+        volume = pd.to_numeric(pd.Series(frame["Volume"]).to_numpy(), errors="coerce")
+        volume = pd.Series(volume, index=_session_dates(frame)).dropna()
+        for stamp in volume.index:
+            known[stamp] = known.get(stamp, 0) + 1
+        for stamp in volume.index[volume.to_numpy() > 0]:
+            traded[stamp] = traded.get(stamp, 0) + 1
+    dead = sorted(
+        stamp for stamp, count in known.items()
+        if count >= MIN_SYMBOLS_TO_JUDGE
+        and traded.get(stamp, 0) / count < TRADED_SHARE_FLOOR
+    )
+    if len(known) >= MIN_SESSIONS_TO_JUDGE_RATE and len(dead) > MAX_NON_TRADING_SHARE * len(known):
+        raise SystemExit(
+            f"{len(dead)} of {len(known)} sessions look non-trading, above the "
+            f"{MAX_NON_TRADING_SHARE:.0%} ceiling. An exchange does not close that "
+            "often; the volume feed is unusable. Refusing to drop sessions."
+        )
+    return dead
+
+
+def without_sessions(
+    histories: Mapping[str, pd.DataFrame], sessions: Sequence[pd.Timestamp]
+) -> dict[str, pd.DataFrame]:
+    """Every history with the given sessions removed.
+
+    Removed rather than masked: a session that did not happen should not exist
+    in any index, so positional lookbacks, session counts and the maturity gate
+    are all counting real trading days without needing to know about this.
+    """
+    drop = {pd.Timestamp(s).normalize() for s in sessions}
+    if not drop:
+        return dict(histories)
+    out: dict[str, pd.DataFrame] = {}
+    for symbol, frame in histories.items():
+        if frame is None or len(frame) == 0:
+            out[symbol] = frame
+            continue
+        keep = ~_session_dates(frame).isin(drop)
+        out[symbol] = frame.loc[keep]
+    return out
 
 
 def session_coverage(
