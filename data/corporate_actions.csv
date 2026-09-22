@@ -1,0 +1,22 @@
+Symbol,Date,Move_Pct,Ratio,Prev_Close,Close,Looks_Like,Match_Gap,Kind
+ARIHANT,2026-04-20,2188.9,22.889028,39.65,907.55,demerger or spin-off (no clean split ratio),1.2889,unclassified
+MBECL,2026-09-01,241.97,3.419725,65.4,223.65,demerger or spin-off (no clean split ratio),0.1399,unclassified
+KOVAI,2026-04-20,112.99,2.129859,2570.2222,5474.21,demerger or spin-off (no clean split ratio),0.0649,unclassified
+SILVERTUC,2026-01-01,-89.92,0.100753,1095.6263,110.3872,1:10 split,0.0075,split/bonus
+SHANKARA,2025-09-24,-75.54,0.244573,990.5,242.25,1:4 split,0.0217,split/bonus
+GICL,2025-10-06,-74.97,0.250306,163.2,40.85,1:4 split,0.0012,split/bonus
+SADHNANIQ,2026-02-09,-72.24,0.277605,6.03,1.674,demerger or spin-off (no clean split ratio),0.1104,unclassified
+DCMSRIND,2025-12-26,-68.33,0.316682,170.3098,53.9341,demerger or spin-off (no clean split ratio),0.0499,unclassified
+ALLCARGO,2025-11-12,-64.92,0.350753,33.87,11.88,demerger or spin-off (no clean split ratio),0.0524,unclassified
+VEDL,2026-04-30,-64.9,0.351021,773.6,271.55,demerger or spin-off (no clean split ratio),0.0532,unclassified
+HEG,2026-09-07,-62.62,0.373773,728.25,272.2,demerger or spin-off (no clean split ratio),0.0656,unclassified
+SKFINDIA,2025-10-15,-54.75,0.45246,4889.0034,2212.0779,demerger or spin-off (no clean split ratio),0.0951,unclassified
+NOVARTIND,2026-04-20,48.08,1.480774,672.25,995.45,demerger or spin-off (no clean split ratio),0.2596,unclassified
+TRIVENI,2026-07-22,-41.57,0.584305,469.4234,274.2867,demerger or spin-off (no clean split ratio),0.1236,unclassified
+GRAUWEIL,2026-04-20,-41.04,0.589619,114.8046,67.691,demerger or spin-off (no clean split ratio),0.1156,unclassified
+VIVIANA,2025-11-10,-40.57,0.594286,1609.6,956.5625,demerger or spin-off (no clean split ratio),0.1086,unclassified
+TMPV,2025-10-14,-40.15,0.598487,655.314,392.1966,demerger or spin-off (no clean split ratio),0.1023,unclassified
+UFBL,2026-02-02,39.36,1.393598,181.2,252.52,demerger or spin-off (no clean split ratio),0.3032,unclassified
+GOODYEAR,2026-04-20,-37.39,0.626089,1234.9635,773.1975,demerger or spin-off (no clean split ratio),0.0609,unclassified
+WATERBASE,2026-08-17,-37.1,0.628972,74.9,47.11,demerger or spin-off (no clean split ratio),0.0566,unclassified
+KAPSTON,2026-03-02,-35.19,0.648119,411.55,266.7333,3:2 (1:2 bonus),0.0279,split/bonus
