@@ -171,3 +171,43 @@ def test_the_window_edge_convention_is_fixed_even_though_it_is_immaterial():
     result = pd.DataFrame({"High_52W": [np.nan]}, index=["EDGE"])
     row = maturing_report(result, snaps, BOUNDARY).iloc[0]
     assert row["Sessions_52W"] == len(idx) - 1, "the session on the edge is not counted"
+
+
+def test_main_never_reads_a_column_the_reports_do_not_emit():
+    """THE BUG THAT BROKE PRODUCTION, 2026-09-21.
+
+    Renaming Reaches_200_Around -> Matures_Around updated the report and its
+    tests and left `main()` printing the old name, so four scheduled audits
+    died with KeyError AFTER doing all the work -- the snapshot was built, the
+    archive checked, and then a log line killed the run.
+
+    No test ran main(), and CI runs tests rather than the audit, so nothing
+    could see it. This reads main()'s AST for subscripts on the report frames
+    and requires every name to be a column those reports actually emit, which
+    is mechanical and cannot drift with prose.
+    """
+    import ast
+    import inspect
+
+    import scripts.real_data_audit as audit
+
+    tree = ast.parse(inspect.getsource(audit.main))
+    frames = {
+        "maturing": ["Symbol", "Sessions_52W", "Blocked_By", "Sessions_To_Go", "Matures_Around"],
+        "soon": ["Symbol", "Sessions_52W", "Blocked_By", "Sessions_To_Go", "Matures_Around"],
+        "events": ["Symbol", "Date", "Move_Pct", "Ratio", "Prev_Close", "Close",
+                   "Looks_Like", "Match_Gap", "Kind"],
+    }
+    seen = 0
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Subscript) or not isinstance(node.value, ast.Name):
+            continue
+        allowed = frames.get(node.value.id)
+        if allowed is None or not isinstance(node.slice, ast.Constant):
+            continue
+        key = node.slice.value
+        if not isinstance(key, str):
+            continue
+        seen += 1
+        assert key in allowed, f"main() reads {node.value.id}[{key!r}], which is not a column it has"
+    assert seen >= 2, "the scan found nothing to check -- it has lost its teeth"

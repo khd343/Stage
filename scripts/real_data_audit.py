@@ -1060,10 +1060,16 @@ def main() -> None:
     maturing.to_csv(output_dir / "maturing.csv", index=False)
     if len(maturing):
         soon = maturing.head(3)
-        print(f"Maturing: {len(maturing)} names under {MATURITY_SESSIONS} sessions "
-              f"(next to cross: {', '.join(soon['Symbol'])} around {soon['Reaches_200_Around'].iloc[0]})")
+        # Says WHY, not just how many. Most rows here are waiting for the
+        # listing to age past 52 weeks, not for a session count -- measured
+        # 130 of 130 on 2026-09-18 -- so naming a session shortfall for all of
+        # them was the same misdescription the report itself carried.
+        blocked = maturing["Blocked_By"].value_counts().to_dict()
+        reasons = ", ".join(f"{count} on {why}" for why, count in sorted(blocked.items()))
+        print(f"Maturing: {len(maturing)} names without a 52-week high ({reasons}); "
+              f"next to cross: {', '.join(soon['Symbol'])} around {soon['Matures_Around'].iloc[0]}")
     else:
-        print(f"Maturing: none; every published name has {MATURITY_SESSIONS}+ sessions")
+        print("Maturing: none; every published name has a 52-week high")
 
     print(f"Decision date: {decision.date()}")
     print(f"Yahoo history: {start.date()} to {end.date()} exclusive")
