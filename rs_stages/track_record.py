@@ -27,6 +27,7 @@ rules_version() ignores the archive schema entirely.
 """
 from __future__ import annotations
 
+import ast
 import gzip
 import hashlib
 import json
@@ -91,14 +92,87 @@ TRACK_COLUMNS = [
     "median_return_pct", "mean_return_pct", "hit_rate",
     "universe_median_pct", "excess_vs_universe_pp",
     "benchmark_return_pct", "excess_vs_benchmark_pp",
-    "rules_version", "graded_on",
+    "rules_version", "recipe_version", "graded_on",
 ]
+
+#: The modules whose SOURCE decides WHO lands in a cohort. `rules_version()`
+#: fingerprints the grading apparatus; this fingerprints the engine being
+#: graded, and until 2026-10-08 nothing did. Not a hand-kept list: a test walks
+#: every module that writes a cohort column and fails if it is not named here.
+RECIPE_SOURCES = ("actions.py", "quant.py", "screener.py")
+
+_PKG = Path(__file__).resolve().parent
+
+
+def _recipe_source(name: str) -> str:
+    """Read one recipe module's text. A missing file raises, never skips.
+
+    The silent-skip class: a renamed module must break the build rather than
+    drop quietly out of the fingerprint, which would leave the hash claiming
+    more coverage than it has.
+    """
+    path = _PKG / name
+    if not path.is_file():
+        raise FileNotFoundError(
+            f"recipe source {name!r} is named in RECIPE_SOURCES but absent; "
+            "the fingerprint must never cover less than it claims"
+        )
+    return path.read_text(encoding="utf-8")
+
+
+def _source_fingerprint(text: str) -> str:
+    """Hash what a module MEANS: its AST, with docstrings removed.
+
+    Comments never reach an AST and docstrings are stripped here, so prose
+    churn cannot move the hash -- one that moved on a typo fix would be
+    ignored within a week, and being worth looking at is the whole value.
+
+    IDENTIFIERS ARE DELIBERATELY KEPT. Normalising names away would hash
+    `rs >= 80 and vol >= 1.5` identically to `vol >= 80 and rs >= 1.5`, which
+    is a behaviour change. A rename therefore moves the hash; that cost is
+    accepted, because over-detection is the safe direction -- a spurious change
+    costs one glance at a diff, a missed one silently voids the record.
+    """
+    tree = ast.parse(text)
+    for node in ast.walk(tree):
+        if not isinstance(node, (ast.Module, ast.ClassDef,
+                                 ast.FunctionDef, ast.AsyncFunctionDef)):
+            continue
+        body = getattr(node, "body", None)
+        if (body and isinstance(body[0], ast.Expr)
+                and isinstance(body[0].value, ast.Constant)
+                and isinstance(body[0].value.value, str)):
+            node.body = body[1:] or [ast.Pass()]
+    dumped = ast.dump(tree, annotate_fields=True, include_attributes=False)
+    return hashlib.sha256(dumped.encode("utf-8")).hexdigest()
+
+
+def recipe_version() -> str:
+    """A fingerprint of the engine that decided the rows being graded.
+
+    Its own column in the record, not folded into `rules_version()` alone,
+    because the two have different change policies: a cohort edit breaks the
+    pre-registration, a recipe edit is a new engine version. One combined hash
+    cannot tell a reader which of those happened.
+    """
+    blob = "\n".join(f"{name}:{_source_fingerprint(_recipe_source(name))}"
+                     for name in RECIPE_SOURCES)
+    return hashlib.sha256(blob.encode("utf-8")).hexdigest()[:12]
 
 
 def rules_version() -> str:
-    """A fingerprint of everything that defines a grade. Changes when the rules do."""
+    """A fingerprint of everything that defines a grade: apparatus AND engine.
+
+    It covered only the apparatus until 2026-10-08 -- the cohort text, the
+    horizons, the column list, the settle rule -- while `action_for()`, the RS
+    blend weights and the stage thresholds sat outside it. So a recipe edit
+    mid-record left identical hashes on both sides and the record would have
+    pooled two different systems with nothing in the data to show it. The guard
+    looked like it covered this, which is why it survived.
+    """
     blob = json.dumps({"cohorts": COHORTS, "horizons": HORIZONS_WEEKS,
-                       "required": REQUIRED_COLUMNS, "settle": SETTLE_SESSIONS}, sort_keys=True)
+                       "required": REQUIRED_COLUMNS, "settle": SETTLE_SESSIONS,
+                       "recipe": recipe_version()}, sort_keys=True)
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()[:12]
 
 
@@ -244,6 +318,7 @@ def grade_snapshot(frame: pd.DataFrame, closes: dict[str, pd.Series], benchmark:
             "benchmark_return_pct": round(bench, 4),
             "excess_vs_benchmark_pp": round(med - bench, 4) if np.isfinite(med) and np.isfinite(bench) else float("nan"),
             "rules_version": rules_version(),
+            "recipe_version": recipe_version(),
             "graded_on": graded_on.isoformat(),
         })
     return pd.DataFrame(rows, columns=TRACK_COLUMNS)
